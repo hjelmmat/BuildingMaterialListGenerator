@@ -38,13 +38,4 @@ class LumberTest {
         assertEquals(secondResult, new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH),
                 Lumber.Dimension.TWO_BY_FOUR).hashCode());
     }
-    
-    @Test
-    public void lumberShouldProduceMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(new Lumber(new Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 1);
-        assertEquals(result, new Lumber(new Measurement(5), Lumber.Dimension.TWO_BY_FOUR).material());
-
-        MaterialList secondResult = new MaterialList().addMaterial(new Lumber(new Measurement(192), Lumber.Dimension.TWO_BY_FOUR), 1);
-        assertEquals(secondResult, new Lumber(new Measurement(190), Lumber.Dimension.TWO_BY_FOUR).material());
-    }
 }

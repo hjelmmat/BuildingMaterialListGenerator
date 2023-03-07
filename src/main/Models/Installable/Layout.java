@@ -1,7 +1,7 @@
-package main.Models;
+package main.Models.Installable;
 
 import main.Models.Material.MaterialList;
-import main.Models.Material.Stud;
+import main.Models.Measurement;
 
 import java.util.TreeMap;
 

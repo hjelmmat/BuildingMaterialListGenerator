@@ -1,12 +1,17 @@
-package main.Models.Material;
+package main.Models.Installable;
 
+import main.Models.Material.Lumber;
+import main.Models.Material.MaterialList;
+import main.Models.Material.Nails;
 import main.Models.Measurement;
 
 /**
  * Class used to describe a stud, essentially a c-style struct
  */
-public class Stud extends Lumber {
+public class Stud implements Installable {
     public final Measurement installedLength;
+    public final Lumber.Dimension dimension;
+    private final MaterialList material;
     private final static Nails nailType = Nails.TEN_D;
     private final static int numberOfNails = 6;
 
@@ -15,16 +20,18 @@ public class Stud extends Lumber {
      * @param length - The length of the stud
      * @param dimension - the width/height dimension of the stud.
      */
-    public Stud(Measurement length, Dimension dimension) {
-        super(length, dimension);
+    public Stud(Measurement length, Lumber.Dimension dimension) {
         this.installedLength = length;
+        this.dimension = dimension;
+        this.material = new MaterialList().addMaterial(new Lumber(this.installedLength, this.dimension), 1)
+                .addMaterial(nailType, numberOfNails);
     }
 
     /**
      * Default Constructor for a Stud assuming 8' 2x4 walls
      */
     public Stud() {
-        this(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Dimension.TWO_BY_FOUR);
+        this(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR);
     }
 
     /**
@@ -41,7 +48,7 @@ public class Stud extends Lumber {
         if (!(obj instanceof Stud s)) {
             return false;
         }
-        return super.equals(s) && this.installedLength.equals(s.installedLength);
+        return this.installedLength.equals(s.installedLength) && this.dimension.equals(s.dimension);
     }
 
     /**
@@ -60,8 +67,6 @@ public class Stud extends Lumber {
      */
     @Override
     public MaterialList material() {
-        return this.material.isEmpty()
-                ? this.material.addMaterials(new Lumber(this.installedLength, this.dimension).material()).addMaterial(nailType, numberOfNails)
-                : this.material;
+        return this.material;
     }
 }

@@ -1,9 +1,9 @@
-package main.Models;
+package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
 import main.Models.Material.Nails;
-import main.Models.Material.Stud;
+import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

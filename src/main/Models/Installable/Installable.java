@@ -1,4 +1,4 @@
-package main.Models;
+package main.Models.Installable;
 
 import main.Models.Material.MaterialList;
 

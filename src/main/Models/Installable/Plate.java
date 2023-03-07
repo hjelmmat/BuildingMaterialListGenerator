@@ -1,11 +1,14 @@
-package main.Models;
+package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
 import main.Models.Material.Nails;
+import main.Models.Measurement;
 
-public class Plate extends Lumber {
+public class Plate implements Installable{
     public final Measurement installedLength;
+    public final Lumber.Dimension dimension;
+    private final MaterialList material;
     private final static Measurement nailSpacing = new Measurement(12);
     private final static Nails nailType = Nails.TEN_D;
 
@@ -13,9 +16,17 @@ public class Plate extends Lumber {
      * @param length    - Length of plate
      * @param dimension - dimension of Lumber to use for plate
      */
-    public Plate(Measurement length, Dimension dimension) throws IllegalArgumentException {
-        super(length, dimension);
+    public Plate(Measurement length, Lumber.Dimension dimension) throws IllegalArgumentException {
         this.installedLength = length;
+        this.dimension = dimension;
+        Lumber lumber = new Lumber(installedLength, dimension);
+        this.material = new MaterialList().addMaterial(lumber, 1).addMaterial(nailType, this.numberOfNails());
+    }
+
+    private int numberOfNails() {
+        // Plates should be installed with a pair of nails every 12" with a set at the beginning and the end.
+        int numberOfNailPairs = (int) Math.ceil(installedLength.divide(nailSpacing)) + 1;
+        return numberOfNailPairs * 2;
     }
 
     /**
@@ -31,7 +42,7 @@ public class Plate extends Lumber {
         if (!(obj instanceof Plate p)) {
             return false;
         }
-        return super.equals(p) && this.installedLength.equals(p.installedLength);
+        return this.installedLength.equals(p.installedLength) && this.dimension.equals(p.dimension);
     }
 
     /**
@@ -48,13 +59,6 @@ public class Plate extends Lumber {
      */
     @Override
     public MaterialList material() {
-        if (this.material.isEmpty()) {
-            this.material.addMaterial(new Lumber(this.installedLength, this.dimension), 1);
-
-            // Plates should be installed with a pair of nails every 12" with a set at the beginning and the end.
-            int numberOfNailPairs = (int) Math.ceil(installedLength.divide(nailSpacing)) + 1;
-            this.material.addMaterial(nailType, numberOfNailPairs * 2);
-        }
         return this.material;
     }
 }

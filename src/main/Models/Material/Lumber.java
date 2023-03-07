@@ -1,12 +1,11 @@
 package main.Models.Material;
 
-import main.Models.Installable;
 import main.Models.Measurement;
 
 /**
  * Base class for all Lumber. This class assumes only lumber that can be bought from a store.
  */
-public class Lumber implements Installable, Material {
+public class Lumber implements Material {
     public final FactoryLength factoryMeasurement;
     public final Dimension dimension;
     protected final MaterialList material;
@@ -90,14 +89,5 @@ public class Lumber implements Installable, Material {
     @Override
     public int hashCode() {
         return (this.dimension + this.factoryMeasurement.length.asString() + this.getClass().getName()).hashCode();
-    }
-
-    /**
-     *
-     * @return The Material required for this Lumber
-     */
-    @Override
-    public MaterialList material() {
-        return this.material.isEmpty() ? this.material.addMaterial(this, 1) : this.material;
     }
 }

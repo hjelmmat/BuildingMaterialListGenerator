@@ -1,21 +1,22 @@
-package main.Models;
+package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Stud;
+import main.Models.Measurement;
 
 /**
  * Class used to describe what it takes to build a wall
  */
 public class Wall implements Installable {
     private final Stud stud;
-    private final Lumber[] plates;
     private final static boolean loadBearing = true;
-    private static final Stud.Dimension studType = Stud.Dimension.TWO_BY_FOUR;
-    private static final Measurement studSeparation = new Measurement(16);
-    private static final int minimumNumberOfStuds = 2;
     private final Layout layout;
     private final int numberOfStuds;
+    private final MaterialList material;
+
+    private static final Lumber.Dimension studType = Lumber.Dimension.TWO_BY_FOUR;
+    private static final Measurement studSeparation = new Measurement(16);
+    private static final int minimumNumberOfStuds = 2;
 
     /**
      *
@@ -24,19 +25,23 @@ public class Wall implements Installable {
      * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
      */
     public Wall(Measurement length, Measurement height) throws IllegalArgumentException {
-        // add the top and bottom plates
-        this.plates = new Lumber[3];
-        this.plates[0] = new Plate(length, studType);
-        this.plates[1] = new Lumber(length, studType);
-        if (loadBearing) {
-            this.plates[2] = new Plate(length, studType);
-        }
+        // All walls have at least one top plate, but the nails to attach it are from the studs
+        this.material = new MaterialList().addMaterial(new Lumber(length, studType), 1);
 
-        Measurement heightOfAllPlates = studType.width.clone().multiply(this.plates.length);
+        // add the top and bottom plates
+        Plate plate = new Plate(length, studType);
+        this.material.addMaterials(plate.material());
+        if (loadBearing) {
+            this.material.addMaterials(plate.material());
+        }
+        int numberOfPlates = loadBearing ? 3 : 2;
+
+        Measurement heightOfAllPlates = studType.width.clone().multiply(numberOfPlates);
         this.stud = new Stud(validateParameter(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates),
                 studType);
         this.layout = this.createLayout(validateParameter(length, studType.width.clone().multiply(minimumNumberOfStuds),
                 "length"));
+        this.material.addMaterials(this.layout.material());
         this.numberOfStuds = this.layout.size();
     }
 
@@ -97,16 +102,6 @@ public class Wall implements Installable {
 
     @Override
     public MaterialList material() {
-        MaterialList result = new MaterialList();
-
-        // Add the plates first
-        for (Lumber plate : this.plates) {
-            result.addMaterials(plate.material());
-        }
-
-        // Add the material from the layout
-        result.addMaterials(this.layout.material());
-
-        return result;
+        return this.material;
     }
 }
