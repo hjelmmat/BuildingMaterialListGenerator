@@ -38,4 +38,10 @@ class LumberTest {
         assertEquals(secondResult, new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH),
                 Lumber.Dimension.TWO_BY_FOUR).hashCode());
     }
+
+    @Test
+    public void lumberShouldProduceNiceString() {
+        String fourFootResult = "48\" 2x4";
+        assertEquals(fourFootResult, new Lumber(new Measurement(40), Lumber.Dimension.TWO_BY_FOUR).toString());
+    }
 }

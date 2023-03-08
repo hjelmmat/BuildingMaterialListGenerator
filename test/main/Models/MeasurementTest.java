@@ -112,23 +112,23 @@ class MeasurementTest {
          */
         String zeroResult = "0\"";
         Measurement zeroMeasure = new Measurement(0, Measurement.Fraction.ZERO);
-        assertEquals(zeroResult, zeroMeasure.asString());
+        assertEquals(zeroResult, zeroMeasure.toString());
 
         String zeroFraction = "5\"";
-        assertEquals(zeroFraction, new Measurement(5, Measurement.Fraction.ZERO).asString());
+        assertEquals(zeroFraction, new Measurement(5, Measurement.Fraction.ZERO).toString());
 
         String threeEighths = "5/8\"";
-        assertEquals(threeEighths, new Measurement(0, Measurement.Fraction.FIVE_EIGHTH).asString());
+        assertEquals(threeEighths, new Measurement(0, Measurement.Fraction.FIVE_EIGHTH).toString());
 
         String fourAndOneHalf = "4-1/2\"";
         Measurement measurementOfFourAndOneHalf = new Measurement(4, Measurement.Fraction.ONE_HALF);
-        assertEquals(fourAndOneHalf, measurementOfFourAndOneHalf.asString());
+        assertEquals(fourAndOneHalf, measurementOfFourAndOneHalf.toString());
 
         String tenAndNineSixteenths = "10-9/16\"";
-        assertEquals(tenAndNineSixteenths, new Measurement(10, Measurement.Fraction.NINE_SIXTEENTH).asString());
+        assertEquals(tenAndNineSixteenths, new Measurement(10, Measurement.Fraction.NINE_SIXTEENTH).toString());
 
         String eighteenAndThreeFourths = "18-3/4\"";
-        assertEquals(eighteenAndThreeFourths, new Measurement(18, Measurement.Fraction.THREE_FOURTH).asString());
+        assertEquals(eighteenAndThreeFourths, new Measurement(18, Measurement.Fraction.THREE_FOURTH).toString());
     }
 
     @Test

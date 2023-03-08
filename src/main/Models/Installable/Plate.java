@@ -50,7 +50,7 @@ public class Plate implements Installable{
      */
     @Override
     public int hashCode() {
-        return  (this.dimension + this.installedLength.asString() + this.getClass().getName()).hashCode();
+        return  (this.dimension + this.installedLength.toString() + this.getClass().getName()).hashCode();
     }
 
     /**

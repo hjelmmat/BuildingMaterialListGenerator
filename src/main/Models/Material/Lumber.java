@@ -14,14 +14,17 @@ public class Lumber implements Material {
      * Enum to represent acceptable Lumber types
      */
     public enum Dimension {
-        TWO_BY_FOUR(new Measurement(1, Measurement.Fraction.ONE_HALF), new Measurement(3, Measurement.Fraction.ONE_HALF));
+        TWO_BY_FOUR(new Measurement(1, Measurement.Fraction.ONE_HALF), new Measurement(3, Measurement.Fraction.ONE_HALF),
+                "2x4");
 
         public final Measurement width;
         public final Measurement height;
+        private final String niceString;
 
-        Dimension(Measurement width, Measurement height) {
+        Dimension(Measurement width, Measurement height, String niceString) {
             this.width = width;
             this.height = height;
+            this.niceString = niceString;
         }
     }
 
@@ -30,8 +33,8 @@ public class Lumber implements Material {
      * that is longer than the provided length.
      */
     public enum FactoryLength {
-        TWO_FT(new Measurement(24)), FOUR_FT(new Measurement(48)), EIGHT_FT_WALL(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH)),
-        EIGHT_FT(new Measurement(96)), NINE_FT_WALL(new Measurement(104, Measurement.Fraction.FIVE_EIGHTH)),
+        TWO_FT(new Measurement(24)), FOUR_FT(new Measurement(48)), EIGHT_FT_PRECUT(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH)),
+        EIGHT_FT(new Measurement(96)), NINE_FT_PRECUT(new Measurement(104, Measurement.Fraction.FIVE_EIGHTH)),
         TEN_FT(new Measurement(120)), TWELVE_FT(new Measurement(144)), FOURTEEN_FT(new Measurement(168)),
         SIXTEEN_FT(new Measurement(192)), TWENTY_FT(new Measurement(240));
 
@@ -50,8 +53,8 @@ public class Lumber implements Material {
             // If this part of the code is reached, then no valid length was found.
             String message = "A FactoryLength cannot be greater than %s, was actually %s";
             throw new IllegalArgumentException(String.format(message,
-                    FactoryLength.TWENTY_FT.length.asString(),
-                    length.asString()));
+                    FactoryLength.TWENTY_FT.length.toString(),
+                    length.toString()));
         }
     }
 
@@ -65,6 +68,11 @@ public class Lumber implements Material {
         this.dimension = dimension;
 
         this.material = new MaterialList();
+    }
+
+    @Override
+    public String toString() {
+        return this.factoryMeasurement.length.toString() + " " + this.dimension.niceString;
     }
 
     /**
@@ -88,6 +96,6 @@ public class Lumber implements Material {
      */
     @Override
     public int hashCode() {
-        return (this.dimension + this.factoryMeasurement.length.asString() + this.getClass().getName()).hashCode();
+        return (this.dimension + this.factoryMeasurement.length.toString() + this.getClass().getName()).hashCode();
     }
 }

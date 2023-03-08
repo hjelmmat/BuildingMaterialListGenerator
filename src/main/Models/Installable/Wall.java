@@ -58,7 +58,7 @@ public class Wall implements Installable {
             throws IllegalArgumentException {
         String exceptionMessageBase = "%s cannot be less than %s; %s was %s";
         if (parameter.compareTo(minimumValue) < 0) {
-            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue.asString(), type, parameter.asString());
+            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue.toString(), type, parameter.toString());
             throw new IllegalArgumentException(lengthExceptionMessage);
         }
         return parameter;

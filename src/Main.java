@@ -1,5 +1,9 @@
+import UI.MainFrame;
+import main.controllers.MainController;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        MainFrame view = new MainFrame();
+        MainController myController = new MainController(view);
     }
 }

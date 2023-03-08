@@ -51,6 +51,11 @@ public class Measurement implements Comparable<Measurement>{
             }
         }
 
+        @Override
+        public String toString() {
+            return this.niceString;
+        }
+
         /**
          *
          * @param fractionValue - The double value to convert into an enum
@@ -182,7 +187,7 @@ public class Measurement implements Comparable<Measurement>{
      *
      * @return The Measurement as a string in the format of: int-fraction"
      */
-    public String asString() {
+    public String toString() {
         String result = "";
         String fractionString = this.fraction.niceString;
         if (this.integer == 0) {
