@@ -1,5 +1,6 @@
 package main.Models.Material;
 
+import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -9,6 +10,7 @@ import java.util.Vector;
  */
 public class MaterialList {
     private final HashMap<Material, Integer> map;
+    private final static Vector<String> keyValueProperties =  new Vector<>(List.of("Material", "Quantity"));
 
     /**
      * Create a MaterialList to store material and quantities.
@@ -38,9 +40,29 @@ public class MaterialList {
         return this;
     }
 
-    public Vector<Vector<Object>> asVector() {
-        Vector<Vector<Object>> result = new Vector<>();
-        this.map.forEach((k,v) -> result.add(new Vector<>(List.of(k, v))));
-        return result;
+    /**
+     *
+     * @return - This material list as a DefaultTableModel
+     */
+    public DefaultTableModel asTableModel() {
+        Vector<Vector<Object>> data = new Vector<>();
+        this.map.forEach((k,v) -> data.add(new Vector<>(List.of(k, v))));
+        return new DefaultTableModel(data, keyValueProperties);
+    }
+
+    /**
+     *
+     * @param obj - the object to be compared
+     * @return Indication if the two objects are equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof MaterialList m)) {
+            return false;
+        }
+        return this.map.equals(m.map);
     }
 }

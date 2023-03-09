@@ -4,10 +4,6 @@ import UI.MainFrame;
 import main.Models.Installable.Wall;
 import main.Models.Measurement;
 
-import javax.swing.table.DefaultTableModel;
-import java.util.List;
-import java.util.Vector;
-
 public class MainController {
     private final MainFrame view;
 
@@ -20,8 +16,6 @@ public class MainController {
     public void calculateMaterials() {
         Measurement height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
         Measurement length = new Measurement(Integer.parseInt(this.view.getLengthText()), this.view.getLengthFractionValue());
-        DefaultTableModel model = new DefaultTableModel(new Wall(length, height).material().asVector(),
-                new Vector<>(List.of("Material", "Quantity")));
-        this.view.updateTable(model);
+        this.view.updateTable(new Wall(length, height).material().asTableModel());
     }
 }
