@@ -65,4 +65,13 @@ public class MaterialList {
         }
         return this.map.equals(m.map);
     }
+
+    /**
+     *
+     * @return The hash code for this MaterialList
+     */
+    @Override
+    public int hashCode() {
+        return this.map.hashCode();
+    }
 }

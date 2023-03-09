@@ -52,4 +52,10 @@ class MaterialListTest {
         MaterialList two = new MaterialList().addMaterial(lumber, 1);
         assertEquals(one, two);
     }
+
+    @Test
+    public void shouldCreateHashCode() {
+        int result = 1134855128;
+        assertEquals(result, new MaterialList().addMaterial(lumber, 1).hashCode());
+    }
 }
