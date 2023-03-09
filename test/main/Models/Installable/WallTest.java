@@ -36,23 +36,6 @@ class WallTest {
     }
 
     @Test
-    public void wallShouldCalculateCorrectNumberOfStuds() throws IllegalArgumentException {
-        assertEquals(2, new Wall(new Measurement(3)).numberOfStuds());
-
-        assertEquals(2, this.maxTwoStudWall.numberOfStuds());
-
-        Wall minThreeStudWall = new Wall(new Measurement(17, Measurement.Fraction.NINE_SIXTEENTH));
-        assertEquals(3, minThreeStudWall.numberOfStuds());
-
-        assertEquals(3, this.threeStudWall.numberOfStuds());
-
-        Measurement maxLengthForThreeStuds = new Measurement(33, Measurement.Fraction.ONE_HALF);
-        assertEquals(3, new Wall(maxLengthForThreeStuds).numberOfStuds());
-
-        assertEquals(4, this.fourStudWall.numberOfStuds());
-    }
-
-    @Test
     public void wallShouldCalculateCorrectStuds() throws IllegalArgumentException {
         Stud standardStud = new Stud();
         Layout minimumLayout = new Layout().addStudAt(new Measurement(0), standardStud)

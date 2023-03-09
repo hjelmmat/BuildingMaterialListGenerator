@@ -11,7 +11,6 @@ public class Wall implements Installable {
     private final Stud stud;
     private final static boolean loadBearing = true;
     private final Layout layout;
-    private final int numberOfStuds;
     private final MaterialList material;
 
     private static final Lumber.Dimension studType = Lumber.Dimension.TWO_BY_FOUR;
@@ -44,7 +43,6 @@ public class Wall implements Installable {
         this.layout = this.createLayout(validateParameter(length, studType.width.clone().multiply(minimumNumberOfStuds),
                 "length"));
         this.material.addMaterials(this.layout.material());
-        this.numberOfStuds = this.layout.size();
     }
 
     /**
@@ -84,14 +82,6 @@ public class Wall implements Installable {
         // add the final stud
         currentLayout.addStudAt(lastPosition, this.stud);
         return currentLayout;
-    }
-
-    /**
-     *
-     * @return the number of studs required to install this wall
-     */
-    public int numberOfStuds() {
-        return this.numberOfStuds;
     }
 
     /**

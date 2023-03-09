@@ -8,7 +8,15 @@ import java.util.TreeMap;
 /**
  * Class used to describe positions of studs. Essentially a c-style struct
  */
-public class Layout extends TreeMap<Measurement, Stud> implements Installable {
+public class Layout implements Installable {
+    TreeMap<Measurement, Stud> map;
+
+    /**
+     * Constructor to create an empty Layout
+     */
+    public Layout() {
+        this.map = new TreeMap<>();
+    }
 
     /**
      *
@@ -17,7 +25,7 @@ public class Layout extends TreeMap<Measurement, Stud> implements Installable {
      * @return Updated Layout with new stud
      */
     public Layout addStudAt(Measurement position, Stud stud) {
-        this.put(position.clone(), stud);
+        this.map.put(position.clone(), stud);
         return this;
     }
 
@@ -28,7 +36,32 @@ public class Layout extends TreeMap<Measurement, Stud> implements Installable {
     @Override
     public MaterialList material() {
         MaterialList result = new MaterialList();
-        this.forEach((k,v) -> result.addMaterials(v.material()));
+        this.map.forEach((k,v) -> result.addMaterials(v.material()));
         return result;
+    }
+
+    /**
+     *
+     * @param obj - the object to compare to this
+     * @return if the object is the same or not
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Layout l)) {
+            return false;
+        }
+        return this.map.equals(l.map);
+    }
+
+    /**
+     *
+     * @return a hashcode for this Layout
+     */
+    @Override
+    public int hashCode() {
+        return this.map.hashCode();
     }
 }
