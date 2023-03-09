@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class LayoutTest {
 
     @Test
     public void layoutShouldReturnMaterials() {
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 12)
+        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 12)
                 .addMaterial(new Lumber(new Measurement(92), Lumber.Dimension.TWO_BY_FOUR), 2);
         assertEquals(result, this.basicLayout.material());
     }

@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class NailsTest {
+class NailTest {
 
     @Test
     public void shouldReturnNiceString() {
         String result = "10d nails";
-        assertEquals(result, Nails.TEN_D.toString());
+        assertEquals(result, Nail.TEN_D.toString());
     }
 
 }

@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 
 /**
@@ -12,7 +12,7 @@ public class Stud implements Installable {
     public final Measurement installedLength;
     public final Lumber.Dimension dimension;
     private final MaterialList material;
-    private final static Nails nailType = Nails.TEN_D;
+    private final static Nail nailType = Nail.TEN_D;
     private final static int numberOfNails = 6;
 
     /**

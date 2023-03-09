@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +18,12 @@ class StudTest {
 
     @Test
     public void studShouldProduceMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 6)
+        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), this.dimension), 1);
         assertEquals(result, new Stud().material());
         assertEquals(result, new Stud(new Measurement(92), this.dimension).material());
 
-        MaterialList secondResult = new MaterialList().addMaterial(Nails.TEN_D, 6)
+        MaterialList secondResult = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(96), this.dimension), 1);
         assertEquals(secondResult, new Stud(new Measurement(92, Measurement.Fraction.ELEVEN_SIXTEENTH), this.dimension).material());
     }

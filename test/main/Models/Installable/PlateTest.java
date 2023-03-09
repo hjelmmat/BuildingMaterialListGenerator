@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 
 import org.junit.jupiter.api.Test;
@@ -14,19 +14,19 @@ class PlateTest {
     public void plateShouldCalculateMaterial() {
         Measurement firstLength = new Measurement(3);
         Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 4)
+        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 4)
                 .addMaterial(new Lumber(firstLength, dimension), 1);
         assertEquals(result, new Plate(firstLength, dimension).material());
         assertEquals(result, new Plate(new Measurement(12), dimension).material());
 
         Measurement secondLength = new Measurement(12, Measurement.Fraction.ONE_SIXTEENTH);
-        MaterialList secondResult = new MaterialList().addMaterial(Nails.TEN_D, 6)
+        MaterialList secondResult = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(secondLength, dimension), 1);
         assertEquals(secondResult, new Plate(secondLength, dimension).material());
         assertEquals(secondResult, new Plate(new Measurement(24), dimension).material());
 
         Measurement thirdLength = new Measurement(24, Measurement.Fraction.ONE_SIXTEENTH);
-        MaterialList thirdResult = new MaterialList().addMaterial(Nails.TEN_D, 8)
+        MaterialList thirdResult = new MaterialList().addMaterial(Nail.TEN_D, 8)
                 .addMaterial(new Lumber(thirdLength, dimension), 1);
         assertEquals(thirdResult, new Plate(thirdLength, dimension).material());
         assertEquals(thirdResult, new Plate(new Measurement(36), dimension).material());

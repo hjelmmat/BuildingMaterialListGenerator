@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 
 public class Plate implements Installable {
@@ -10,7 +10,7 @@ public class Plate implements Installable {
     public final Lumber.Dimension dimension;
     private final MaterialList material;
     private final static Measurement nailSpacing = new Measurement(12);
-    private final static Nails nailType = Nails.TEN_D;
+    private final static Nail nailType = Nail.TEN_D;
 
     /**
      * @param length    - Length of plate

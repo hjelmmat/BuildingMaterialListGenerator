@@ -2,7 +2,7 @@ package main.Models.Installable;
 
 import main.Models.Material.Lumber;
 import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Material.Nail;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -94,7 +94,7 @@ class WallTest {
 
     @Test
     public void wallShouldCreateMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 20)
+        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 20)
                 .addMaterial(new Lumber(new Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 3)
                 .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR), 2);
         assertEquals(result, new Wall(new Measurement(3)).material());
