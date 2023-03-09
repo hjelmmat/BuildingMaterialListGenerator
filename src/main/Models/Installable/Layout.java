@@ -21,6 +21,10 @@ public class Layout extends TreeMap<Measurement, Stud> implements Installable {
         return this;
     }
 
+    /**
+     *
+     * @return The material required to install this layout.
+     */
     @Override
     public MaterialList material() {
         MaterialList result = new MaterialList();

@@ -12,6 +12,10 @@ public enum Nails implements Material{
         this.niceString = niceString;
     }
 
+    /**
+     *
+     * @return a nice String representation of the Nail
+     */
     @Override
     public String toString() {
         return this.niceString + " nails";

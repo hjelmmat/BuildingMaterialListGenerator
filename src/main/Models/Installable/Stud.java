@@ -20,7 +20,7 @@ public class Stud implements Installable {
      * @param length - The length of the stud
      * @param dimension - the width/height dimension of the stud.
      */
-    public Stud(Measurement length, Lumber.Dimension dimension) {
+    public Stud(Measurement length, Lumber.Dimension dimension) throws IllegalArgumentException {
         this.installedLength = length;
         this.dimension = dimension;
         this.material = new MaterialList().addMaterial(new Lumber(this.installedLength, this.dimension), 1)
@@ -30,7 +30,7 @@ public class Stud implements Installable {
     /**
      * Default Constructor for a Stud assuming 8' 2x4 walls
      */
-    public Stud() {
+    public Stud() throws IllegalArgumentException {
         this(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR);
     }
 
@@ -58,7 +58,7 @@ public class Stud implements Installable {
      */
     @Override
     public int hashCode() {
-        return  (this.dimension + this.installedLength.toString() + this.getClass().getName()).hashCode();
+        return  (this.dimension.toString() + this.installedLength.toString() + this.getClass().getName()).hashCode();
     }
 
     /**

@@ -6,6 +6,7 @@ import java.util.HashMap;
  * A hashmap containing the Material needed to build something
  */
 public class MaterialList extends HashMap<Material, Integer> {
+
     /**
      *
      * @param type - the type of material to add

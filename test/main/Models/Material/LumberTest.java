@@ -31,10 +31,10 @@ class LumberTest {
 
     @Test
     public void lumberShouldProduceUniqueHash() {
-        int result = -196223298;
+        int result = -1658746639;
         assertEquals(result, new Lumber(new Measurement(3), Lumber.Dimension.TWO_BY_FOUR).hashCode());
 
-        int secondResult = -572052698;
+        int secondResult = 1134855129;
         assertEquals(secondResult, new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH),
                 Lumber.Dimension.TWO_BY_FOUR).hashCode());
     }

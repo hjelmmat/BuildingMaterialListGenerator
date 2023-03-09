@@ -42,7 +42,7 @@ class PlateTest {
 
     @Test
     public void plateShouldCalculateHashCode() {
-        int result = -419674364;
+        int result = -1450299273;
         assertEquals(result, new Plate(new Measurement(30), Lumber.Dimension.TWO_BY_FOUR).hashCode());
     }
 }

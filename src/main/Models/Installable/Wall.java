@@ -36,6 +36,8 @@ public class Wall implements Installable {
         }
         int numberOfPlates = loadBearing ? 3 : 2;
 
+        // The height of a wall includes the top and bottom plates and the studs so we need to remove the height of the
+        // plates to get the heights of the studs
         Measurement heightOfAllPlates = studType.width.clone().multiply(numberOfPlates);
         this.stud = new Stud(validateParameter(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates),
                 studType);
@@ -58,7 +60,7 @@ public class Wall implements Installable {
             throws IllegalArgumentException {
         String exceptionMessageBase = "%s cannot be less than %s; %s was %s";
         if (parameter.compareTo(minimumValue) < 0) {
-            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue.toString(), type, parameter.toString());
+            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue, type, parameter);
             throw new IllegalArgumentException(lengthExceptionMessage);
         }
         return parameter;
@@ -86,7 +88,7 @@ public class Wall implements Installable {
 
     /**
      *
-     * @return the number of studs required to build the wall
+     * @return the number of studs required to install this wall
      */
     public int numberOfStuds() {
         return this.numberOfStuds;
@@ -100,6 +102,10 @@ public class Wall implements Installable {
         return this.layout;
     }
 
+    /**
+     *
+     * @return The material required to install this wall
+     */
     @Override
     public MaterialList material() {
         return this.material;

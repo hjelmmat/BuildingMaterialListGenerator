@@ -5,7 +5,7 @@ import main.Models.Material.MaterialList;
 import main.Models.Material.Nails;
 import main.Models.Measurement;
 
-public class Plate implements Installable{
+public class Plate implements Installable {
     public final Measurement installedLength;
     public final Lumber.Dimension dimension;
     private final MaterialList material;

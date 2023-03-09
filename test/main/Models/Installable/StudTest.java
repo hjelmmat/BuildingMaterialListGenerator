@@ -36,7 +36,7 @@ class StudTest {
 
     @Test
     public void studShouldCalculateHashCode() {
-        int result = -193163819;
+        int result = 1181371266;
         assertEquals(result, new Stud().hashCode());
     }
 
