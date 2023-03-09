@@ -1,36 +1,38 @@
 package main.Models.Material;
 
 import main.Models.Measurement;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MaterialListTest {
-    Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
-    @Test
-    public void materialListShouldAddMembers() {
-        HashMap<Material, Integer> result = new HashMap<>();
-        Lumber lumber = new Lumber(new Measurement(90), this.dimension);
-        result.put(lumber, 1);
-        assertEquals(result, new MaterialList().addMaterial(lumber, 1));
+    private static final Lumber lumber = new Lumber(new Measurement(90),  Lumber.Dimension.TWO_BY_FOUR);
+    private static Vector<Vector<Object>> result;
+
+    @BeforeAll
+    static void setup() {
+        result = new Vector<>();
+        Vector<Object> firstElement = new Vector<>(List.of(lumber, 2));
+        result.add(firstElement);
     }
 
     @Test
     public void materialListShouldIncreaseQuantityWithNewMaterial() {
-        HashMap<Material, Integer> result = new HashMap<>();
-        Lumber lumber = new Lumber(new Measurement(90), this.dimension);
-        result.put(lumber, 2);
-        assertEquals(result, new MaterialList().addMaterial(lumber, 1).addMaterial(lumber, 1));
+        assertEquals(result, new MaterialList().addMaterial(lumber, 1).addMaterial(lumber, 1).asVector());
     }
 
     @Test
     public void materialListShouldAddSeparateMaterialList() {
-        HashMap<Material, Integer> result = new HashMap<>();
-        Lumber Lumber = new Lumber(new Measurement(90), this.dimension);
-        result.put(Lumber, 2);
-        MaterialList testable = new MaterialList().addMaterial(Lumber, 2);
-        assertEquals(result, new MaterialList().addMaterials(testable));
+        MaterialList testable = new MaterialList().addMaterial(lumber, 2);
+        assertEquals(result, new MaterialList().addMaterials(testable).asVector());
+    }
+
+    @Test
+    public void shouldReturnContentsAsVector() {
+        assertEquals(result, new MaterialList().addMaterial(lumber, 2).asVector());
     }
 }

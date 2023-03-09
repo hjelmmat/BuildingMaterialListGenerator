@@ -1,11 +1,21 @@
 package main.Models.Material;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 /**
- * A hashmap containing the Material needed to build something
+ * A container for the Material needed to build something
  */
-public class MaterialList extends HashMap<Material, Integer> {
+public class MaterialList {
+    private final HashMap<Material, Integer> map;
+
+    /**
+     * Create a MaterialList to store material and quantities.
+     */
+    public MaterialList() {
+        this.map = new HashMap<>();
+    }
 
     /**
      *
@@ -14,7 +24,7 @@ public class MaterialList extends HashMap<Material, Integer> {
      * @return - this updated MaterialList
      */
     public MaterialList addMaterial(Material type, int quantity) {
-        this.merge(type, quantity, Integer::sum);
+        this.map.merge(type, quantity, Integer::sum);
         return this;
     }
 
@@ -24,7 +34,13 @@ public class MaterialList extends HashMap<Material, Integer> {
      * @return - this updated MaterialList
      */
     public MaterialList addMaterials(MaterialList materials) {
-        materials.forEach(this::addMaterial);
+        materials.map.forEach(this::addMaterial);
         return this;
+    }
+
+    public Vector<Vector<Object>> asVector() {
+        Vector<Vector<Object>> result = new Vector<>();
+        this.map.forEach((k,v) -> result.add(new Vector<>(List.of(k, v))));
+        return result;
     }
 }
