@@ -1,30 +1,31 @@
 package main.controllers;
 
 import UI.MainFrame;
-import main.Models.Installable.Wall;
-import main.Models.Material.MaterialList;
+import main.Models.Buildable.House;
 import main.Models.Measurement;
 
-import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.util.Vector;
 
 public class MainController {
     private final MainFrame view;
+    private final House house;
 
 
-    public MainController(MainFrame view) {
+    public MainController(MainFrame view, House house) {
         this.view = view;
-        this.view.addCalculateListener(e -> calculateMaterials());
+        this.view.addCalculateListener(this::calculateMaterials);
+
+        this.house = house;
     }
 
-    public void calculateMaterials() {
-        Measurement height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
+    public void calculateMaterials(ActionEvent e) {
         Measurement length = new Measurement(Integer.parseInt(this.view.getLengthText()), this.view.getLengthFractionValue());
-        MaterialList materials = new Wall(length, height).material();
-        Object[] columnNames = {"Material", "Quantity"};
+        Measurement height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
+        this.house.addWall(length, height);
+        Vector<Vector<String>> material = this.house.materials();
 
-        DefaultTableModel model = new DefaultTableModel();
-        model.setColumnIdentifiers(columnNames);
-        materials.forEach((k,v) -> model.addRow(new Object[] {k.toString(), v}));
-        this.view.updateTable(model);
+        // The first element of the vector from Material is the title and everything else is the data
+        this.view.updateTable(new Vector<>(material.subList(1, material.size())), material.get(0));
     }
 }

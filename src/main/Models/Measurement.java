@@ -7,8 +7,8 @@ import java.util.Map;
  * Contains positive distances limited to multiples of 1/16.
  */
 public class Measurement implements Comparable<Measurement>{
-    public int integer; // This should only be updated via this.updateIntegerValue
-    public Fraction fraction;
+    private int integer; // This should only be updated via this.updateIntegerValue
+    private Fraction fraction;
 
     /**
      * The Fraction enum is used to allow for non-int Measurements but restrict the options to commonly used values,
@@ -22,7 +22,8 @@ public class Measurement implements Comparable<Measurement>{
         public final double value;
         public final String niceString;
         private static final double maximumFraction = 16;
-        private static final Map<Double, Fraction> map = new HashMap<>();
+        private static final Map<Double, Fraction> doubleMap = new HashMap<>();
+        private static final Map<String, Fraction> stringMap = new HashMap<>();
 
         Fraction(int numerator) {
             this.value = numerator / maximumFraction;
@@ -47,7 +48,8 @@ public class Measurement implements Comparable<Measurement>{
 
         static {
             for (Fraction fraction : Fraction.values()) {
-                map.put(fraction.value, fraction);
+                doubleMap.put(fraction.value, fraction);
+                stringMap.put(fraction.toString(), fraction);
             }
         }
 
@@ -62,8 +64,10 @@ public class Measurement implements Comparable<Measurement>{
          * @return The appropriate Fraction for the given value
          */
         public static Fraction valueOf(double fractionValue) {
-            return map.get(fractionValue);
+            return doubleMap.get(fractionValue);
         }
+
+        public static Fraction fromString(String fractionString) { return stringMap.get(fractionString); }
     }
 
     /**
@@ -138,7 +142,7 @@ public class Measurement implements Comparable<Measurement>{
         return (int) (this.doubleValue() * 10000.0);
     }
 
-    private Measurement updateMeasurementFromDouble(double newMeasurement) throws IllegalArgumentException {
+    private Measurement updateMeasurementFromDouble(double newMeasurement){
         int wholeNumber = (int) Math.floor(newMeasurement);
         Fraction remainder = Fraction.valueOf(newMeasurement % 1);
         this.updateIntegerValue(wholeNumber);
@@ -170,8 +174,7 @@ public class Measurement implements Comparable<Measurement>{
      * @return A Measurement that is the difference between this and the subtrahend
      */
     public Measurement subtract(Measurement subtrahend) throws IllegalArgumentException {
-        double difference = this.doubleValue() - subtrahend.doubleValue();
-        return this.updateMeasurementFromDouble(difference);
+        return this.updateMeasurementFromDouble(this.doubleValue() - subtrahend.doubleValue());
     }
 
     /**

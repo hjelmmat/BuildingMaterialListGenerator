@@ -1,4 +1,4 @@
-package main.Models.Material;
+package main.Models.Buildable.Material;
 
 import main.Models.Measurement;
 
@@ -25,6 +25,15 @@ public class Lumber implements Material {
             this.width = width;
             this.height = height;
             this.niceString = niceString;
+        }
+
+        /**
+         *
+         * @return a nice String representation of the Dimension
+         */
+        @Override
+        public String toString() {
+            return this.niceString;
         }
     }
 
@@ -56,6 +65,15 @@ public class Lumber implements Material {
                     FactoryLength.TWENTY_FT.length.toString(),
                     length.toString()));
         }
+
+        /**
+         *
+         * @return a nice String representation of the FactoryLength
+         */
+        @Override
+        public String toString() {
+            return this.length.toString();
+        }
     }
 
     /**
@@ -70,9 +88,13 @@ public class Lumber implements Material {
         this.material = new MaterialList();
     }
 
+    /**
+     *
+     * @return a nice String representation of the Lumber
+     */
     @Override
     public String toString() {
-        return this.factoryMeasurement.length.toString() + " " + this.dimension.niceString;
+        return this.factoryMeasurement.toString() + " " + this.dimension.toString();
     }
 
     /**
@@ -96,6 +118,6 @@ public class Lumber implements Material {
      */
     @Override
     public int hashCode() {
-        return (this.dimension + this.factoryMeasurement.length.toString() + this.getClass().getName()).hashCode();
+        return (this.dimension.toString() + this.factoryMeasurement.toString() + this.getClass().getName()).hashCode();
     }
 }

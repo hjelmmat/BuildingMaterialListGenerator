@@ -1,16 +1,16 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 
-public class Plate implements Installable{
+public class Plate implements Installable {
     public final Measurement installedLength;
     public final Lumber.Dimension dimension;
     private final MaterialList material;
     private final static Measurement nailSpacing = new Measurement(12);
-    private final static Nails nailType = Nails.TEN_D;
+    private final static Nail nailType = Nail.TEN_D;
 
     /**
      * @param length    - Length of plate
@@ -58,7 +58,7 @@ public class Plate implements Installable{
      * @return A MaterialList of the material required to install the Plate.
      */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         return this.material;
     }
 }

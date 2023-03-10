@@ -1,8 +1,8 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -18,14 +18,14 @@ class StudTest {
 
     @Test
     public void studShouldProduceMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 6)
+        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), this.dimension), 1);
-        assertEquals(result, new Stud().material());
-        assertEquals(result, new Stud(new Measurement(92), this.dimension).material());
+        assertEquals(result, new Stud().materialList());
+        assertEquals(result, new Stud(new Measurement(92), this.dimension).materialList());
 
-        MaterialList secondResult = new MaterialList().addMaterial(Nails.TEN_D, 6)
+        MaterialList secondResult = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(96), this.dimension), 1);
-        assertEquals(secondResult, new Stud(new Measurement(92, Measurement.Fraction.ELEVEN_SIXTEENTH), this.dimension).material());
+        assertEquals(secondResult, new Stud(new Measurement(92, Measurement.Fraction.ELEVEN_SIXTEENTH), this.dimension).materialList());
     }
 
     @Test
@@ -36,7 +36,7 @@ class StudTest {
 
     @Test
     public void studShouldCalculateHashCode() {
-        int result = -193163819;
+        int result = 2045471944;
         assertEquals(result, new Stud().hashCode());
     }
 

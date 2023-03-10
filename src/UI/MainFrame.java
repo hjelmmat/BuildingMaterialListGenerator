@@ -3,10 +3,12 @@ package UI;
 import main.Models.Measurement;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
-public class MainFrame extends JFrame{
+public class MainFrame {
+    private JFrame frame;
     private JLabel heightLB;
     private JLabel lengthLB;
     private JScrollPane resultsSP;
@@ -19,12 +21,13 @@ public class MainFrame extends JFrame{
     private JButton calculateBtn;
 
     public MainFrame(){
-        this.setContentPane(wallMaterials);
-        this.setTitle("Wall Materials");
-        this.setSize(750, 300);
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.frame = new JFrame();
+        this.frame.setContentPane(wallMaterials);
+        this.frame.setTitle("Wall Materials");
+        this.frame.setSize(750, 300);
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setVisible(true);
+        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         DefaultComboBoxModel<Measurement.Fraction> heightFraction = new DefaultComboBoxModel<>(Measurement.Fraction.values());
         this.heightFractionCB.setModel(heightFraction);
@@ -39,8 +42,8 @@ public class MainFrame extends JFrame{
         calculateBtn.addActionListener(actionListener);
     }
 
-    public void updateTable(TableModel model) {
-        this.resultsTB.setModel(model);
+    public void updateTable(Vector<Vector<String>> modelData, Vector<String> dataHeaders) {
+        this.resultsTB.setModel(new DefaultTableModel(modelData, dataHeaders));
     }
 
 

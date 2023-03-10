@@ -1,8 +1,8 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 
 /**
@@ -12,7 +12,7 @@ public class Stud implements Installable {
     public final Measurement installedLength;
     public final Lumber.Dimension dimension;
     private final MaterialList material;
-    private final static Nails nailType = Nails.TEN_D;
+    private final static Nail nailType = Nail.TEN_D;
     private final static int numberOfNails = 6;
 
     /**
@@ -20,7 +20,7 @@ public class Stud implements Installable {
      * @param length - The length of the stud
      * @param dimension - the width/height dimension of the stud.
      */
-    public Stud(Measurement length, Lumber.Dimension dimension) {
+    public Stud(Measurement length, Lumber.Dimension dimension) throws IllegalArgumentException {
         this.installedLength = length;
         this.dimension = dimension;
         this.material = new MaterialList().addMaterial(new Lumber(this.installedLength, this.dimension), 1)
@@ -30,7 +30,7 @@ public class Stud implements Installable {
     /**
      * Default Constructor for a Stud assuming 8' 2x4 walls
      */
-    public Stud() {
+    public Stud() throws IllegalArgumentException {
         this(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR);
     }
 
@@ -58,7 +58,7 @@ public class Stud implements Installable {
      */
     @Override
     public int hashCode() {
-        return  (this.dimension + this.installedLength.toString() + this.getClass().getName()).hashCode();
+        return  (this.dimension.toString() + this.installedLength.toString() + this.getClass().getName()).hashCode();
     }
 
     /**
@@ -66,7 +66,7 @@ public class Stud implements Installable {
      * @return A MaterialList of the material required to install the stud.
      */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         return this.material;
     }
 }

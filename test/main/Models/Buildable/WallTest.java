@@ -1,10 +1,13 @@
-package main.Models.Installable;
+package main.Models.Buildable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nails;
+import main.Models.Buildable.Installable.Layout;
+import main.Models.Buildable.Installable.Stud;
+import main.Models.Buildable.Material.Lumber;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,20 +39,13 @@ class WallTest {
     }
 
     @Test
-    public void wallShouldCalculateCorrectNumberOfStuds() throws IllegalArgumentException {
-        assertEquals(2, new Wall(new Measurement(3)).numberOfStuds());
-
-        assertEquals(2, this.maxTwoStudWall.numberOfStuds());
-
-        Wall minThreeStudWall = new Wall(new Measurement(17, Measurement.Fraction.NINE_SIXTEENTH));
-        assertEquals(3, minThreeStudWall.numberOfStuds());
-
-        assertEquals(3, this.threeStudWall.numberOfStuds());
-
-        Measurement maxLengthForThreeStuds = new Measurement(33, Measurement.Fraction.ONE_HALF);
-        assertEquals(3, new Wall(maxLengthForThreeStuds).numberOfStuds());
-
-        assertEquals(4, this.fourStudWall.numberOfStuds());
+    public void wallShouldCreateWallWithDefaultHeight() {
+        Vector<Vector<String>> results = new Vector<>();
+        results.add(new Vector<>(List.of("Material", "Quantity")));
+        results.add(new Vector<>(List.of("24\" 2x4", "3")));
+        results.add(new Vector<>(List.of("92-5/8\" 2x4", "3")));
+        results.add(new Vector<>(List.of("10d nails", "30")));
+        assertEquals(results, new Wall(new Measurement(24)).materials());
     }
 
     @Test
@@ -90,13 +86,5 @@ class WallTest {
         Layout shortLayout = new Layout().addStudAt(new Measurement(0), shortStud)
                 .addStudAt(new Measurement(1, Measurement.Fraction.ONE_HALF), shortStud);
         assertEquals(shortLayout, new Wall(new Measurement(3), new Measurement(9, Measurement.Fraction.ONE_HALF)).layout());
-    }
-
-    @Test
-    public void wallShouldCreateMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(Nails.TEN_D, 20)
-                .addMaterial(new Lumber(new Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 3)
-                .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR), 2);
-        assertEquals(result, new Wall(new Measurement(3)).material());
     }
 }

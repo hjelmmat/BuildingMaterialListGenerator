@@ -1,17 +1,22 @@
-package main.Models.Installable;
+package main.Models.Buildable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
+import main.Models.Buildable.Installable.Installable;
+import main.Models.Buildable.Installable.Layout;
+import main.Models.Buildable.Installable.Plate;
+import main.Models.Buildable.Installable.Stud;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
 import main.Models.Measurement;
+
+import java.util.Vector;
 
 /**
  * Class used to describe what it takes to build a wall
  */
-public class Wall implements Installable {
+public class Wall implements Buildable, Installable {
     private final Stud stud;
     private final static boolean loadBearing = true;
     private final Layout layout;
-    private final int numberOfStuds;
     private final MaterialList material;
 
     private static final Lumber.Dimension studType = Lumber.Dimension.TWO_BY_FOUR;
@@ -30,19 +35,20 @@ public class Wall implements Installable {
 
         // add the top and bottom plates
         Plate plate = new Plate(length, studType);
-        this.material.addMaterials(plate.material());
+        this.material.addMaterials(plate.materialList());
         if (loadBearing) {
-            this.material.addMaterials(plate.material());
+            this.material.addMaterials(plate.materialList());
         }
         int numberOfPlates = loadBearing ? 3 : 2;
 
+        // The height of a wall includes the top and bottom plates and the studs so we need to remove the height of the
+        // plates to get the heights of the studs
         Measurement heightOfAllPlates = studType.width.clone().multiply(numberOfPlates);
         this.stud = new Stud(validateParameter(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates),
                 studType);
         this.layout = this.createLayout(validateParameter(length, studType.width.clone().multiply(minimumNumberOfStuds),
                 "length"));
-        this.material.addMaterials(this.layout.material());
-        this.numberOfStuds = this.layout.size();
+        this.material.addMaterials(this.layout.materialList());
     }
 
     /**
@@ -58,7 +64,7 @@ public class Wall implements Installable {
             throws IllegalArgumentException {
         String exceptionMessageBase = "%s cannot be less than %s; %s was %s";
         if (parameter.compareTo(minimumValue) < 0) {
-            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue.toString(), type, parameter.toString());
+            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue, type, parameter);
             throw new IllegalArgumentException(lengthExceptionMessage);
         }
         return parameter;
@@ -86,22 +92,27 @@ public class Wall implements Installable {
 
     /**
      *
-     * @return the number of studs required to build the wall
+     * @return The studs required to create this wall
      */
-    public int numberOfStuds() {
-        return this.numberOfStuds;
+    protected Layout layout() {
+        return this.layout;
     }
 
     /**
      *
-     * @return The studs required to create this wall
+     * @return The material required to build this wall
      */
-    public Layout layout() {
-        return this.layout;
+    @Override
+    public Vector<Vector<String>> materials() {
+        return this.material.materials();
     }
 
+    /**
+     *
+     * @return The MaterialList of the material required to build this wall
+     */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         return this.material;
     }
 }
