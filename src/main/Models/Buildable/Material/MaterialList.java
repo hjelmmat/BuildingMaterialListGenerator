@@ -1,6 +1,5 @@
-package main.Models.Material;
+package main.Models.Buildable.Material;
 
-import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -42,16 +41,6 @@ public class MaterialList {
 
     /**
      *
-     * @return - This material list as a DefaultTableModel
-     */
-    public DefaultTableModel asTableModel() {
-        Vector<Vector<Object>> data = new Vector<>();
-        this.map.forEach((k,v) -> data.add(new Vector<>(List.of(k, v))));
-        return new DefaultTableModel(data, keyValueProperties);
-    }
-
-    /**
-     *
      * @param obj - the object to be compared
      * @return Indication if the two objects are equal
      */
@@ -73,5 +62,18 @@ public class MaterialList {
     @Override
     public int hashCode() {
         return this.map.hashCode();
+    }
+
+    /**
+     *
+     * @return a Vector in which the first element describes the elements of the rest of the elements as:
+     * ["Material", "Quantity"]
+     * and the rest of the elements are the [Material, Quantity] of the list represented as Strings
+     */
+    public Vector<Vector<String>> material() {
+        Vector<Vector<String>> result = new Vector<>();
+        result.add(keyValueProperties);
+        this.map.forEach((k,v) -> result.add(new Vector<>(List.of(k.toString(), v.toString()))));
+        return result;
     }
 }

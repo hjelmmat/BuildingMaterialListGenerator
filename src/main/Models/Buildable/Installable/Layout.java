@@ -1,6 +1,6 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.MaterialList;
+import main.Models.Buildable.Material.MaterialList;
 import main.Models.Measurement;
 
 import java.util.TreeMap;

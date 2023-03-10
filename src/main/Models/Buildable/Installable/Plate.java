@@ -1,8 +1,8 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nail;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 
 public class Plate implements Installable {

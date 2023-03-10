@@ -1,4 +1,4 @@
-package main.Models.Material;
+package main.Models.Buildable.Material;
 
 public interface Material {
     String toString();

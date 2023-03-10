@@ -1,8 +1,8 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nail;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ class StudTest {
 
     @Test
     public void studShouldCalculateHashCode() {
-        int result = 1181371266;
+        int result = 2045471944;
         assertEquals(result, new Stud().hashCode());
     }
 

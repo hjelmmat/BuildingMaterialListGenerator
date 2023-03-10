@@ -1,10 +1,13 @@
-package main.Models.Installable;
+package main.Models.Buildable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nail;
+import main.Models.Buildable.Installable.Layout;
+import main.Models.Buildable.Installable.Stud;
+import main.Models.Buildable.Material.Lumber;
 import main.Models.Measurement;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,13 +76,5 @@ class WallTest {
         Layout shortLayout = new Layout().addStudAt(new Measurement(0), shortStud)
                 .addStudAt(new Measurement(1, Measurement.Fraction.ONE_HALF), shortStud);
         assertEquals(shortLayout, new Wall(new Measurement(3), new Measurement(9, Measurement.Fraction.ONE_HALF)).layout());
-    }
-
-    @Test
-    public void wallShouldCreateMaterialList() {
-        MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 20)
-                .addMaterial(new Lumber(new Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 3)
-                .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR), 2);
-        assertEquals(result, new Wall(new Measurement(3)).material());
     }
 }

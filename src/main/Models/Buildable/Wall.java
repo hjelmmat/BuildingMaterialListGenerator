@@ -1,13 +1,18 @@
-package main.Models.Installable;
+package main.Models.Buildable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
+import main.Models.Buildable.Installable.Layout;
+import main.Models.Buildable.Installable.Plate;
+import main.Models.Buildable.Installable.Stud;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
 import main.Models.Measurement;
+
+import java.util.Vector;
 
 /**
  * Class used to describe what it takes to build a wall
  */
-public class Wall implements Installable {
+public class Wall implements Buildable {
     private final Stud stud;
     private final static boolean loadBearing = true;
     private final Layout layout;
@@ -88,16 +93,16 @@ public class Wall implements Installable {
      *
      * @return The studs required to create this wall
      */
-    public Layout layout() {
+    protected Layout layout() {
         return this.layout;
     }
 
     /**
      *
-     * @return The material required to install this wall
+     * @return The material required to build this wall
      */
     @Override
-    public MaterialList material() {
-        return this.material;
+    public Vector<Vector<String>> material() {
+        return this.material.material();
     }
 }

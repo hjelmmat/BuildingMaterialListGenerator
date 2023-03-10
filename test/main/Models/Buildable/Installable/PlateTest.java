@@ -1,8 +1,8 @@
-package main.Models.Installable;
+package main.Models.Buildable.Installable;
 
-import main.Models.Material.Lumber;
-import main.Models.Material.MaterialList;
-import main.Models.Material.Nail;
+import main.Models.Buildable.Material.Lumber;
+import main.Models.Buildable.Material.MaterialList;
+import main.Models.Buildable.Material.Nail;
 import main.Models.Measurement;
 
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class PlateTest {
 
     @Test
     public void plateShouldCalculateHashCode() {
-        int result = -1450299273;
+        int result = -1986091983;
         assertEquals(result, new Plate(new Measurement(30), Lumber.Dimension.TWO_BY_FOUR).hashCode());
     }
 }
