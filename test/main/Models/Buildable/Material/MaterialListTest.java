@@ -22,15 +22,15 @@ class MaterialListTest {
 
     @Test
     public void materialListShouldIncreaseQuantityWithNewMaterial() {
-        assertEquals(result, new MaterialList().addMaterial(lumber, 1).addMaterial(lumber, 1).material());
+        assertEquals(result, new MaterialList().addMaterial(lumber, 1).addMaterial(lumber, 1).materials());
     }
 
     @Test
     public void shouldReturnContentsVector() {
         MaterialList test = new MaterialList().addMaterial(lumber, 2);
-        assertEquals(result, test.material());
-        result.add(1, new Vector<>(List.of(Nail.TEN_D.toString(), "2")));
-        assertEquals(result, test.addMaterial(Nail.TEN_D, 2).material());
+        assertEquals(result, test.materials());
+        result.add(new Vector<>(List.of("10d nails", "2")));
+        assertEquals(result, test.addMaterial(Nail.TEN_D, 2).materials());
     }
 
     @Test

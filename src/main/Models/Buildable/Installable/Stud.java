@@ -66,7 +66,7 @@ public class Stud implements Installable {
      * @return A MaterialList of the material required to install the stud.
      */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         return this.material;
     }
 }

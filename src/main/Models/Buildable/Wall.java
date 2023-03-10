@@ -1,5 +1,6 @@
 package main.Models.Buildable;
 
+import main.Models.Buildable.Installable.Installable;
 import main.Models.Buildable.Installable.Layout;
 import main.Models.Buildable.Installable.Plate;
 import main.Models.Buildable.Installable.Stud;
@@ -12,7 +13,7 @@ import java.util.Vector;
 /**
  * Class used to describe what it takes to build a wall
  */
-public class Wall implements Buildable {
+public class Wall implements Buildable, Installable {
     private final Stud stud;
     private final static boolean loadBearing = true;
     private final Layout layout;
@@ -34,9 +35,9 @@ public class Wall implements Buildable {
 
         // add the top and bottom plates
         Plate plate = new Plate(length, studType);
-        this.material.addMaterials(plate.material());
+        this.material.addMaterials(plate.materialList());
         if (loadBearing) {
-            this.material.addMaterials(plate.material());
+            this.material.addMaterials(plate.materialList());
         }
         int numberOfPlates = loadBearing ? 3 : 2;
 
@@ -47,7 +48,7 @@ public class Wall implements Buildable {
                 studType);
         this.layout = this.createLayout(validateParameter(length, studType.width.clone().multiply(minimumNumberOfStuds),
                 "length"));
-        this.material.addMaterials(this.layout.material());
+        this.material.addMaterials(this.layout.materialList());
     }
 
     /**
@@ -102,7 +103,16 @@ public class Wall implements Buildable {
      * @return The material required to build this wall
      */
     @Override
-    public Vector<Vector<String>> material() {
-        return this.material.material();
+    public Vector<Vector<String>> materials() {
+        return this.material.materials();
+    }
+
+    /**
+     *
+     * @return The MaterialList of the material required to build this wall
+     */
+    @Override
+    public MaterialList materialList() {
+        return this.material;
     }
 }

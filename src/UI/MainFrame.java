@@ -5,6 +5,7 @@ import main.Models.Measurement;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 public class MainFrame {
     private JFrame frame;
@@ -41,8 +42,8 @@ public class MainFrame {
         calculateBtn.addActionListener(actionListener);
     }
 
-    public void updateTable(DefaultTableModel model) {
-        this.resultsTB.setModel(model);
+    public void updateTable(Vector<Vector<String>> modelData, Vector<String> dataHeaders) {
+        this.resultsTB.setModel(new DefaultTableModel(modelData, dataHeaders));
     }
 
 

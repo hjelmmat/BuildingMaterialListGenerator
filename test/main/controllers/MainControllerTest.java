@@ -3,10 +3,9 @@ package main.controllers;
 import static org.mockito.Mockito.*;
 
 import UI.MainFrame;
-import main.Models.Material.Lumber;
-import main.Models.Material.Nail;
+import main.Models.Buildable.House;
 import main.Models.Measurement;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,31 +16,44 @@ import java.util.List;
 import java.util.Vector;
 
 
+/*
+Setting up the mocks causes to run the test slowly. If you comment out the timings in 'setup()' then you'll see
+a substantial delay before the setup runs and the rest of the test is instantaneous.
+ */
 @ExtendWith(MockitoExtension.class)
 class MainControllerTest {
+    Vector<String> headers = new Vector<>(List.of("Material", "Quantity"));
+    Vector<Vector<String>> material = new Vector<>();
+
     @Mock
-    private MainFrame myFrame;
+    MainFrame myFrame;
+    @Mock
+    House myHouse;
 
-    @AfterEach
+    @BeforeEach
     public void setup() {
-        reset(myFrame);
-    }
-
-    /*
-     This test is very slow for some reason. Maybe something to do with making the Wall, but the entirety of the
-     WallTest class is faster than the execution of this one test.
-     */
-    @Test
-    public void shouldUpdateTable() {
-        MainController test = new MainController(myFrame);
+//        System.out.println(System.nanoTime());
         when(myFrame.getHeightText()).thenReturn("10");
         when(myFrame.getHeightFractionValue()).thenReturn(Measurement.Fraction.ZERO);
         when(myFrame.getLengthText()).thenReturn("10");
         when(myFrame.getLengthFractionValue()).thenReturn(Measurement.Fraction.ZERO);
+
+        when(myHouse.addWall(new Measurement(10), new Measurement(10))).thenReturn(myHouse);
+
+        material.clear();
+        material.add(new Vector<>(List.of("24\" 2x4", "5")));
+        material.add(new Vector<>(List.of("10d nails", "20")));
+        Vector<Vector<String>> result = new Vector<>();
+        result.add(headers);
+        result.addAll(material);
+        when(myHouse.materials()).thenReturn(result);
+//        System.out.println(System.nanoTime());
+    }
+
+    @Test
+    public void shouldUpdateTable() {
+        MainController test = new MainController(myFrame, myHouse);
         test.calculateMaterials(new ActionEvent(0, 0, ""));
-        Vector<Vector<Object>> result = new Vector<>();
-        result.add(new Vector<>(List.of(new Lumber(new Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 5)));
-        result.add(new Vector<>((List.of(Nail.TEN_D, 20))));
-        verify(myFrame).updateTable(argThat(arg -> arg.getDataVector().equals(result)));
+        verify(myFrame).updateTable(material, headers);
     }
 }

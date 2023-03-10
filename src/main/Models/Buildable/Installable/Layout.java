@@ -34,9 +34,9 @@ public class Layout implements Installable {
      * @return The material required to install this layout.
      */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         MaterialList result = new MaterialList();
-        this.map.forEach((k,v) -> result.addMaterials(v.material()));
+        this.map.forEach((k,v) -> result.addMaterials(v.materialList()));
         return result;
     }
 

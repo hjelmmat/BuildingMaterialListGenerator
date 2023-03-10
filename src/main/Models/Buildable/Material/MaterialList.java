@@ -1,8 +1,6 @@
 package main.Models.Buildable.Material;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * A container for the Material needed to build something
@@ -70,10 +68,25 @@ public class MaterialList {
      * ["Material", "Quantity"]
      * and the rest of the elements are the [Material, Quantity] of the list represented as Strings
      */
-    public Vector<Vector<String>> material() {
+    public Vector<Vector<String>> materials() {
         Vector<Vector<String>> result = new Vector<>();
         result.add(keyValueProperties);
-        this.map.forEach((k,v) -> result.add(new Vector<>(List.of(k.toString(), v.toString()))));
+        Vector<Vector<String>> nails = new Vector<>();
+        Vector<Vector<String>> lumber = new Vector<>();
+        for (Material key : this.map.keySet()) {
+            Vector<String> keyValue = new Vector<>(List.of(key.toString(), this.map.get(key).toString()));
+            Class<? extends Material> keyClass = key.getClass();
+            if (keyClass == Nail.class) {
+                nails.add(keyValue);
+            }
+            else if (keyClass == Lumber.class) {
+                lumber.add(keyValue);
+            }
+        }
+        nails.sort(Comparator.comparing(v -> v.get(0)));
+        lumber.sort(Comparator.comparing(v -> v.get(0)));
+        result.addAll(lumber);
+        result.addAll(nails);
         return result;
     }
 }

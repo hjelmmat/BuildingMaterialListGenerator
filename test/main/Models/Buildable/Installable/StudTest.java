@@ -20,12 +20,12 @@ class StudTest {
     public void studShouldProduceMaterialList() {
         MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), this.dimension), 1);
-        assertEquals(result, new Stud().material());
-        assertEquals(result, new Stud(new Measurement(92), this.dimension).material());
+        assertEquals(result, new Stud().materialList());
+        assertEquals(result, new Stud(new Measurement(92), this.dimension).materialList());
 
         MaterialList secondResult = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(new Measurement(96), this.dimension), 1);
-        assertEquals(secondResult, new Stud(new Measurement(92, Measurement.Fraction.ELEVEN_SIXTEENTH), this.dimension).material());
+        assertEquals(secondResult, new Stud(new Measurement(92, Measurement.Fraction.ELEVEN_SIXTEENTH), this.dimension).materialList());
     }
 
     @Test

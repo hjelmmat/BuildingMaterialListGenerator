@@ -58,7 +58,7 @@ public class Plate implements Installable {
      * @return A MaterialList of the material required to install the Plate.
      */
     @Override
-    public MaterialList material() {
+    public MaterialList materialList() {
         return this.material;
     }
 }

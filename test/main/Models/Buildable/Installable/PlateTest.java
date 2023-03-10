@@ -16,20 +16,20 @@ class PlateTest {
         Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
         MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 4)
                 .addMaterial(new Lumber(firstLength, dimension), 1);
-        assertEquals(result, new Plate(firstLength, dimension).material());
-        assertEquals(result, new Plate(new Measurement(12), dimension).material());
+        assertEquals(result, new Plate(firstLength, dimension).materialList());
+        assertEquals(result, new Plate(new Measurement(12), dimension).materialList());
 
         Measurement secondLength = new Measurement(12, Measurement.Fraction.ONE_SIXTEENTH);
         MaterialList secondResult = new MaterialList().addMaterial(Nail.TEN_D, 6)
                 .addMaterial(new Lumber(secondLength, dimension), 1);
-        assertEquals(secondResult, new Plate(secondLength, dimension).material());
-        assertEquals(secondResult, new Plate(new Measurement(24), dimension).material());
+        assertEquals(secondResult, new Plate(secondLength, dimension).materialList());
+        assertEquals(secondResult, new Plate(new Measurement(24), dimension).materialList());
 
         Measurement thirdLength = new Measurement(24, Measurement.Fraction.ONE_SIXTEENTH);
         MaterialList thirdResult = new MaterialList().addMaterial(Nail.TEN_D, 8)
                 .addMaterial(new Lumber(thirdLength, dimension), 1);
-        assertEquals(thirdResult, new Plate(thirdLength, dimension).material());
-        assertEquals(thirdResult, new Plate(new Measurement(36), dimension).material());
+        assertEquals(thirdResult, new Plate(thirdLength, dimension).materialList());
+        assertEquals(thirdResult, new Plate(new Measurement(36), dimension).materialList());
     }
 
     @Test

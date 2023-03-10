@@ -25,7 +25,7 @@ class LayoutTest {
     public void layoutShouldReturnMaterials() {
         MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 12)
                 .addMaterial(new Lumber(new Measurement(92), Lumber.Dimension.TWO_BY_FOUR), 2);
-        assertEquals(result, this.basicLayout.material());
+        assertEquals(result, this.basicLayout.materialList());
     }
 
     @Test

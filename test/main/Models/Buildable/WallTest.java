@@ -39,6 +39,16 @@ class WallTest {
     }
 
     @Test
+    public void wallShouldCreateWallWithDefaultHeight() {
+        Vector<Vector<String>> results = new Vector<>();
+        results.add(new Vector<>(List.of("Material", "Quantity")));
+        results.add(new Vector<>(List.of("24\" 2x4", "3")));
+        results.add(new Vector<>(List.of("92-5/8\" 2x4", "3")));
+        results.add(new Vector<>(List.of("10d nails", "30")));
+        assertEquals(results, new Wall(new Measurement(24)).materials());
+    }
+
+    @Test
     public void wallShouldCalculateCorrectStuds() throws IllegalArgumentException {
         Stud standardStud = new Stud();
         Layout minimumLayout = new Layout().addStudAt(new Measurement(0), standardStud)
