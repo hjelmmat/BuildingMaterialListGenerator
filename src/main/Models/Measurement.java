@@ -22,7 +22,8 @@ public class Measurement implements Comparable<Measurement>{
         public final double value;
         public final String niceString;
         private static final double maximumFraction = 16;
-        private static final Map<Double, Fraction> map = new HashMap<>();
+        private static final Map<Double, Fraction> doubleMap = new HashMap<>();
+        private static final Map<String, Fraction> stringMap = new HashMap<>();
 
         Fraction(int numerator) {
             this.value = numerator / maximumFraction;
@@ -47,7 +48,8 @@ public class Measurement implements Comparable<Measurement>{
 
         static {
             for (Fraction fraction : Fraction.values()) {
-                map.put(fraction.value, fraction);
+                doubleMap.put(fraction.value, fraction);
+                stringMap.put(fraction.toString(), fraction);
             }
         }
 
@@ -62,8 +64,10 @@ public class Measurement implements Comparable<Measurement>{
          * @return The appropriate Fraction for the given value
          */
         public static Fraction valueOf(double fractionValue) {
-            return map.get(fractionValue);
+            return doubleMap.get(fractionValue);
         }
+
+        public static Fraction fromString(String fractionString) { return stringMap.get(fractionString); }
     }
 
     /**

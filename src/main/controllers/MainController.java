@@ -13,10 +13,10 @@ public class MainController {
 
     public MainController(MainFrame view) {
         this.view = view;
-        this.view.addCalculateListener(e -> calculateMaterials());
+        this.view.addCalculateListener(this::calculateMaterials);
     }
 
-    public void calculateMaterials() {
+    public void calculateMaterials(ActionEvent e) {
         Measurement height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
         Measurement length = new Measurement(Integer.parseInt(this.view.getLengthText()), this.view.getLengthFractionValue());
         Vector<Vector<String>> material = new Wall(length, height).material();
