@@ -7,7 +7,7 @@ import java.util.Vector;
 public class House implements Buildable {
     private Wall wall;
 
-    public House addWall(Measurement wallLength, Measurement wallHeight) {
+    public House addWall(Measurement wallLength, Measurement wallHeight) throws IllegalArgumentException {
         this.wall = new Wall(wallLength, wallHeight);
         return this;
     }

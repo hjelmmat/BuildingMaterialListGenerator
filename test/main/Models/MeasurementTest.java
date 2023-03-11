@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MeasurementTest {
-    String errorMessage = "A Measurement cannot have an integerValue of less than 0. integerValue was -1";
+    String errorMessage = "measurement cannot be less than 0, was -1";
     Measurement measurementOfFour = new Measurement(4);
     Measurement secondMeasurementOfFour = new Measurement(4);
     Measurement eight = new Measurement(8);
@@ -95,7 +95,7 @@ class MeasurementTest {
 
         Measurement six = new Measurement(6);
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> zeroMeasure.subtract(six)); //TODO finish
-        String error = "A Measurement cannot have an integerValue of less than 0. integerValue was -6";
+        String error = "measurement cannot be less than 0, was -6";
         assertEquals(error, thrown.getMessage());
     }
 

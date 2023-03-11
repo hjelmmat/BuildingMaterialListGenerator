@@ -10,6 +10,12 @@ public class Measurement implements Comparable<Measurement>{
     private int integer; // This should only be updated via this.updateIntegerValue
     private Fraction fraction;
 
+    public class InvalidMeasurementException extends IllegalArgumentException {
+        public InvalidMeasurementException(String s) {
+            super(s);
+        }
+    }
+
     /**
      * The Fraction enum is used to allow for non-int Measurements but restrict the options to commonly used values,
      * namely multiples of 1/16.
@@ -94,8 +100,8 @@ public class Measurement implements Comparable<Measurement>{
 
     private void updateIntegerValue(int integerValue) {
         if (integerValue < 0) {
-            String errorMessage = "A Measurement cannot have an integerValue of less than 0. integerValue was %d";
-            throw new IllegalArgumentException(String.format(errorMessage, integerValue));
+            String errorMessage = "measurement cannot be less than 0, was %d";
+            throw new InvalidMeasurementException(String.format(errorMessage, integerValue));
         }
         else {
             this.integer = integerValue;

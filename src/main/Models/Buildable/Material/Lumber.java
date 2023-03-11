@@ -60,7 +60,7 @@ public class Lumber implements Material {
                 }
             }
             // If this part of the code is reached, then no valid length was found.
-            String message = "A FactoryLength cannot be greater than %s, was actually %s";
+            String message = "A length cannot be greater than %s, was %s";
             throw new IllegalArgumentException(String.format(message,
                     FactoryLength.TWENTY_FT.length.toString(),
                     length.toString()));

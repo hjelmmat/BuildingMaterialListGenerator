@@ -19,10 +19,40 @@ public class MainController {
         this.house = house;
     }
 
-    public void calculateMaterials(ActionEvent e) {
-        Measurement length = new Measurement(Integer.parseInt(this.view.getLengthText()), this.view.getLengthFractionValue());
-        Measurement height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
-        this.house.addWall(length, height);
+    public void calculateMaterials(ActionEvent event) {
+        Measurement length;
+        try {
+            length = new Measurement(Integer.parseInt(this.view.getLengthText()), this.view.getLengthFractionValue());
+        }
+        catch (Measurement.InvalidMeasurementException e) {
+            this.view.postError("Length " + e.getMessage());
+            return;
+        }
+        catch (NumberFormatException e) {
+            this.view.postError("Length cannot be empty");
+            return;
+        }
+
+        Measurement height;
+        try {
+            height = new Measurement(Integer.parseInt(this.view.getHeightText()), this.view.getHeightFractionValue());
+        }
+        catch (Measurement.InvalidMeasurementException e) {
+            this.view.postError("Height " + e.getMessage());
+            return;
+        }
+        catch (NumberFormatException e) {
+            this.view.postError("Height cannot be empty");
+            return;
+        }
+
+        try {
+            this.house.addWall(length, height);
+        }
+        catch (IllegalArgumentException e) {
+            this.view.postError(e.getMessage());
+            return;
+        }
         Vector<Vector<String>> material = this.house.materials();
 
         // The first element of the vector from Material is the title and everything else is the data

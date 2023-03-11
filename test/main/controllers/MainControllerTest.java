@@ -1,5 +1,6 @@
 package main.controllers;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import UI.MainFrame;
@@ -55,5 +56,10 @@ class MainControllerTest {
         MainController test = new MainController(myFrame, myHouse);
         test.calculateMaterials(new ActionEvent(0, 0, ""));
         verify(myFrame).updateTable(material, headers);
+    }
+
+    @Test
+    public void shouldDisplayAppropriateErrorMessages() {
+        fail();
     }
 }

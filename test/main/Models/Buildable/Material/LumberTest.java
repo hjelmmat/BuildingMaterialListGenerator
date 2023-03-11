@@ -10,7 +10,7 @@ class LumberTest {
     public void lumberShouldThrowWhenLengthIsTooLong() {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                 () -> new Lumber(new Measurement(240, Measurement.Fraction.ONE_SIXTEENTH), Lumber.Dimension.TWO_BY_FOUR));
-        String message = "A FactoryLength cannot be greater than 240\", was actually 240-1/16\"";
+        String message = "A length cannot be greater than 240\", was 240-1/16\"";
         assertEquals(message, thrown.getMessage());
 
         assertDoesNotThrow(() -> new Lumber(new Measurement(240), Lumber.Dimension.TWO_BY_FOUR));
