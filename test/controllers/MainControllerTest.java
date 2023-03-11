@@ -58,6 +58,10 @@ class MainControllerTest {
         verify(myFrame).updateTable(material, headers);
     }
 
+    /*
+    TODO: Test should validate error messages are thrown at the correct time, the table is reset to empty, and the value
+    is reset as appropriate.   
+     */
     @Test
     public void shouldDisplayAppropriateErrorMessages() {
         fail();
