@@ -41,7 +41,7 @@ public class Wall implements Buildable, Installable {
         }
         int numberOfPlates = loadBearing ? 3 : 2;
 
-        // The height of a wall includes the top and bottom plates and the studs so we need to remove the height of the
+        // The height of a wall includes the top and bottom plates and the studs, so we need to remove the height of the
         // plates to get the heights of the studs
         Measurement heightOfAllPlates = studType.width.clone().multiply(numberOfPlates);
         this.stud = new Stud(validateParameter(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates),
@@ -62,9 +62,9 @@ public class Wall implements Buildable, Installable {
 
     private static Measurement validateParameter(Measurement parameter, Measurement minimumValue, String type)
             throws IllegalArgumentException {
-        String exceptionMessageBase = "%s cannot be less than %s; %s was %s";
+        String exceptionMessageBase = "%s cannot be less than %s, was %s";
         if (parameter.compareTo(minimumValue) < 0) {
-            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue, type, parameter);
+            String lengthExceptionMessage = String.format(exceptionMessageBase, type, minimumValue, parameter);
             throw new IllegalArgumentException(lengthExceptionMessage);
         }
         return parameter;

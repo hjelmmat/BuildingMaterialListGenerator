@@ -22,7 +22,7 @@ class WallTest {
         Measurement minimumLengthEdgeCase = new Measurement(2, Measurement.Fraction.FIFTEEN_SIXTEENTH);
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                                         () -> new Wall(minimumLengthEdgeCase));
-        String exceptionMessage = "length cannot be less than 3\"; length was 2-15/16\"";
+        String exceptionMessage = "length cannot be less than 3\", was 2-15/16\"";
         assertEquals(exceptionMessage, thrown.getMessage());
         assertDoesNotThrow(() -> new Wall(new Measurement(3)));
     }
@@ -32,7 +32,7 @@ class WallTest {
         Measurement minimumHeightEdgeCase = new Measurement(2, Measurement.Fraction.FIFTEEN_SIXTEENTH);
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                                         () -> new Wall(this.validMeasurement, minimumHeightEdgeCase));
-        String exceptionMessage = "height cannot be less than 4-1/2\"; height was 2-15/16\"";
+        String exceptionMessage = "height cannot be less than 4-1/2\", was 2-15/16\"";
         assertEquals(exceptionMessage, thrown.getMessage());
         Measurement minimumHeight = new Measurement(5);
         assertDoesNotThrow(() -> new Wall(this.validMeasurement, minimumHeight));
