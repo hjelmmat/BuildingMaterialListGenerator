@@ -1,4 +1,4 @@
-package UI;
+package main.UI;
 
 import main.Models.Measurement;
 

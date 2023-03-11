@@ -1,6 +1,6 @@
 package main.controllers;
 
-import UI.MainFrame;
+import main.UI.MainFrame;
 import main.Models.Buildable.House;
 import main.Models.Measurement;
 

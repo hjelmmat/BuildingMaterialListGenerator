@@ -1,4 +1,4 @@
-import UI.MainFrame;
+import main.UI.MainFrame;
 import main.Models.Buildable.House;
 import main.controllers.MainController;
 

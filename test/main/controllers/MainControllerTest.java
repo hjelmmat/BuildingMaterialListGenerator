@@ -3,7 +3,7 @@ package main.controllers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import UI.MainFrame;
+import main.UI.MainFrame;
 import main.Models.Buildable.House;
 import main.Models.Measurement;
 import org.junit.jupiter.api.BeforeEach;
