@@ -1,6 +1,6 @@
 package UI;
 
-import main.Models.Measurement;
+import Models.Measurement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,9 +14,9 @@ public class MainFrame {
     private JScrollPane resultsSP;
     private JTable resultsTB;
     private JPanel wallMaterials;
-    private JTextField heightIntTF;
+    private JFormattedTextField heightIntTF;
     private JComboBox<Measurement.Fraction> heightFractionCB;
-    private JTextField lengthIntTF;
+    private JFormattedTextField lengthIntTF;
     private JComboBox<Measurement.Fraction> lengthFractionCB;
     private JButton calculateBtn;
 
@@ -44,6 +44,10 @@ public class MainFrame {
 
     public void updateTable(Vector<Vector<String>> modelData, Vector<String> dataHeaders) {
         this.resultsTB.setModel(new DefaultTableModel(modelData, dataHeaders));
+    }
+
+    public void postError(String errorMessage) {
+        JOptionPane.showMessageDialog(this.frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
 

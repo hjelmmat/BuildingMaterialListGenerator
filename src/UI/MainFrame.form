@@ -58,7 +58,7 @@
           </grid>
         </constraints>
       </vspacer>
-      <component id="4a55" class="javax.swing.JTextField" binding="heightIntTF">
+      <component id="26de3" class="javax.swing.JFormattedTextField" binding="heightIntTF">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -72,7 +72,7 @@
         </constraints>
         <properties/>
       </component>
-      <component id="71ec6" class="javax.swing.JTextField" binding="lengthIntTF">
+      <component id="165a3" class="javax.swing.JFormattedTextField" binding="lengthIntTF">
         <constraints>
           <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
