@@ -6,8 +6,8 @@ import Models.Buildable.Material.Nail;
 import Models.Measurement;
 
 public class Plate implements Installable {
-    public final Measurement installedLength;
-    public final Lumber.Dimension dimension;
+    private final Measurement installedLength;
+    private final Lumber.Dimension dimension;
     private final MaterialList material;
     private final static Measurement nailSpacing = new Measurement(12);
     private final static Nail nailType = Nail.TEN_D;

@@ -9,7 +9,7 @@ import java.util.TreeMap;
  * Class used to describe positions of studs. Essentially a c-style struct
  */
 public class Layout implements Installable {
-    TreeMap<Measurement, Stud> map;
+    private TreeMap<Measurement, Stud> map;
 
     /**
      * Constructor to create an empty Layout

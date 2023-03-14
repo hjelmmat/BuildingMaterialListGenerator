@@ -12,8 +12,11 @@ class StudTest {
     Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
     @Test
     public void defaultStudShouldHave8FtLength() {
-        Measurement result = new Measurement(92, Measurement.Fraction.FIVE_EIGHTH);
-        assertEquals(result, new Stud().installedLength);
+        MaterialList result = new MaterialList().addMaterial(new Lumber(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), dimension), 1)
+                .addMaterial(Nail.TEN_D, 6);
+        MaterialList test = new Stud().materialList();
+        String error = String.format("Expected %s, was %s", result.materials(), test.materials());
+        assertEquals(result, test, error);
     }
 
     @Test

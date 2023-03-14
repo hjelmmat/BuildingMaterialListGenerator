@@ -6,9 +6,8 @@ import Models.Measurement;
  * Base class for all Lumber. This class assumes only lumber that can be bought from a store.
  */
 public class Lumber implements Material {
-    public final FactoryLength factoryMeasurement;
-    public final Dimension dimension;
-    protected final MaterialList material;
+    private final FactoryLength factoryMeasurement;
+    private final Dimension dimension;
 
     /**
      * Enum to represent acceptable Lumber types
@@ -47,7 +46,7 @@ public class Lumber implements Material {
         TEN_FT(new Measurement(120)), TWELVE_FT(new Measurement(144)), FOURTEEN_FT(new Measurement(168)),
         SIXTEEN_FT(new Measurement(192)), TWENTY_FT(new Measurement(240));
 
-        public final Measurement length;
+        private final Measurement length;
 
         FactoryLength(Measurement length) {
             this.length = length;
@@ -84,8 +83,6 @@ public class Lumber implements Material {
     public Lumber(Measurement length, Dimension dimension) throws IllegalArgumentException {
         this.factoryMeasurement = FactoryLength.fromLength(length);
         this.dimension = dimension;
-
-        this.material = new MaterialList();
     }
 
     /**

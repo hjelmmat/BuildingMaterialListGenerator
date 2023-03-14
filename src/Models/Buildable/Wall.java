@@ -29,7 +29,7 @@ public class Wall implements Buildable, Installable {
      * @param height - Height of wall to create
      * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
      */
-    public Wall(Measurement length, Measurement height) throws IllegalArgumentException {
+    Wall(Measurement length, Measurement height) throws IllegalArgumentException {
         // All walls have at least one top plate, but the nails to attach it are from the studs
         this.material = new MaterialList().addMaterial(new Lumber(length, studType), 1);
 
@@ -56,7 +56,7 @@ public class Wall implements Buildable, Installable {
      * @param length - Length of wall to create
      * @throws IllegalArgumentException - Thrown when the length is less than the minimum wall length/height
      */
-    public Wall(Measurement length) throws IllegalArgumentException {
+    Wall(Measurement length) throws IllegalArgumentException {
         this(length, new Measurement(97, Measurement.Fraction.ONE_EIGHTH));
     }
 
@@ -94,7 +94,7 @@ public class Wall implements Buildable, Installable {
      *
      * @return The studs required to create this wall
      */
-    protected Layout layout() {
+    Layout layout() {
         return this.layout;
     }
 

@@ -9,8 +9,8 @@ import Models.Measurement;
  * Class used to describe a stud, essentially a c-style struct
  */
 public class Stud implements Installable {
-    public final Measurement installedLength;
-    public final Lumber.Dimension dimension;
+    private final Measurement installedLength;
+    private final Lumber.Dimension dimension;
     private final MaterialList material;
     private final static Nail nailType = Nail.TEN_D;
     private final static int numberOfNails = 6;

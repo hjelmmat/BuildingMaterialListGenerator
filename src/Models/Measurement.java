@@ -10,7 +10,7 @@ public class Measurement implements Comparable<Measurement>{
     private int integer; // This should only be updated via this.updateIntegerValue
     private Fraction fraction;
 
-    public class InvalidMeasurementException extends IllegalArgumentException {
+    public static class InvalidMeasurementException extends IllegalArgumentException {
         public InvalidMeasurementException(String s) {
             super(s);
         }
@@ -25,8 +25,8 @@ public class Measurement implements Comparable<Measurement>{
         SEVEN_SIXTEENTH(7), ONE_HALF(8), NINE_SIXTEENTH(9), FIVE_EIGHTH(10), ELEVEN_SIXTEENTH(11), THREE_FOURTH(12),
         THIRTEEN_SIXTEENTH(13), SEVEN_EIGHTH(14), FIFTEEN_SIXTEENTH(15);
 
-        public final double value;
-        public final String niceString;
+        private final double value;
+        private final String niceString;
         private static final double maximumFraction = 16;
         private static final Map<Double, Fraction> doubleMap = new HashMap<>();
         private static final Map<String, Fraction> stringMap = new HashMap<>();
@@ -69,11 +69,11 @@ public class Measurement implements Comparable<Measurement>{
          * @param fractionValue - The double value to convert into an enum
          * @return The appropriate Fraction for the given value
          */
-        public static Fraction valueOf(double fractionValue) {
+        static Fraction valueOf(double fractionValue) {
             return doubleMap.get(fractionValue);
         }
 
-        public static Fraction fromString(String fractionString) { return stringMap.get(fractionString); }
+        static Fraction fromString(String fractionString) { return stringMap.get(fractionString); }
     }
 
     /**
