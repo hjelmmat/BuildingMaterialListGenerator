@@ -12,10 +12,10 @@ import Models.Measurement;
  * Class used to describe a stud, essentially a c-style struct
  */
 public class Stud implements Installable, Drawable {
-    private final Measurement installedLength;
-    private final Lumber.Dimension dimension;
-    private final MaterialList material;
-    private final static Nail nailType = Nail.TEN_D;
+    final Measurement installedLength;
+    final Lumber.Dimension dimension;
+    final MaterialList material;
+    final static Nail nailType = Nail.TEN_D;
     private final static int numberOfNails = 6;
 
     /**
@@ -51,7 +51,10 @@ public class Stud implements Installable, Drawable {
         if (!(obj instanceof Stud s)) {
             return false;
         }
-        return this.installedLength.equals(s.installedLength) && this.dimension.equals(s.dimension);
+
+        // subclasses typically change the materialList so to ensure equality matters with subclasses, we verify
+        // the difference
+        return this.installedLength.equals(s.installedLength) && this.material.equals(s.material);
     }
 
     /**
@@ -73,6 +76,10 @@ public class Stud implements Installable, Drawable {
         return this.material;
     }
 
+    /**
+     *
+     * @return a GraphicsList of the instructions to draw this Stud
+     */
     @Override
     public GraphicsList drawingInstructions() {
         Measurement zero = new Measurement(0);

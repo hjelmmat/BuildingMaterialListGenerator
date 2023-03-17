@@ -1,6 +1,6 @@
 package Models.Buildable;
 
-import Graphics.RectangleInstructions;
+import Models.Buildable.Installable.DoubleStud;
 import Models.Buildable.Installable.Layout;
 import Models.Buildable.Installable.Stud;
 import Models.Buildable.Material.Lumber;
@@ -61,10 +61,10 @@ class WallTest {
         Layout twoStudLayout = new Layout().addStudAt(firstStud, standardStud).addStudAt(secondStud, standardStud);
         assertEquals(twoStudLayout, this.maxTwoStudWall.layout());
 
+        DoubleStud doubleStud = new DoubleStud(standardStud);
         Layout minThreeStudLayout = new Layout()
                 .addStudAt(firstStud, standardStud)
-                .addStudAt(new Measurement(14, Measurement.Fraction.NINE_SIXTEENTH), standardStud)
-                .addStudAt(new Measurement(16, Measurement.Fraction.ONE_SIXTEENTH), standardStud);
+                .addStudAt(new Measurement(14, Measurement.Fraction.NINE_SIXTEENTH), doubleStud);
         Wall minThreeStudWall = new Wall(new Measurement(17, Measurement.Fraction.NINE_SIXTEENTH));
         assertEquals(minThreeStudLayout, minThreeStudWall.layout());
 

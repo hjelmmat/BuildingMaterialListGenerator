@@ -1,12 +1,9 @@
 package Models.Buildable;
 
 import Graphics.GraphicsList;
-import Models.Buildable.Installable.Installable;
-import Models.Buildable.Installable.Layout;
+import Models.Buildable.Installable.*;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
-import Models.Buildable.Installable.Plate;
-import Models.Buildable.Installable.Stud;
 import Models.Measurement;
 
 import java.util.TreeMap;
@@ -113,11 +110,14 @@ public class Wall implements Buildable, Installable {
         // to ensure finalStudPosition.subtract(currentPosition) won't ever be negative. Then the difference can
         // be compared to the studSeparation to see which is bigger
         if (finalStudPosition.clone().subtract(currentPosition.subtract(studSeparation)).compareTo(studSeparation) > 0) {
-            currentLayout.addStudAt(furthestAdditionalStud, this.stud);
-        }
 
-        // add the final stud, so it touches the end of the wall
-        currentLayout.addStudAt(finalStudPosition, this.stud);
+            // A double stud here will ensure the correct number of nails are added
+            currentLayout.addStudAt(furthestAdditionalStud, new DoubleStud(this.stud));
+        }
+        else {
+            // add the final stud, so it touches the end of the wall
+            currentLayout.addStudAt(finalStudPosition, this.stud);
+        }
         return currentLayout;
     }
 
