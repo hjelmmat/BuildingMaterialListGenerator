@@ -16,4 +16,9 @@ public class House implements Buildable {
     public Vector<Vector<String>> materials() throws NullPointerException {
         return wall.materials();
     }
+
+    @Override
+    public Vector<Vector<Vector<Integer>>> drawingInstructions() {
+        return this.wall.drawingInstructions();
+    }
 }

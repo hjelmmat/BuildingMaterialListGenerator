@@ -10,6 +10,9 @@ public class Measurement implements Comparable<Measurement>{
     private int integer; // This should only be updated via this.updateIntegerValue
     private Fraction fraction;
 
+    /**
+     * Created to not Conflict with the IllegalArgumentException that can throw with Integer.parseInt() used elsewhere
+     */
     public static class InvalidMeasurementException extends IllegalArgumentException {
         public InvalidMeasurementException(String s) {
             super(s);
@@ -218,5 +221,13 @@ public class Measurement implements Comparable<Measurement>{
     @Override
     public Measurement clone() {
         return new Measurement(this.integer, this.fraction);
+    }
+
+    /**
+     *
+     * @return - The number of pixels it takes to draw this measurement.
+     */
+    public Integer numberOfPixels() {
+        return (int) (this.doubleValue() * 8);
     }
 }

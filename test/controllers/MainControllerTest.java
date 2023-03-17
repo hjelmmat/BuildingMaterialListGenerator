@@ -1,6 +1,5 @@
 package controllers;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import UI.MainFrame;
@@ -39,13 +38,14 @@ class MainControllerTest {
     }
 
     @Test
-    public void shouldUpdateTable() {
+    public void shouldCalculateMaterials() {
         when(myFrame.getHeightText()).thenReturn("10");
         when(myFrame.getHeightFractionValue()).thenReturn(Measurement.Fraction.ZERO);
         when(myFrame.getLengthText()).thenReturn("10");
         when(myFrame.getLengthFractionValue()).thenReturn(Measurement.Fraction.ZERO);
 
         when(myHouse.addWall(new Measurement(10), new Measurement(10))).thenReturn(myHouse);
+        when(myHouse.drawingInstructions()).thenReturn(null);
         MainController test = new MainController(myFrame, myHouse);
 
         material.add(new Vector<>(List.of("24\" 2x4", "5")));
@@ -57,6 +57,7 @@ class MainControllerTest {
 
         test.calculateMaterials(new ActionEvent(0, 0, ""));
         verify(myFrame).updateTable(material, headers);
+        verify(myFrame).showGraphic(null);
     }
 
     @Test

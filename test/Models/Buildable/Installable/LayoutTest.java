@@ -1,5 +1,7 @@
 package Models.Buildable.Installable;
 
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Buildable.Material.Nail;
@@ -32,5 +34,17 @@ class LayoutTest {
     public void layoutShouldDetermineEquals() {
         Layout testingLayout = new Layout().addStudAt(firstPosition, defaultStud).addStudAt(secondPosition, defaultStud);
         assertEquals(basicLayout, testingLayout);
+    }
+
+    @Test
+    public void layoutShouldCreateGraphicsList() {
+        Measurement width = Lumber.Dimension.TWO_BY_FOUR.width;
+        Measurement zero = new Measurement(0);
+        Measurement distance = new Measurement(10);
+        GraphicsList result = new GraphicsList()
+                .addGraphic(new RectangleInstructions(zero, zero, width, distance))
+                .addGraphic(new RectangleInstructions(distance, zero, width, distance));
+        Stud stud = new Stud(distance, Lumber.Dimension.TWO_BY_FOUR);
+        assertEquals(result.drawingInstructions(), new Layout().addStudAt(new Measurement(0), stud).addStudAt(distance, stud).drawingInstructions().drawingInstructions());
     }
 }

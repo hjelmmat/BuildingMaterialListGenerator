@@ -1,5 +1,7 @@
 package Models.Buildable.Installable;
 
+import Graphics.Drawable;
+import Graphics.GraphicsList;
 import Models.Buildable.Material.MaterialList;
 import Models.Measurement;
 
@@ -8,7 +10,7 @@ import java.util.TreeMap;
 /**
  * Class used to describe positions of studs. Essentially a c-style struct
  */
-public class Layout implements Installable {
+public class Layout implements Installable, Drawable {
     private TreeMap<Measurement, Stud> map;
 
     /**
@@ -63,5 +65,17 @@ public class Layout implements Installable {
     @Override
     public int hashCode() {
         return this.map.hashCode();
+    }
+
+    /**
+     *
+     * @return a GraphicsList of the instructions to draw this layout
+     */
+    @Override
+    public GraphicsList drawingInstructions() {
+        GraphicsList result = new GraphicsList();
+        Measurement zero = new Measurement(0);
+        this.map.forEach(((measurement, stud) -> result.addGraphics(stud.drawingInstructions().shift(measurement, zero))));
+        return result;
     }
 }

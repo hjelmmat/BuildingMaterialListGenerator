@@ -1,5 +1,7 @@
 package Models.Buildable.Installable;
 
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Buildable.Material.Nail;
@@ -46,5 +48,13 @@ class StudTest {
     @Test
     public void studShouldNotBeEqualWhenOfDifferentInstalledLength() {
         assertNotEquals(new Stud(), new Stud(new Measurement(92), this.dimension));
+    }
+
+    @Test
+    public void studShouldCreateDrawingInstructions() {
+        Measurement zero = new Measurement(0);
+        Measurement height = new Measurement(10);
+        GraphicsList results = new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, dimension.width, height));
+        assertEquals(results.drawingInstructions(), new Stud(height, dimension).drawingInstructions().drawingInstructions());
     }
 }

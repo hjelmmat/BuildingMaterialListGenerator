@@ -138,4 +138,13 @@ class MeasurementTest {
         assertNotSame(one, copy);
         assertEquals(one, copy);
     }
+
+    @Test
+    public void measurementShouldCalculateNumberOfPixels() {
+        int result = 8;
+        assertEquals(result, new Measurement(1).numberOfPixels());
+
+        int secondResult = 12;
+        assertEquals(secondResult, new Measurement(1, Measurement.Fraction.ONE_HALF).numberOfPixels());
+    }
 }

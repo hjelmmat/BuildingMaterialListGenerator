@@ -1,5 +1,7 @@
 package Models.Buildable.Installable;
 
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Buildable.Material.Nail;
@@ -44,5 +46,26 @@ class PlateTest {
     public void plateShouldCalculateHashCode() {
         int result = 1768948330;
         assertEquals(result, new Plate(new Measurement(30), Lumber.Dimension.TWO_BY_FOUR).hashCode());
+    }
+
+    @Test
+    public void plateShouldCreateGraphicsList() {
+        Measurement zero = new Measurement(0);
+        Measurement ten = new Measurement(10);
+        GraphicsList result = new GraphicsList()
+                .addGraphic(new RectangleInstructions(zero, zero, ten, Lumber.Dimension.TWO_BY_FOUR.width));
+        Plate test = new Plate(ten, Lumber.Dimension.TWO_BY_FOUR);
+        assertEquals(result.drawingInstructions(), test.drawingInstructions().drawingInstructions());
+    }
+
+    @Test
+    public void plateShouldCreateLineBelowForTopPlate() {
+        Measurement zero = new Measurement(0);
+        Measurement ten = new Measurement(10);
+        Measurement width = Lumber.Dimension.TWO_BY_FOUR.width;
+        GraphicsList result = new GraphicsList()
+                .addGraphic(new RectangleInstructions(zero, zero, ten, Lumber.Dimension.TWO_BY_FOUR.width));
+        Plate test = new Plate(ten, Lumber.Dimension.TWO_BY_FOUR);
+        assertEquals(result.drawingInstructions(), test.drawingInstructions().drawingInstructions());
     }
 }

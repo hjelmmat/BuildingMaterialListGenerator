@@ -1,6 +1,7 @@
 package UI;
 
 import Models.Measurement;
+import controllers.WallController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -50,10 +51,13 @@ public class MainFrame {
         JOptionPane.showMessageDialog(this.frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-
     public String getHeightText(){ return this.heightIntTF.getText(); };
     public Measurement.Fraction getHeightFractionValue() { return (Measurement.Fraction) this.heightFractionCB.getSelectedItem(); }
     public String getLengthText(){ return this.lengthIntTF.getText(); };
     public Measurement.Fraction getLengthFractionValue() { return (Measurement.Fraction) this.lengthFractionCB.getSelectedItem(); }
+
+    public void showGraphic(Vector<Vector<Vector<Integer>>> drawingInstructions) {
+        new WallController(drawingInstructions, new WallGraphic());
+    }
 }
 

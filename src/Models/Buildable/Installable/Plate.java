@@ -1,16 +1,20 @@
 package Models.Buildable.Installable;
 
+import Graphics.Drawable;
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Buildable.Material.Nail;
 import Models.Measurement;
 
-public class Plate implements Installable {
+public class Plate implements Installable, Drawable {
+    private final static Measurement nailSpacing = new Measurement(12);
+    private final static Nail nailType = Nail.TEN_D;
+
     private final Measurement installedLength;
     private final Lumber.Dimension dimension;
     private final MaterialList material;
-    private final static Measurement nailSpacing = new Measurement(12);
-    private final static Nail nailType = Nail.TEN_D;
 
     /**
      * @param length    - Length of plate
@@ -60,5 +64,16 @@ public class Plate implements Installable {
     @Override
     public MaterialList materialList() {
         return this.material;
+    }
+
+    /**
+     *
+     * @return GraphicsList showing where the plate should be drawn with both a Rectangle and a Line
+     */
+    @Override
+    public GraphicsList drawingInstructions() {
+        Measurement zero = new Measurement(0);
+        Measurement width = this.dimension.width;
+        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.installedLength, width));
     }
 }

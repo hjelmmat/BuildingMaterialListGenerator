@@ -1,5 +1,6 @@
 package Models.Buildable;
 
+import Graphics.RectangleInstructions;
 import Models.Buildable.Installable.Layout;
 import Models.Buildable.Installable.Stud;
 import Models.Buildable.Material.Lumber;
@@ -62,7 +63,7 @@ class WallTest {
 
         Layout minThreeStudLayout = new Layout()
                 .addStudAt(firstStud, standardStud)
-                .addStudAt(secondStud, standardStud)
+                .addStudAt(new Measurement(14, Measurement.Fraction.NINE_SIXTEENTH), standardStud)
                 .addStudAt(new Measurement(16, Measurement.Fraction.ONE_SIXTEENTH), standardStud);
         Wall minThreeStudWall = new Wall(new Measurement(17, Measurement.Fraction.NINE_SIXTEENTH));
         assertEquals(minThreeStudLayout, minThreeStudWall.layout());
@@ -86,5 +87,30 @@ class WallTest {
         Layout shortLayout = new Layout().addStudAt(new Measurement(0), shortStud)
                 .addStudAt(new Measurement(1, Measurement.Fraction.ONE_HALF), shortStud);
         assertEquals(shortLayout, new Wall(new Measurement(3), new Measurement(9, Measurement.Fraction.ONE_HALF)).layout());
+    }
+
+    @Test
+    public void wallShouldCalculateDrawingInstructions() {
+        Measurement zero = new Measurement(0);
+        Measurement width = Lumber.Dimension.TWO_BY_FOUR.width;
+        Measurement ten = new Measurement(10);
+        Vector<Vector<Vector<Integer>>> result = new Vector<>();
+        result.add(new Vector<>());
+
+        Vector<Vector<Integer>> rectangles = new Vector<>();
+        // Add the plates
+        rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), zero.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
+        rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), width.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
+        Measurement heightMinusWidth = ten.clone().subtract(width);
+        rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), heightMinusWidth.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
+
+        // Add the studs
+        Measurement studHeight = ten.clone().subtract(width.clone().multiply(3));
+        Measurement doubleWidth = width.clone().multiply(2);
+        rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), doubleWidth.numberOfPixels(), width.numberOfPixels(), studHeight.numberOfPixels())));
+        rectangles.add(new Vector<>(List.of(ten.clone().subtract(width).numberOfPixels(), doubleWidth.numberOfPixels(), width.numberOfPixels(), studHeight.numberOfPixels())));
+        result.add(rectangles);
+
+        assertEquals(result, new Wall(ten, ten).drawingInstructions());
     }
 }

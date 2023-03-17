@@ -1,5 +1,8 @@
 package Models.Buildable.Installable;
 
+import Graphics.Drawable;
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Buildable.Material.Nail;
@@ -8,7 +11,7 @@ import Models.Measurement;
 /**
  * Class used to describe a stud, essentially a c-style struct
  */
-public class Stud implements Installable {
+public class Stud implements Installable, Drawable {
     private final Measurement installedLength;
     private final Lumber.Dimension dimension;
     private final MaterialList material;
@@ -68,5 +71,11 @@ public class Stud implements Installable {
     @Override
     public MaterialList materialList() {
         return this.material;
+    }
+
+    @Override
+    public GraphicsList drawingInstructions() {
+        Measurement zero = new Measurement(0);
+        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.dimension.width, this.installedLength));
     }
 }

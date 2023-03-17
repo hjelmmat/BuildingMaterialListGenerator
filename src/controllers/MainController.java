@@ -3,6 +3,7 @@ package controllers;
 import Models.Buildable.House;
 import Models.Measurement;
 import UI.MainFrame;
+import UI.WallGraphic;
 
 import java.awt.event.ActionEvent;
 import java.util.Vector;
@@ -36,6 +37,7 @@ public class MainController {
 
         // The first element of the vector from Material is the title and everything else is the data
         this.view.updateTable(new Vector<>(material.subList(1, material.size())), material.get(0));
+        this.view.showGraphic(this.house.drawingInstructions());
     }
 
     private Measurement verifyMeasurement(String intValue, Measurement.Fraction fractionValue, String measurementType) {
