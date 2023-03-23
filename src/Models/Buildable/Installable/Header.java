@@ -36,7 +36,6 @@ public class Header implements Installable{
                 .addMaterial(Nail.TEN_D, 12);
 
         Measurement zero = new Measurement(0);
-        // TODO: Add functionality to Graphics List to better deal with shifting and rotating.
         this.graphics = new GraphicsList()
                 .addGraphics(plateStuds.graphicsList())
                 .addGraphic(new RectangleInstructions(zero, plateDimension.width, gapWidth, loadBearingDimension.height))

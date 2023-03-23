@@ -18,7 +18,6 @@ public class Lumber implements Material {
         TWO_BY_SIX(new Measurement(1, Measurement.Fraction.ONE_HALF), new Measurement(5, Measurement.Fraction.ONE_HALF),
                 "2x6");
 
-        // TODO: Make sure these values will not change by people forgetting to clone
         public final Measurement width;
         public final Measurement height;
         private final String niceString;
