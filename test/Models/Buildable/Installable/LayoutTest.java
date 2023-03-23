@@ -168,8 +168,8 @@ class LayoutTest {
         assertEquals(materialResult.materials(), test.materialList().materials());
 
         GraphicsList graphicsResult = new GraphicsList()
-                .addGraphic(new RectangleInstructions(zero, zero, defaultStud.totalWidth(), defaultStud.installedHeight))
-                .addGraphic(new RectangleInstructions(new Measurement(50), zero, defaultStud.totalWidth(), defaultStud.installedHeight));
+                .addGraphic(new RectangleInstructions(zero, zero, defaultStud.totalWidth(), defaultStud.totalHeight()))
+                .addGraphic(new RectangleInstructions(new Measurement(50), zero, defaultStud.totalWidth(), defaultStud.totalHeight()));
         graphicsResult.addGraphics(new Door()
                 .addCrippleStud(defaultStud, new Measurement(14))
                 .addCrippleStud(defaultStud, new Measurement(30))
@@ -221,5 +221,12 @@ class LayoutTest {
 
         test.addStudAt(new Measurement(44), defaultStud);
         assertDoesNotThrow(() -> test.addDoorAt(new Door(), new Measurement(0)));
+    }
+
+    @Test
+    public void shouldReturnTotalHeight() {
+        assertEquals(new Measurement(100), new Layout()
+                .addStudAt(new Measurement(50), new Stud(new Measurement(100), Lumber.Dimension.TWO_BY_FOUR))
+                .totalHeight());
     }
 }

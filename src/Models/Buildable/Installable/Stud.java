@@ -11,7 +11,7 @@ import Models.Measurement;
  * Class used to describe a stud, essentially a c-style struct
  */
 public class Stud implements Installable {
-    final Measurement installedHeight;
+    private final Measurement installedHeight;
     final Lumber.Dimension dimension;
     final MaterialList material;
     final static Nail nailType = Nail.TEN_D;
@@ -72,6 +72,15 @@ public class Stud implements Installable {
     @Override
     public Measurement totalWidth() {
         return this.dimension.width.clone();
+    }
+
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the height of this Stud
+     */
+    @Override
+    public Measurement totalHeight() {
+        return this.installedHeight.clone();
     }
 
     /**

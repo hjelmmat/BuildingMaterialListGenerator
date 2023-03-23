@@ -21,7 +21,7 @@ public class Plate extends Stud {
     @Override
     int numberOfNails() {
         // Plates should be installed with a pair of nails every 12" with a set at the beginning and the end.
-        return Plate.numberOfNails(this.installedHeight);
+        return Plate.numberOfNails(this.totalWidth());
     }
 
     /**
@@ -42,7 +42,16 @@ public class Plate extends Stud {
      */
     @Override
     public Measurement totalWidth() {
-        return this.installedHeight.clone();
+        return super.totalHeight();
+    }
+
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the width of this Plate
+     */
+    @Override
+    public Measurement totalHeight() {
+        return super.totalWidth();
     }
 
     /**
@@ -53,7 +62,6 @@ public class Plate extends Stud {
     @Override
     public GraphicsList graphicsList() {
         Measurement zero = new Measurement(0);
-        Measurement width = this.dimension.width;
-        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.installedHeight, width));
+        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.totalWidth(), this.totalHeight()));
     }
 }

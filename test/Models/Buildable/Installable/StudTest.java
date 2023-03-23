@@ -57,4 +57,9 @@ class StudTest {
         GraphicsList results = new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, dimension.width, height));
         assertEquals(results.drawingInstructions(), new Stud(height, dimension).graphicsList().drawingInstructions());
     }
+
+    @Test
+    public void shouldReturnTotalHeight() {
+        assertEquals(new Measurement(95), new Stud(new Measurement(95), Lumber.Dimension.TWO_BY_FOUR).totalHeight());
+    }
 }

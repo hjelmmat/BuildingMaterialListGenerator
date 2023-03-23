@@ -11,7 +11,11 @@ public interface Installable {
      */
     Measurement totalWidth();
 
-    // TODO: Add totalHeight and tighten permissions
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the height of the installable
+     */
+    Measurement totalHeight();
 
     /**
      *

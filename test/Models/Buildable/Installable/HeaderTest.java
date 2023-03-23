@@ -35,15 +35,15 @@ class HeaderTest {
     }
 
     @Test
-    public void shouldCalculateHeight() {
-        Measurement result = new Measurement(8, Measurement.Fraction.ONE_HALF);
-        assertEquals(result, new Header(new Measurement(41)).height);
-    }
-
-    @Test
     public void shouldReturnTotalWidth() {
         Measurement gapWidth = new Measurement(44);
         assertEquals(gapWidth, new Header(gapWidth).totalWidth());
+    }
+
+    @Test
+    public void shouldReturnTotalHeight() {
+        Measurement result = new Measurement(8, Measurement.Fraction.ONE_HALF);
+        assertEquals(result, new Header(new Measurement(41)).totalHeight());
     }
 
 }

@@ -180,6 +180,15 @@ public class Wall implements Buildable, Installable {
 
     /**
      *
+     * @return - A copy of the {@link Measurement} of the height of this Wall
+     */
+    @Override
+    public Measurement totalHeight() {
+        return this.layout.totalHeight();
+    }
+
+    /**
+     *
      * @return - A {@link MaterialList} of {@link Models.Buildable.Material.Material} used to create this Wall
      */
     @Override

@@ -14,7 +14,7 @@ public class Header implements Installable{
     private final MaterialList materials;
     private final GraphicsList graphics;
     private final Measurement width;
-    final Measurement height; // TODO: Make height a method call as part of Installable (totalHeight)
+    private final Measurement height;
 
     /**
      *
@@ -54,6 +54,15 @@ public class Header implements Installable{
     @Override
     public Measurement totalWidth() {
         return this.width.clone();
+    }
+
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the height of this Header
+     */
+    @Override
+    public Measurement totalHeight() {
+        return this.height.clone();
     }
 
     /**

@@ -46,7 +46,7 @@ public class Door implements Installable {
 
         // Headers should be long enough to cover the gap and rest on two trimmers, which are 2x4s
         this.header = new Header(this.type.openingWidth.clone().add(studDimension.width.clone().multiply(2)));
-        this.topOfHeader = this.header.height.clone().add(this.type.openingHeight);
+        this.topOfHeader = this.header.totalHeight().add(this.type.openingHeight);
 
         // there will be 2 king and 2 jack studs all of 2x4 so that is part of the total width.
         this.totalWidth = this.type.openingWidth.clone().add(studDimension.width.clone().multiply(4));
@@ -75,7 +75,7 @@ public class Door implements Installable {
 
     /**
      *
-     * @return - The total height of this Door including all pieces
+     * @return - A copy of the {@link Measurement} of the height of this Door
      */
     public Measurement totalHeight() {
         return this.totalHeight.clone();
@@ -137,8 +137,8 @@ public class Door implements Installable {
             return this;
         }
         // The king studs need to be updated to be taller
-        if (stud.installedHeight.compareTo(this.totalHeight) > 0) {
-            this.totalHeight = stud.installedHeight;
+        if (stud.totalHeight().compareTo(this.totalHeight) > 0) {
+            this.totalHeight = stud.totalHeight();
             this.floorLayout = this.floorLayout();
         }
         // Cripple studs should be as tall to take the space between the open

@@ -28,7 +28,7 @@ public class DoubleStud extends Stud {
      * @param stud - Stud to create a double stud from
      */
     public DoubleStud(Stud stud) {
-        this(stud.installedHeight, stud.dimension);
+        this(stud.totalHeight(), stud.dimension);
     }
 
 
@@ -38,7 +38,7 @@ public class DoubleStud extends Stud {
      */
     @Override
     public Measurement totalWidth() {
-        return this.dimension.width.clone().multiply(2);
+        return super.totalWidth().multiply(2);
     }
 
     /**
@@ -49,6 +49,6 @@ public class DoubleStud extends Stud {
     public GraphicsList graphicsList() {
         GraphicsList result = super.graphicsList();
         Measurement zero = new Measurement(0);
-        return result.addGraphic(new RectangleInstructions(this.dimension.width, zero, this.dimension.width, this.installedHeight));
+        return result.addGraphic(new RectangleInstructions(super.totalWidth(), zero, super.totalWidth(), this.totalHeight()));
     }
 }

@@ -46,7 +46,7 @@ public class Layout implements Installable {
         this.studs.put(position.clone(), stud);
 
         // Keep track of the tallest studs, so we know how far to shift studs down in the graphics
-        this.tallestStudHeight = this.tallestStudHeight.compareTo(stud.installedHeight) < 0 ? stud.installedHeight.clone() : this.tallestStudHeight;
+        this.tallestStudHeight = this.tallestStudHeight.compareTo(stud.totalHeight()) < 0 ? stud.totalHeight() : this.tallestStudHeight;
         return this;
     }
 
@@ -180,6 +180,11 @@ public class Layout implements Installable {
         return greatestStudWidth.greaterValue(greatestDoorWidth).clone();
     }
 
+    @Override
+    public Measurement totalHeight() {
+        return this.tallestStudHeight.clone();
+    }
+
     /**
      *
      * @return - A {@link MaterialList} of {@link Models.Buildable.Material.Material} used to create this Layout
@@ -203,7 +208,7 @@ public class Layout implements Installable {
             Stud stud = this.studs.get(location);
             // Each stud needs to be shifted down a difference of the tallest stud and its height so the bottoms
             // are the same
-            Measurement verticalShift = new Measurement(0).add(this.tallestStudHeight.clone().subtract(stud.installedHeight));
+            Measurement verticalShift = new Measurement(0).add(this.tallestStudHeight.clone().subtract(stud.totalHeight()));
             result.addGraphics(stud.graphicsList().shift(location, verticalShift));
         }
         this.doors.forEach((location, door) -> result.addGraphics(door.graphicsList().shift(location, new Measurement(0))));

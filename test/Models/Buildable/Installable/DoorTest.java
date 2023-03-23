@@ -33,7 +33,7 @@ class DoorTest {
 
     @Test
     public void shouldCreateHashNumber() {
-        int result = 1452012306;
+        int result = 1452012306; // TODO: Fix the hashcode so it is stable
         assertEquals(result, new Door().hashCode());
     }
 
@@ -53,10 +53,10 @@ class DoorTest {
         Measurement zero = new Measurement(0);
         Measurement topOfDoor = new Measurement(100);
         Stud kingStud = new Stud(topOfDoor, dimension);
-        Measurement topOfTrimmer = kingStud.installedHeight.clone().subtract(baseTrimmerHeight);
+        Measurement topOfTrimmer = kingStud.totalHeight().subtract(baseTrimmerHeight);
         Measurement lastTrimmerPlacement = baseTotalWidth.clone().subtract(dimension.width.clone().multiply(2));
         Header header = new Header(gapWidth);
-        Measurement topOfHeader = topOfTrimmer.clone().subtract(header.height);
+        Measurement topOfHeader = topOfTrimmer.clone().subtract(header.totalHeight());
         Measurement crippleDistance = new Measurement(10);
         GraphicsList result = new GraphicsList()
                 .addGraphics(kingStud.graphicsList())
