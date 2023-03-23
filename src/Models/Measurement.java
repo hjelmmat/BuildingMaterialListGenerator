@@ -83,11 +83,11 @@ public class Measurement implements Comparable<Measurement>{
      * Main Constructor for creating a Measurement meant to represent a building measurement, for example 1 and 1/16"
      * @param integerValue - The integer portion of a measurement, for example 1"
      * @param fractionValue - The fraction portion of a measurement, for example 1/16"
-     * @exception IllegalArgumentException - Thrown when the measurement is less than 1/16", as 0" and negative numbers
+     * @exception InvalidMeasurementException - Thrown when the measurement is less than 0" as negative numbers
      * are not valid measurements.
      *
      */
-    public Measurement(int integerValue, Fraction fractionValue) throws IllegalArgumentException {
+    public Measurement(int integerValue, Fraction fractionValue) throws InvalidMeasurementException {
         this.updateIntegerValue(integerValue);
         this.fraction = fractionValue;
     }
@@ -97,7 +97,7 @@ public class Measurement implements Comparable<Measurement>{
      * @see Measurement constructor.
      *
      */
-    public Measurement(int integerValue) throws IllegalArgumentException {
+    public Measurement(int integerValue) throws InvalidMeasurementException {
         this(integerValue, Fraction.ZERO);
     }
 
@@ -123,6 +123,10 @@ public class Measurement implements Comparable<Measurement>{
         double thisSum = this.doubleValue();
         double oSum = o.doubleValue();
         return Double.compare(thisSum, oSum);
+    }
+
+    public Measurement greaterValue(Measurement o) {
+        return this.compareTo(o) > 0 ? this : o;
     }
 
     /**
@@ -151,7 +155,7 @@ public class Measurement implements Comparable<Measurement>{
         return (int) (this.doubleValue() * 10000.0);
     }
 
-    private Measurement updateMeasurementFromDouble(double newMeasurement){
+    private Measurement updateMeasurementFromDouble(double newMeasurement) {
         int wholeNumber = (int) Math.floor(newMeasurement);
         Fraction remainder = Fraction.valueOf(newMeasurement % 1);
         this.updateIntegerValue(wholeNumber);
@@ -182,7 +186,7 @@ public class Measurement implements Comparable<Measurement>{
      * @param subtrahend - The value to subtract from this Measurement
      * @return A Measurement that is the difference between this and the subtrahend
      */
-    public Measurement subtract(Measurement subtrahend) throws IllegalArgumentException {
+    public Measurement subtract(Measurement subtrahend) throws InvalidMeasurementException {
         return this.updateMeasurementFromDouble(this.doubleValue() - subtrahend.doubleValue());
     }
 

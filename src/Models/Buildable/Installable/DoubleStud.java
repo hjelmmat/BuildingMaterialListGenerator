@@ -10,8 +10,6 @@ import Models.Measurement;
  * the material list and drawing instructions are updated accordingly.
  */
 public class DoubleStud extends Stud {
-    private static final Measurement nailSpacing = new Measurement(12);
-
     /**
      *
      * @param length - Length of Double stud to create
@@ -19,8 +17,9 @@ public class DoubleStud extends Stud {
      */
     public DoubleStud(Measurement length, Lumber.Dimension dimension) {
         super(length, dimension);
-        int numberOfNails = (int) (Math.ceil(length.divide(nailSpacing)) + 1) * 2;
-        this.material.addMaterial(Stud.nailType, numberOfNails);
+
+        // The second stud is attached like a plate, so use the static method here.
+        this.material.addMaterial(Stud.nailType, Plate.numberOfNails(length));
         this.material.addMaterial(new Lumber(length, dimension), 1);
     }
 
@@ -29,17 +28,27 @@ public class DoubleStud extends Stud {
      * @param stud - Stud to create a double stud from
      */
     public DoubleStud(Stud stud) {
-        this(stud.installedLength, stud.dimension);
+        this(stud.installedHeight, stud.dimension);
+    }
+
+
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the width of this DoubleStud
+     */
+    @Override
+    public Measurement totalWidth() {
+        return this.dimension.width.clone().multiply(2);
     }
 
     /**
      *
-     * @return a GraphicsList of the instructions to draw this DoubleStud
+     * @return - A {@link GraphicsList} of {@link Graphics.GraphicsInstructions} used to draw this DoubleStud
      */
     @Override
-    public GraphicsList drawingInstructions() {
-        GraphicsList result = super.drawingInstructions();
+    public GraphicsList graphicsList() {
+        GraphicsList result = super.graphicsList();
         Measurement zero = new Measurement(0);
-        return result.addGraphic(new RectangleInstructions(zero, zero, this.dimension.width.clone().multiply(2), this.installedLength));
+        return result.addGraphic(new RectangleInstructions(this.dimension.width, zero, this.dimension.width, this.installedHeight));
     }
 }

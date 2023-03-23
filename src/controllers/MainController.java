@@ -3,7 +3,6 @@ package controllers;
 import Models.Buildable.House;
 import Models.Measurement;
 import UI.MainFrame;
-import UI.WallGraphic;
 
 import java.awt.event.ActionEvent;
 import java.util.Vector;

@@ -32,8 +32,8 @@ class DoubleStudTest {
         Measurement height = new Measurement(10);
         GraphicsList result = new GraphicsList()
                 .addGraphic(new RectangleInstructions(zero, zero, this.dimension.width, height))
-                .addGraphic(new RectangleInstructions(zero, zero, this.dimension.width.clone().multiply(2), height));
-        assertEquals(result.drawingInstructions(), new DoubleStud(height, this.dimension).drawingInstructions().drawingInstructions());
+                .addGraphic(new RectangleInstructions(this.dimension.width, zero, this.dimension.width, height));
+        assertEquals(result.drawingInstructions(), new DoubleStud(height, this.dimension).graphicsList().drawingInstructions());
     }
 
     @Test
@@ -48,5 +48,10 @@ class DoubleStudTest {
     public void shouldNotEqualStud() {
         Stud stud = new Stud();
         assertNotEquals(stud, new DoubleStud(this.defaultLength, this.dimension));
+    }
+
+    @Test
+    public void shouldReturnTotalWidth() {
+        assertEquals(new Measurement(3), new DoubleStud(this.defaultLength, this.dimension).totalWidth());
     }
 }

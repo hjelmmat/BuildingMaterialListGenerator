@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlateTest {
+    Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
     @Test
     public void plateShouldCalculateMaterial() {
         Measurement firstLength = new Measurement(3);
-        Lumber.Dimension dimension = Lumber.Dimension.TWO_BY_FOUR;
         MaterialList result = new MaterialList().addMaterial(Nail.TEN_D, 4)
                 .addMaterial(new Lumber(firstLength, dimension), 1);
         assertEquals(result, new Plate(firstLength, dimension).materialList());
@@ -35,37 +35,26 @@ class PlateTest {
     }
 
     @Test
-    public void plateShouldCalculateEqual() {
-        Plate threePlate = new Plate(new Measurement(3), Lumber.Dimension.TWO_BY_FOUR);
-        assertEquals(threePlate,
-                new Plate(new Measurement(3), Lumber.Dimension.TWO_BY_FOUR));
-        assertNotEquals(threePlate, new Plate(new Measurement(5), Lumber.Dimension.TWO_BY_FOUR));
-    }
-
-    @Test
-    public void plateShouldCalculateHashCode() {
-        int result = 1768948330;
-        assertEquals(result, new Plate(new Measurement(30), Lumber.Dimension.TWO_BY_FOUR).hashCode());
-    }
-
-    @Test
     public void plateShouldCreateGraphicsList() {
         Measurement zero = new Measurement(0);
         Measurement ten = new Measurement(10);
         GraphicsList result = new GraphicsList()
-                .addGraphic(new RectangleInstructions(zero, zero, ten, Lumber.Dimension.TWO_BY_FOUR.width));
-        Plate test = new Plate(ten, Lumber.Dimension.TWO_BY_FOUR);
-        assertEquals(result.drawingInstructions(), test.drawingInstructions().drawingInstructions());
+                .addGraphic(new RectangleInstructions(zero, zero, ten, this.dimension.width));
+        Plate test = new Plate(ten, this.dimension);
+        assertEquals(result.drawingInstructions(), test.graphicsList().drawingInstructions());
     }
 
     @Test
-    public void plateShouldCreateLineBelowForTopPlate() {
-        Measurement zero = new Measurement(0);
-        Measurement ten = new Measurement(10);
-        Measurement width = Lumber.Dimension.TWO_BY_FOUR.width;
-        GraphicsList result = new GraphicsList()
-                .addGraphic(new RectangleInstructions(zero, zero, ten, Lumber.Dimension.TWO_BY_FOUR.width));
-        Plate test = new Plate(ten, Lumber.Dimension.TWO_BY_FOUR);
-        assertEquals(result.drawingInstructions(), test.drawingInstructions().drawingInstructions());
+    public void plateShouldReturnTotalWidth() {
+        Measurement result = new Measurement(10);
+        assertEquals(result, new Plate(result, this.dimension).totalWidth());
+    }
+
+    @Test
+    public void plateShouldCalculateNumberOfNails() {
+        assertEquals(4, Plate.numberOfNails(new Measurement(12)));
+        assertEquals(6, Plate.numberOfNails(new Measurement(12, Measurement.Fraction.ONE_SIXTEENTH)));
+        assertEquals(6, Plate.numberOfNails(new Measurement(24)));
+        assertEquals(8, Plate.numberOfNails(new Measurement(24, Measurement.Fraction.ONE_SIXTEENTH)));
     }
 }

@@ -2,6 +2,10 @@ package Models.Buildable;
 
 import Graphics.GraphicsList;
 import Models.Buildable.Installable.*;
+import Models.Buildable.Installable.DoubleStud;
+import Models.Buildable.Installable.Layout;
+import Models.Buildable.Installable.Plate;
+import Models.Buildable.Installable.Stud;
 import Models.Buildable.Material.Lumber;
 import Models.Buildable.Material.MaterialList;
 import Models.Measurement;
@@ -17,9 +21,10 @@ public class Wall implements Buildable, Installable {
     private final static boolean loadBearing = true;
     private final Layout layout;
     private final TreeMap<Measurement, Plate> platesHeightMap;
+    private final MaterialList plateMaterials;
     private final Measurement studHeightShift;
-    private final MaterialList material;
-    private final GraphicsList graphics;
+    private final Measurement studHeight;
+    private final Measurement length;
 
     private static final Lumber.Dimension studType = Lumber.Dimension.TWO_BY_FOUR;
     private static final Measurement studSeparation = new Measurement(16);
@@ -32,8 +37,9 @@ public class Wall implements Buildable, Installable {
      * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
      */
     Wall(Measurement length, Measurement height) throws IllegalArgumentException {
+        this.length = length;
         // All walls have at least one top plate, but the nails to attach it are from the studs
-        this.material = new MaterialList().addMaterial(new Lumber(length, studType), 1);
+        this.plateMaterials = new MaterialList().addMaterial(new Lumber(length, studType), 1);
 
         this.platesHeightMap = new TreeMap<>();
         Plate genericTopPlate = new Plate(length, studType);
@@ -41,12 +47,12 @@ public class Wall implements Buildable, Installable {
 
         // Add the bottom plate
         this.platesHeightMap.put(height.clone().subtract(studType.width), new Plate(length, studType));
-        this.material.addMaterials(genericTopPlate.materialList());
+        this.plateMaterials.addMaterials(genericTopPlate.materialList());
 
         // if loadBearing, there are two top plates
         if (loadBearing) {
             this.platesHeightMap.put(studType.width, genericTopPlate);
-            this.material.addMaterials(genericTopPlate.materialList());
+            this.plateMaterials.addMaterials(genericTopPlate.materialList());
             this.studHeightShift = studType.width.clone().multiply(2);
         }
         // otherwise, just one
@@ -57,13 +63,10 @@ public class Wall implements Buildable, Installable {
         // The height of a wall includes the top and bottom plates and the studs, so we need to remove the height of the
         // plates to get the heights of the studs
         Measurement heightOfAllPlates = studType.width.clone().multiply(this.platesHeightMap.size());
-        this.stud = new Stud(validateParameter(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates),
-                studType);
-        this.layout = this.createLayout(validateParameter(length, studType.width.clone().multiply(minimumNumberOfStuds),
+        this.studHeight = validateParameterMinimumMeasurement(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates);
+        this.stud = new Stud(this.studHeight, studType);
+        this.layout = this.createLayout(validateParameterMinimumMeasurement(length, studType.width.clone().multiply(minimumNumberOfStuds),
                 "length"));
-        this.material.addMaterials(this.layout.materialList());
-
-        this.graphics = this.createGraphics();
     }
 
     /**
@@ -75,7 +78,7 @@ public class Wall implements Buildable, Installable {
         this(length, new Measurement(97, Measurement.Fraction.ONE_EIGHTH));
     }
 
-    private static Measurement validateParameter(Measurement parameter, Measurement minimumValue, String type)
+    private static Measurement validateParameterMinimumMeasurement(Measurement parameter, Measurement minimumValue, String type)
             throws IllegalArgumentException {
         String exceptionMessageBase = "%s cannot be less than %s, was %s";
         if (parameter.compareTo(minimumValue) < 0) {
@@ -121,17 +124,6 @@ public class Wall implements Buildable, Installable {
         return currentLayout;
     }
 
-    private GraphicsList createGraphics() {
-        GraphicsList result = new GraphicsList();
-        Measurement zero = new Measurement(0);
-
-        // Plates need to be shifted according to where it is located in the wall
-        this.platesHeightMap.forEach((measurement,plate) -> result.addGraphics(plate.drawingInstructions().shift(zero, measurement)));
-
-        result.addGraphics(this.layout.drawingInstructions().shift(zero, this.studHeightShift));
-        return result;
-    }
-
     /**
      *
      * @return The studs required to create this wall
@@ -140,26 +132,74 @@ public class Wall implements Buildable, Installable {
         return this.layout;
     }
 
+    public Wall addADoor(Door.StandardDoor ofType, Measurement atLocation) throws IllegalArgumentException {
+        String baseErrorMessage = String.format("Door of type %s cannot be installed at %s.", ofType, atLocation);
+        Door attemptedDoor = new Door(ofType);
+        if (this.studHeight.compareTo(attemptedDoor.totalHeight()) < 0 ) {
+            throw new IllegalArgumentException(baseErrorMessage
+                    + String.format(" Wall has studs %s tall, door was %s tall", this.studHeight, attemptedDoor.totalHeight()));
+        }
+        try {
+            this.layout.addDoorAt(attemptedDoor, atLocation);
+        }
+        catch (Layout.InstallableLocationConflict c) {
+            throw new IllegalArgumentException(baseErrorMessage
+                    + String.format(" Wall is only %s long, door at %s of width %s would be outside the wall",
+                        this.length,
+                        atLocation,
+                        attemptedDoor.totalWidth()));
+        }
+        return this;
+    }
+
     /**
      *
      * @return The material required to build this wall
      */
     @Override
     public Vector<Vector<String>> materials() {
-        return this.material.materials();
+        return this.materialList().materials();
     }
 
     /**
      *
-     * @return The MaterialList of the material required to build this wall
+     * @return The instructions to draw this wall as described in {@link Buildable}
+     * @see Buildable
+     */
+    @Override
+    public Vector<Vector<Vector<Integer>>> drawingInstructions() { return this.graphicsList().drawingInstructions(); }
+
+    /**
+     *
+     * @return - A copy of the {@link Measurement} of the width of this Wall
+     */
+    @Override
+    public Measurement totalWidth() {
+        return this.layout.totalWidth();
+    }
+
+    /**
+     *
+     * @return - A {@link MaterialList} of {@link Models.Buildable.Material.Material} used to create this Wall
      */
     @Override
     public MaterialList materialList() {
-        return this.material;
+        return new MaterialList().addMaterials(this.plateMaterials).addMaterials(this.layout.materialList());
     }
 
+    /**
+     *
+     * @return - A {@link GraphicsList} of {@link Graphics.GraphicsInstructions} used to draw this Wall
+     */
     @Override
-    public Vector<Vector<Vector<Integer>>> drawingInstructions() {
-        return this.graphics.drawingInstructions();
+    public GraphicsList graphicsList() {
+        GraphicsList result = new GraphicsList();
+        Measurement zero = new Measurement(0);
+
+        // Plates need to be shifted according to where it is located in the wall
+        this.platesHeightMap.forEach((measurement,plate) -> result.addGraphics(plate.graphicsList().shift(zero, measurement)));
+
+        result.addGraphics(this.layout.graphicsList().shift(zero, this.studHeightShift));
+        return result;
     }
 }

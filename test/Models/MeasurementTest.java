@@ -13,16 +13,16 @@ class MeasurementTest {
     @Test
     public void measurementShouldThrowWhenParameterIsInvalid() {
         int negativeValue = -1;
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> new Measurement(negativeValue));
+        Measurement.InvalidMeasurementException thrown = assertThrows(Measurement.InvalidMeasurementException.class, () -> new Measurement(negativeValue));
         assertEquals(errorMessage, thrown.getMessage());
 
         Measurement.Fraction fractionValue = Measurement.Fraction.ZERO;
-        IllegalArgumentException secondThrow = assertThrows(IllegalArgumentException.class, () -> new Measurement(negativeValue, fractionValue));
+        Measurement.InvalidMeasurementException secondThrow = assertThrows(Measurement.InvalidMeasurementException.class, () -> new Measurement(negativeValue, fractionValue));
         assertEquals(errorMessage, secondThrow.getMessage());
     }
 
     @Test
-    public void measurementShouldBeComparable() throws IllegalArgumentException {
+    public void measurementShouldBeComparable() throws Measurement.InvalidMeasurementException {
         assertNotSame(this.measurementOfFour, this.secondMeasurementOfFour);
         assertEquals(0, this.measurementOfFour.compareTo(this.secondMeasurementOfFour));
 
@@ -36,14 +36,14 @@ class MeasurementTest {
     }
 
     @Test
-    public void measurementShouldCompareEquality() throws IllegalArgumentException {
+    public void measurementShouldCompareEquality() throws Measurement.InvalidMeasurementException {
         assertEquals(this.measurementOfFour, this.secondMeasurementOfFour);
         Measurement measurementOfFourAndOneHalf = new Measurement(4, Measurement.Fraction.ONE_HALF);
         assertNotEquals(this.measurementOfFour, measurementOfFourAndOneHalf);
     }
 
     @Test
-    public void measurementShouldCreateUniqueHash() throws IllegalArgumentException {
+    public void measurementShouldCreateUniqueHash() throws Measurement.InvalidMeasurementException {
         int onlyFractionExpectedValue = 625;
         assertEquals(onlyFractionExpectedValue, new Measurement(0, Measurement.Fraction.ONE_SIXTEENTH).hashCode());
 
@@ -52,7 +52,7 @@ class MeasurementTest {
     }
 
     @Test
-    public void measurementShouldMultiplyByInt() throws IllegalArgumentException {
+    public void measurementShouldMultiplyByInt() throws Measurement.InvalidMeasurementException {
         int simpleMultiplicand = 1;
         Measurement measurementOfFive = new Measurement(5);
         assertEquals(measurementOfFive, measurementOfFive.multiply(simpleMultiplicand));
@@ -71,7 +71,7 @@ class MeasurementTest {
     }
 
     @Test
-    public void measurementShouldDivideByMeasurement() throws IllegalArgumentException {
+    public void measurementShouldDivideByMeasurement() throws Measurement.InvalidMeasurementException {
         assertEquals(1, this.measurementOfFour.divide(this.measurementOfFour));
         assertEquals(2, this.eight.divide(measurementOfFour));
         assertEquals(.5, this.measurementOfFour.divide(this.eight));
@@ -94,7 +94,7 @@ class MeasurementTest {
                 new Measurement(13, Measurement.Fraction.FIVE_SIXTEENTH).subtract(new Measurement(7, Measurement.Fraction.THIRTEEN_SIXTEENTH)));
 
         Measurement six = new Measurement(6);
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> zeroMeasure.subtract(six)); //TODO finish
+        Measurement.InvalidMeasurementException thrown = assertThrows(Measurement.InvalidMeasurementException.class, () -> zeroMeasure.subtract(six)); //TODO finish
         String error = "measurement cannot be less than 0, was -6";
         assertEquals(error, thrown.getMessage());
     }
@@ -146,5 +146,13 @@ class MeasurementTest {
 
         int secondResult = 12;
         assertEquals(secondResult, new Measurement(1, Measurement.Fraction.ONE_HALF).numberOfPixels());
+    }
+
+    @Test
+    public void measurementShouldReturnGreaterMeasurement() {
+        Measurement greater = new Measurement(10);
+        Measurement lesser = new Measurement(5);
+        assertEquals(greater, greater.greaterValue(lesser));
+        assertEquals(greater, lesser.greaterValue(greater));
     }
 }

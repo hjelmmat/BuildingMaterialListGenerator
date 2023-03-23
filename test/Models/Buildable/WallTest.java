@@ -1,9 +1,14 @@
 package Models.Buildable;
 
+import Graphics.GraphicsList;
+import Graphics.RectangleInstructions;
+import Models.Buildable.Installable.Door;
 import Models.Buildable.Installable.DoubleStud;
 import Models.Buildable.Installable.Layout;
 import Models.Buildable.Installable.Stud;
 import Models.Buildable.Material.Lumber;
+import Models.Buildable.Material.MaterialList;
+import Models.Buildable.Material.Nail;
 import Models.Measurement;
 import org.junit.jupiter.api.Test;
 
@@ -112,5 +117,57 @@ class WallTest {
         result.add(rectangles);
 
         assertEquals(result, new Wall(ten, ten).drawingInstructions());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenDoorDoesNotFitInWallLength() {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+                () -> this.maxTwoStudWall.addADoor(Door.StandardDoor.Bedroom, new Measurement(100)));
+        String exceptionMessage = "Door of type Bedroom cannot be installed at 100\". Wall is only 17-1/2\" long, door at 100\" of width 44\" would be outside the wall";
+        assertEquals(exceptionMessage, thrown.getMessage());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenDoorIsTooTallForWall() {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
+                () -> new Wall(new Measurement(100), new Measurement(10)).addADoor(Door.StandardDoor.Bedroom, new Measurement(0)));
+        assertEquals("Door of type Bedroom cannot be installed at 0\". Wall has studs 5-1/2\" tall, door was 89-1/2\" tall",
+                thrown.getMessage());
+    }
+
+    @Test
+     public void whenDoorIsAddedMaterialListShouldUpdate() {
+        Measurement defaultHeight = new Measurement(92, Measurement.Fraction.FIVE_EIGHTH);
+        MaterialList materialResult = new MaterialList()
+                .addMaterial(Nail.TEN_D, 168)
+                .addMaterial(new Lumber(defaultHeight, Lumber.Dimension.TWO_BY_FOUR), 4)
+                .addMaterial(new Lumber(new Measurement(81), Lumber.Dimension.TWO_BY_FOUR), 2)
+                .addMaterial(new Lumber(new Measurement(41), Lumber.Dimension.TWO_BY_FOUR), 5)
+                .addMaterial(new Lumber(new Measurement(41), Lumber.Dimension.TWO_BY_SIX), 2)
+                .addMaterial(new Lumber(new Measurement(6, Measurement.Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 4);
+
+        Measurement wallLength = new Measurement(48);
+        Wall test = new Wall(wallLength).addADoor(Door.StandardDoor.Bedroom, new Measurement(2));
+
+        /*
+        Checking twice to ensure that the materials are not added multiple times over successive calls`
+         */
+        assertEquals(materialResult, test.materialList());
+        assertEquals(materialResult, test.materialList());
+
+        Measurement zero = new Measurement(0);
+        Measurement studWidth = new Stud().totalWidth();
+        Measurement downShiftBecauseOfPlates = studWidth.clone().multiply(2);
+        GraphicsList graphicsResult = new GraphicsList()
+                .addGraphic(new RectangleInstructions(zero, zero, wallLength, studWidth))
+                .addGraphic(new RectangleInstructions(zero, studWidth, wallLength, studWidth))
+                .addGraphic(new RectangleInstructions(zero, downShiftBecauseOfPlates.clone().add(defaultHeight), wallLength, studWidth))
+                .addGraphic(new RectangleInstructions(zero, downShiftBecauseOfPlates, studWidth, defaultHeight))
+                .addGraphic(new RectangleInstructions(wallLength.clone().subtract(studWidth), downShiftBecauseOfPlates, studWidth, defaultHeight))
+                .addGraphics(new Door()
+                    .addCrippleStud(new Stud(), new Measurement(14))
+                    .addCrippleStud(new Stud(), new Measurement(30))
+                    .graphicsList().shift(new Measurement(2), downShiftBecauseOfPlates));
+        assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions());
     }
 }

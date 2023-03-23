@@ -55,6 +55,6 @@ class StudTest {
         Measurement zero = new Measurement(0);
         Measurement height = new Measurement(10);
         GraphicsList results = new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, dimension.width, height));
-        assertEquals(results.drawingInstructions(), new Stud(height, dimension).drawingInstructions().drawingInstructions());
+        assertEquals(results.drawingInstructions(), new Stud(height, dimension).graphicsList().drawingInstructions());
     }
 }

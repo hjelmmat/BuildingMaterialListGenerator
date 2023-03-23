@@ -1,6 +1,5 @@
 package Models.Buildable.Installable;
 
-import Graphics.Drawable;
 import Graphics.GraphicsList;
 import Graphics.RectangleInstructions;
 import Models.Buildable.Material.Lumber;
@@ -11,23 +10,22 @@ import Models.Measurement;
 /**
  * Class used to describe a stud, essentially a c-style struct
  */
-public class Stud implements Installable, Drawable {
-    final Measurement installedLength;
+public class Stud implements Installable {
+    final Measurement installedHeight;
     final Lumber.Dimension dimension;
     final MaterialList material;
     final static Nail nailType = Nail.TEN_D;
-    private final static int numberOfNails = 6;
 
     /**
      *
-     * @param length - The length of the stud
+     * @param height - The height of the stud
      * @param dimension - the width/height dimension of the stud.
      */
-    public Stud(Measurement length, Lumber.Dimension dimension) throws IllegalArgumentException {
-        this.installedLength = length;
+    public Stud(Measurement height, Lumber.Dimension dimension) throws IllegalArgumentException {
+        this.installedHeight = height;
         this.dimension = dimension;
-        this.material = new MaterialList().addMaterial(new Lumber(this.installedLength, this.dimension), 1)
-                .addMaterial(nailType, numberOfNails);
+        this.material = new MaterialList().addMaterial(new Lumber(this.installedHeight, this.dimension), 1)
+                .addMaterial(nailType, this.numberOfNails());
     }
 
     /**
@@ -37,24 +35,24 @@ public class Stud implements Installable, Drawable {
         this(new Measurement(92, Measurement.Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR);
     }
 
+    int numberOfNails(){
+        return 6;
+    }
+
     /**
-     * Studs are only equal if the installedLength is the same, which will also have the same FactoryLength for the
+     * Studs are only equal if the installedHeight is the same, which will also have the same FactoryLength for the
      * MaterialList
      * @param obj - the object to be compared
      * @return Indication if the two studs are equal
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Stud s)) {
-            return false;
-        }
+        if (obj == this) { return true; }
+        if (!(obj instanceof Stud s)) { return false; }
 
         // subclasses typically change the materialList so to ensure equality matters with subclasses, we verify
         // the difference
-        return this.installedLength.equals(s.installedLength) && this.material.equals(s.material);
+        return this.hashCode() == s.hashCode();
     }
 
     /**
@@ -64,12 +62,21 @@ public class Stud implements Installable, Drawable {
      */
     @Override
     public int hashCode() {
-        return  (this.dimension.toString() + this.installedLength.toString() + this.getClass().getName()).hashCode();
+        return  (this.dimension.toString() + this.installedHeight.toString() + this.getClass().getName()).hashCode();
     }
 
     /**
      *
-     * @return A MaterialList of the material required to install the stud.
+     * @return - A copy of the {@link Measurement} of the width of this Stud
+     */
+    @Override
+    public Measurement totalWidth() {
+        return this.dimension.width.clone();
+    }
+
+    /**
+     *
+     * @return - A {@link MaterialList} of {@link Models.Buildable.Material.Material} used to create this Stud
      */
     @Override
     public MaterialList materialList() {
@@ -78,11 +85,11 @@ public class Stud implements Installable, Drawable {
 
     /**
      *
-     * @return a GraphicsList of the instructions to draw this Stud
+     * @return - A {@link GraphicsList} of {@link Graphics.GraphicsInstructions} used to draw this Stud
      */
     @Override
-    public GraphicsList drawingInstructions() {
+    public GraphicsList graphicsList() {
         Measurement zero = new Measurement(0);
-        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.dimension.width, this.installedLength));
+        return new GraphicsList().addGraphic(new RectangleInstructions(zero, zero, this.dimension.width, this.installedHeight));
     }
 }

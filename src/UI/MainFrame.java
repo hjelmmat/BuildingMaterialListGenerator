@@ -16,7 +16,7 @@ public class MainFrame {
     private JTable resultsTB;
     private JPanel wallMaterials;
     private JFormattedTextField heightIntTF;
-    private JComboBox<Measurement.Fraction> heightFractionCB;
+    private JComboBox<Measurement.Fraction> heightFractionCB; // TODO: Consider making a list of Strings instead
     private JFormattedTextField lengthIntTF;
     private JComboBox<Measurement.Fraction> lengthFractionCB;
     private JButton calculateBtn;
