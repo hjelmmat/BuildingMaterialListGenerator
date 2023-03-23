@@ -71,7 +71,7 @@ public class Stud implements Installable {
      */
     @Override
     public Measurement totalWidth() {
-        return this.dimension.width.clone();
+        return this.dimension.width;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Stud implements Installable {
      */
     @Override
     public Measurement totalHeight() {
-        return this.installedHeight.clone();
+        return this.installedHeight;
     }
 
     /**

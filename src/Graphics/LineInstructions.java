@@ -9,23 +9,23 @@ import java.util.Vector;
  * A Class used to store information required to draw a line
  */
 public class LineInstructions implements GraphicsInstructions {
-    private final Measurement startx;
-    private final Measurement starty;
-    private final Measurement endx;
-    private final Measurement endy;
+    private final Measurement startX;
+    private final Measurement startY;
+    private final Measurement endX;
+    private final Measurement endY;
 
     /**
      *
-     * @param startx - Start x position of the line
-     * @param starty - Start y position of the line
-     * @param endx - End x position of the line
-     * @param endy - End y position of the line
+     * @param startX - Start x position of the line
+     * @param startY - Start y position of the line
+     * @param endX - End x position of the line
+     * @param endY - End y position of the line
      */
-    public LineInstructions(Measurement startx, Measurement starty, Measurement endx, Measurement endy) {
-        this.startx = startx.clone();
-        this.starty = starty.clone();
-        this.endx = endx.clone();
-        this.endy = endy.clone();
+    public LineInstructions(Measurement startX, Measurement startY, Measurement endX, Measurement endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
     }
 
     /**
@@ -34,8 +34,8 @@ public class LineInstructions implements GraphicsInstructions {
      */
     @Override
     public Vector<Integer> drawingInstructions() {
-        return new Vector<>(List.of(this.startx.numberOfPixels(), this.starty.numberOfPixels(),
-                this.endx.numberOfPixels(), this.endy.numberOfPixels()));
+        return new Vector<>(List.of(this.startX.numberOfPixels(), this.startY.numberOfPixels(),
+                this.endX.numberOfPixels(), this.endY.numberOfPixels()));
     }
 
     /**
@@ -45,11 +45,7 @@ public class LineInstructions implements GraphicsInstructions {
      * @return this Line
      */
     @Override
-    public GraphicsInstructions shift(Measurement horizontal, Measurement vertical) {
-        this.startx.add(horizontal);
-        this.starty.add(vertical);
-        this.endx.add(horizontal);
-        this.endy.add(vertical);
-        return this;
+    public LineInstructions shift(Measurement horizontal, Measurement vertical) {
+        return new LineInstructions(this.startX.add(horizontal), this.startY.add(vertical),this.endX.add(horizontal), this.endY.add(vertical));
     }
 }

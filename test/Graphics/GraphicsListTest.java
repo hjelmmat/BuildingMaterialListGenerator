@@ -51,5 +51,6 @@ class GraphicsListTest {
         GraphicsList test = new GraphicsList().addGraphic(new LineInstructions(zero, zero, zero, zero));
         assertNotEquals(result, test.drawingInstructions());
         assertEquals(result, test.shift(ten, ten).drawingInstructions());
+        assertEquals(result, test.shift(ten, ten).drawingInstructions());
     }
 }

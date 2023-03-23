@@ -106,14 +106,14 @@ class WallTest {
         // Add the plates
         rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), zero.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
         rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), width.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
-        Measurement heightMinusWidth = ten.clone().subtract(width);
+        Measurement heightMinusWidth = ten.subtract(width);
         rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), heightMinusWidth.numberOfPixels(), ten.numberOfPixels(), width.numberOfPixels())));
 
         // Add the studs
-        Measurement studHeight = ten.clone().subtract(width.clone().multiply(3));
-        Measurement doubleWidth = width.clone().multiply(2);
+        Measurement studHeight = ten.subtract(width.multiply(3));
+        Measurement doubleWidth = width.multiply(2);
         rectangles.add(new Vector<>(List.of(zero.numberOfPixels(), doubleWidth.numberOfPixels(), width.numberOfPixels(), studHeight.numberOfPixels())));
-        rectangles.add(new Vector<>(List.of(ten.clone().subtract(width).numberOfPixels(), doubleWidth.numberOfPixels(), width.numberOfPixels(), studHeight.numberOfPixels())));
+        rectangles.add(new Vector<>(List.of(ten.subtract(width).numberOfPixels(), doubleWidth.numberOfPixels(), width.numberOfPixels(), studHeight.numberOfPixels())));
         result.add(rectangles);
 
         assertEquals(result, new Wall(ten, ten).drawingInstructions());
@@ -157,13 +157,13 @@ class WallTest {
 
         Measurement zero = new Measurement(0);
         Measurement studWidth = new Stud().totalWidth();
-        Measurement downShiftBecauseOfPlates = studWidth.clone().multiply(2);
+        Measurement downShiftBecauseOfPlates = studWidth.multiply(2);
         GraphicsList graphicsResult = new GraphicsList()
                 .addGraphic(new RectangleInstructions(zero, zero, wallLength, studWidth))
                 .addGraphic(new RectangleInstructions(zero, studWidth, wallLength, studWidth))
-                .addGraphic(new RectangleInstructions(zero, downShiftBecauseOfPlates.clone().add(defaultHeight), wallLength, studWidth))
+                .addGraphic(new RectangleInstructions(zero, downShiftBecauseOfPlates.add(defaultHeight), wallLength, studWidth))
                 .addGraphic(new RectangleInstructions(zero, downShiftBecauseOfPlates, studWidth, defaultHeight))
-                .addGraphic(new RectangleInstructions(wallLength.clone().subtract(studWidth), downShiftBecauseOfPlates, studWidth, defaultHeight))
+                .addGraphic(new RectangleInstructions(wallLength.subtract(studWidth), downShiftBecauseOfPlates, studWidth, defaultHeight))
                 .addGraphics(new Door()
                     .addCrippleStud(new Stud(), new Measurement(14))
                     .addCrippleStud(new Stud(), new Measurement(30))

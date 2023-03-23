@@ -45,12 +45,12 @@ public class Door implements Installable {
         this.type = ofType;
 
         // Headers should be long enough to cover the gap and rest on two trimmers, which are 2x4s
-        this.header = new Header(this.type.openingWidth.clone().add(studDimension.width.clone().multiply(2)));
+        this.header = new Header(this.type.openingWidth.add(studDimension.width.multiply(2)));
         this.topOfHeader = this.header.totalHeight().add(this.type.openingHeight);
 
         // there will be 2 king and 2 jack studs all of 2x4 so that is part of the total width.
-        this.totalWidth = this.type.openingWidth.clone().add(studDimension.width.clone().multiply(4));
-        this.totalHeight = this.topOfHeader.clone();
+        this.totalWidth = this.type.openingWidth.add(studDimension.width.multiply(4));
+        this.totalHeight = this.topOfHeader;
         this.floorLayout = this.floorLayout();
 
         // Trimmers need to be attached to King studs so add those extra nails
@@ -69,8 +69,8 @@ public class Door implements Installable {
         return new Layout()
                 .addStudAt(new Measurement(0), king)
                 .addStudAt(dimension.width, trimmer)
-                .addStudAt(totalWidth.clone().subtract(dimension.width.clone().multiply(2)), trimmer)
-                .addStudAt(totalWidth.clone().subtract(dimension.width), king);
+                .addStudAt(totalWidth.subtract(dimension.width.multiply(2)), trimmer)
+                .addStudAt(totalWidth.subtract(dimension.width), king);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Door implements Installable {
      * @return - A copy of the {@link Measurement} of the height of this Door
      */
     public Measurement totalHeight() {
-        return this.totalHeight.clone();
+        return this.totalHeight;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Door implements Installable {
      */
     @Override
     public Measurement totalWidth() {
-        return this.totalWidth.clone();
+        return this.totalWidth;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Door implements Installable {
     public GraphicsList graphicsList() {
         return new GraphicsList()
                 .addGraphics(this.floorLayout.graphicsList())
-                .addGraphics(this.header.graphicsList().shift(studDimension.width.clone(), this.totalHeight.clone().subtract(this.topOfHeader)))
+                .addGraphics(this.header.graphicsList().shift(studDimension.width, this.totalHeight.subtract(this.topOfHeader)))
                 .addGraphics(this.crippleStuds.graphicsList());
     }
 
@@ -130,8 +130,8 @@ public class Door implements Installable {
 
         // If the cripple stud need to go before the first or after the last, it can be ignored as there is a king stud
         // there already
-        Measurement firstCrippleStud = studDimension.width.clone();
-         Measurement lastCrippleStud = this.totalWidth().subtract(studDimension.width.clone().multiply(2));
+        Measurement firstCrippleStud = studDimension.width;
+         Measurement lastCrippleStud = this.totalWidth().subtract(studDimension.width.multiply(2));
         if (location.compareTo(firstCrippleStud) <= 0 || location.compareTo(lastCrippleStud) >= 0)
         {
             return this;
@@ -168,11 +168,11 @@ public class Door implements Installable {
          */
         catch (Layout.InstallableLocationConflict e) {
             if (e.conflict.equals(firstCrippleStud)) {
-                this.crippleStuds.addStudAt(firstCrippleStud.clone().add(crippleStud.totalWidth()), crippleStud);
+                this.crippleStuds.addStudAt(firstCrippleStud.add(crippleStud.totalWidth()), crippleStud);
                 this.extraNails += crippleStudExtraNails;
             }
             else if (e.conflict.equals(lastCrippleStud)) {
-                this.crippleStuds.addStudAt(lastCrippleStud.clone().subtract(crippleStud.totalWidth()), crippleStud);
+                this.crippleStuds.addStudAt(lastCrippleStud.subtract(crippleStud.totalWidth()), crippleStud);
                 this.extraNails += crippleStudExtraNails;
             }
             else {

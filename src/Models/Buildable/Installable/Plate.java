@@ -32,7 +32,7 @@ public class Plate extends Stud {
      */
     static int numberOfNails(Measurement length) {
         Measurement nailSpacing = new Measurement(12);
-        int numberOfNailPairs = (int) Math.ceil(length.clone().divide(nailSpacing)) + 1;
+        int numberOfNailPairs = (int) Math.ceil(length.divide(nailSpacing)) + 1;
         return numberOfNailPairs * 2;
     }
 

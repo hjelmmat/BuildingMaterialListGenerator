@@ -7,8 +7,8 @@ import java.util.Map;
  * Contains positive distances limited to multiples of 1/16.
  */
 public class Measurement implements Comparable<Measurement>{
-    private int integer; // This should only be updated via this.updateIntegerValue
-    private Fraction fraction;
+    private final int integer;
+    private final Fraction fraction;
 
     /**
      * Created to not Conflict with the IllegalArgumentException that can throw with Integer.parseInt() used elsewhere
@@ -73,7 +73,7 @@ public class Measurement implements Comparable<Measurement>{
          * @return The appropriate Fraction for the given value
          */
         static Fraction valueOf(double fractionValue) {
-            return doubleMap.get(fractionValue);
+            return doubleMap.get(fractionValue % 1);
         }
 
         static Fraction fromString(String fractionString) { return stringMap.get(fractionString); }
@@ -88,7 +88,11 @@ public class Measurement implements Comparable<Measurement>{
      *
      */
     public Measurement(int integerValue, Fraction fractionValue) throws InvalidMeasurementException {
-        this.updateIntegerValue(integerValue);
+        if (integerValue < 0) {
+            String errorMessage = "measurement cannot be less than 0, was %d";
+            throw new InvalidMeasurementException(String.format(errorMessage, integerValue));
+        }
+        this.integer = integerValue;
         this.fraction = fractionValue;
     }
 
@@ -101,14 +105,13 @@ public class Measurement implements Comparable<Measurement>{
         this(integerValue, Fraction.ZERO);
     }
 
-    private void updateIntegerValue(int integerValue) {
-        if (integerValue < 0) {
-            String errorMessage = "measurement cannot be less than 0, was %d";
-            throw new InvalidMeasurementException(String.format(errorMessage, integerValue));
+    private Measurement(Double doubleValue) throws InvalidMeasurementException {
+        if (doubleValue < 0 ) {
+            String errorMessage = "measurement cannot be less than 0, was -%s";
+            throw new InvalidMeasurementException(String.format(errorMessage, new Measurement(-doubleValue)));
         }
-        else {
-            this.integer = integerValue;
-        }
+        this.integer = doubleValue.intValue();
+        this.fraction = Fraction.valueOf(doubleValue);
     }
 
     private double doubleValue() { return this.integer + this.fraction.value; }
@@ -155,21 +158,13 @@ public class Measurement implements Comparable<Measurement>{
         return (int) (this.doubleValue() * 10000.0);
     }
 
-    private Measurement updateMeasurementFromDouble(double newMeasurement) {
-        int wholeNumber = (int) Math.floor(newMeasurement);
-        Fraction remainder = Fraction.valueOf(newMeasurement % 1);
-        this.updateIntegerValue(wholeNumber);
-        this.fraction = remainder;
-        return this;
-    }
-
     /**
      *
      * @param multiplicand - The value to multiply this Measurement by.
      * @return A Measurement of size multiplied by the multiplicand.
      */
     public Measurement multiply(int multiplicand) {
-        return this.updateMeasurementFromDouble(this.doubleValue() * multiplicand);
+        return new Measurement(this.doubleValue() * multiplicand);
     }
 
     /**
@@ -187,7 +182,7 @@ public class Measurement implements Comparable<Measurement>{
      * @return A Measurement that is the difference between this and the subtrahend
      */
     public Measurement subtract(Measurement subtrahend) throws InvalidMeasurementException {
-        return this.updateMeasurementFromDouble(this.doubleValue() - subtrahend.doubleValue());
+        return new Measurement(this.doubleValue() - subtrahend.doubleValue());
     }
 
     /**
@@ -196,7 +191,7 @@ public class Measurement implements Comparable<Measurement>{
      * @return Resultant Measurement of addition
      */
     public Measurement add(Measurement addend) {
-        return this.updateMeasurementFromDouble(this.doubleValue() + addend.doubleValue());
+        return new Measurement(this.doubleValue() + addend.doubleValue());
     }
 
     /**
@@ -216,15 +211,6 @@ public class Measurement implements Comparable<Measurement>{
             }
         }
         return result  + "\""; // Add one double quote to denote inches.
-    }
-
-    /**
-     *
-     * @return a new Measurement that is a clone of this one.
-     */
-    @Override
-    public Measurement clone() {
-        return new Measurement(this.integer, this.fraction);
     }
 
     /**

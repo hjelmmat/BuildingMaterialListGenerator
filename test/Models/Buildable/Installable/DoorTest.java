@@ -54,20 +54,20 @@ class DoorTest {
         Measurement topOfDoor = new Measurement(100);
         Stud kingStud = new Stud(topOfDoor, dimension);
         Measurement topOfTrimmer = kingStud.totalHeight().subtract(baseTrimmerHeight);
-        Measurement lastTrimmerPlacement = baseTotalWidth.clone().subtract(dimension.width.clone().multiply(2));
+        Measurement lastTrimmerPlacement = baseTotalWidth.subtract(dimension.width.multiply(2));
         Header header = new Header(gapWidth);
-        Measurement topOfHeader = topOfTrimmer.clone().subtract(header.totalHeight());
+        Measurement topOfHeader = topOfTrimmer.subtract(header.totalHeight());
         Measurement crippleDistance = new Measurement(10);
         GraphicsList result = new GraphicsList()
                 .addGraphics(kingStud.graphicsList())
                 .addGraphic(new RectangleInstructions(dimension.width, topOfTrimmer, dimension.width, baseTrimmerHeight))
                 .addGraphic(new RectangleInstructions(lastTrimmerPlacement, topOfTrimmer, dimension.width, baseTrimmerHeight))
-                .addGraphics(kingStud.graphicsList().shift(baseTotalWidth.clone().subtract(dimension.width), zero))
+                .addGraphics(kingStud.graphicsList().shift(baseTotalWidth.subtract(dimension.width), zero))
                 .addGraphics(header.graphicsList().shift(dimension.width, topOfHeader))
                 .addGraphic(new RectangleInstructions(dimension.width, zero, dimension.width, topOfHeader))
-                .addGraphic(new RectangleInstructions(dimension.width.clone().multiply(2), zero, dimension.width, topOfHeader))
+                .addGraphic(new RectangleInstructions(dimension.width.multiply(2), zero, dimension.width, topOfHeader))
                 .addGraphic(new RectangleInstructions(crippleDistance, zero, dimension.width, topOfHeader))
-                .addGraphic(new RectangleInstructions(lastTrimmerPlacement.clone().subtract(dimension.width), zero, dimension.width, topOfHeader))
+                .addGraphic(new RectangleInstructions(lastTrimmerPlacement.subtract(dimension.width), zero, dimension.width, topOfHeader))
                 .addGraphic(new RectangleInstructions(lastTrimmerPlacement, zero, dimension.width, topOfHeader));
 
         Stud crippleStuds = new Stud(topOfDoor, Lumber.Dimension.TWO_BY_FOUR);
@@ -79,13 +79,13 @@ class DoorTest {
                 // Ignored Cripple Stud since it is exactly where the first cripple stud is
                 .addCrippleStud(crippleStuds, dimension.width)
                 // Ignored Cripple Stud since it is where the right king stud is
-                .addCrippleStud(crippleStuds, baseTotalWidth.clone().subtract(dimension.width).add(new Measurement(1)))
+                .addCrippleStud(crippleStuds, baseTotalWidth.subtract(dimension.width).add(new Measurement(1)))
                 // Ignored Cripple Stud since it is exactly where the last cripple stud is
-                .addCrippleStud(crippleStuds, baseTotalWidth.clone().subtract(dimension.width.clone().multiply(2)))
+                .addCrippleStud(crippleStuds, baseTotalWidth.subtract(dimension.width.multiply(2)))
                 // Valid Cripple Stud that needs to be shifted Right
-                .addCrippleStud(crippleStuds, dimension.width.clone().add(new Measurement(1)))
+                .addCrippleStud(crippleStuds, dimension.width.add(new Measurement(1)))
                 // Valid Cripple Stud that needs to be shifted Left
-                .addCrippleStud(crippleStuds, lastTrimmerPlacement.clone().subtract(new Measurement(1)));
+                .addCrippleStud(crippleStuds, lastTrimmerPlacement.subtract(new Measurement(1)));
         assertEquals(result.drawingInstructions(), test.graphicsList().drawingInstructions());
 
         MaterialList materialResult = new MaterialList()
@@ -101,12 +101,12 @@ class DoorTest {
     @Test
     public void shouldCreateGraphicsList() {
         Measurement zero = new Measurement(0);
-        Measurement topOfTrimmer = baseKingHeight.clone().subtract(baseTrimmerHeight);
+        Measurement topOfTrimmer = baseKingHeight.subtract(baseTrimmerHeight);
         GraphicsList result = new GraphicsList()
                 .addGraphic(new RectangleInstructions(zero, zero, dimension.width, baseKingHeight))
                 .addGraphic(new RectangleInstructions(dimension.width, topOfTrimmer, dimension.width, baseTrimmerHeight))
-                .addGraphic(new RectangleInstructions(baseTotalWidth.clone().subtract(dimension.width.clone().multiply(2)), topOfTrimmer, dimension.width, baseTrimmerHeight))
-                .addGraphic(new RectangleInstructions(baseTotalWidth.clone().subtract(dimension.width), zero, dimension.width, baseKingHeight))
+                .addGraphic(new RectangleInstructions(baseTotalWidth.subtract(dimension.width.multiply(2)), topOfTrimmer, dimension.width, baseTrimmerHeight))
+                .addGraphic(new RectangleInstructions(baseTotalWidth.subtract(dimension.width), zero, dimension.width, baseKingHeight))
                 .addGraphics(new Header(gapWidth).graphicsList().shift(dimension.width, zero));
         assertEquals(result.drawingInstructions(), new Door().graphicsList().drawingInstructions());
     }

@@ -46,26 +46,26 @@ public class Wall implements Buildable, Installable {
         this.platesHeightMap.put(new Measurement(0), genericTopPlate);
 
         // Add the bottom plate
-        this.platesHeightMap.put(height.clone().subtract(studType.width), new Plate(length, studType));
+        this.platesHeightMap.put(height.subtract(studType.width), new Plate(length, studType));
         this.plateMaterials.addMaterials(genericTopPlate.materialList());
 
         // if loadBearing, there are two top plates
         if (loadBearing) {
             this.platesHeightMap.put(studType.width, genericTopPlate);
             this.plateMaterials.addMaterials(genericTopPlate.materialList());
-            this.studHeightShift = studType.width.clone().multiply(2);
+            this.studHeightShift = studType.width.multiply(2);
         }
         // otherwise, just one
         else {
-            this.studHeightShift = studType.width.clone();
+            this.studHeightShift = studType.width;
         }
 
         // The height of a wall includes the top and bottom plates and the studs, so we need to remove the height of the
         // plates to get the heights of the studs
-        Measurement heightOfAllPlates = studType.width.clone().multiply(this.platesHeightMap.size());
-        this.studHeight = validateParameterMinimumMeasurement(height, heightOfAllPlates, "height").clone().subtract(heightOfAllPlates);
+        Measurement heightOfAllPlates = studType.width.multiply(this.platesHeightMap.size());
+        this.studHeight = validateParameterMinimumMeasurement(height, heightOfAllPlates, "height").subtract(heightOfAllPlates);
         this.stud = new Stud(this.studHeight, studType);
-        this.layout = this.createLayout(validateParameterMinimumMeasurement(length, studType.width.clone().multiply(minimumNumberOfStuds),
+        this.layout = this.createLayout(validateParameterMinimumMeasurement(length, studType.width.multiply(minimumNumberOfStuds),
                 "length"));
     }
 
@@ -94,25 +94,25 @@ public class Wall implements Buildable, Installable {
 
         // add the initial stud
         currentLayout.addStudAt(currentPosition, this.stud);
-        currentPosition.add(studSeparation);
+        currentPosition = currentPosition.add(studSeparation);
 
         // add the rest of the studs. There needs to be enough room for both the full separation and the width of
         // two studs, the stud to add and the final stud
-        Measurement furthestAdditionalStud = length.clone().subtract(studType.width.clone().multiply(2));
+        Measurement furthestAdditionalStud = length.subtract(studType.width.multiply(2));
         while (currentPosition.compareTo(furthestAdditionalStud) < 0) {
             currentLayout.addStudAt(currentPosition, this.stud);
-            currentPosition.add(studSeparation);
+            currentPosition = currentPosition.add(studSeparation);
         }
 
         // It possible for the difference between the last added stud and the final stud to be greater than the
         // studSeparation. In this case, we need a stud to be right next to the final stud in the location of
         // furthestAdditionalStud.
-        Measurement finalStudPosition = length.clone().subtract(studType.width);
+        Measurement finalStudPosition = length.subtract(studType.width);
 
         // Since Measurements have to be positive, the currentPosition needs to be backed up by a studSeparation
         // to ensure finalStudPosition.subtract(currentPosition) won't ever be negative. Then the difference can
         // be compared to the studSeparation to see which is bigger
-        if (finalStudPosition.clone().subtract(currentPosition.subtract(studSeparation)).compareTo(studSeparation) > 0) {
+        if (finalStudPosition.subtract(currentPosition.subtract(studSeparation)).compareTo(studSeparation) > 0) {
 
             // A double stud here will ensure the correct number of nails are added
             currentLayout.addStudAt(furthestAdditionalStud, new DoubleStud(this.stud));

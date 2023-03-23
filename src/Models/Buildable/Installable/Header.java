@@ -40,11 +40,11 @@ public class Header implements Installable{
         this.graphics = new GraphicsList()
                 .addGraphics(plateStuds.graphicsList())
                 .addGraphic(new RectangleInstructions(zero, plateDimension.width, gapWidth, loadBearingDimension.height))
-                .addGraphic(new RectangleInstructions(zero, plateDimension.width.clone().add(loadBearingDimension.height), gapWidth, loadBearingDimension.height))
-                .addGraphic(new RectangleInstructions(zero, plateDimension.width.clone().add(loadBearingDimension.height.clone().multiply(2)), gapWidth, plateDimension.width));
+                .addGraphic(new RectangleInstructions(zero, plateDimension.width.add(loadBearingDimension.height), gapWidth, loadBearingDimension.height))
+                .addGraphic(new RectangleInstructions(zero, plateDimension.width.add(loadBearingDimension.height.multiply(2)), gapWidth, plateDimension.width));
 
         this.width = gapWidth;
-        this.height = loadBearingDimension.height.clone().add(plateDimension.width.clone().multiply(2));
+        this.height = loadBearingDimension.height.add(plateDimension.width.multiply(2));
     }
 
     /**
@@ -53,7 +53,7 @@ public class Header implements Installable{
      */
     @Override
     public Measurement totalWidth() {
-        return this.width.clone();
+        return this.width;
     }
 
     /**
@@ -62,7 +62,7 @@ public class Header implements Installable{
      */
     @Override
     public Measurement totalHeight() {
-        return this.height.clone();
+        return this.height;
     }
 
     /**

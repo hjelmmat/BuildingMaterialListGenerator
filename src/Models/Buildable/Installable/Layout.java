@@ -22,7 +22,7 @@ public class Layout implements Installable {
 
         public InstallableLocationConflict(String s, Measurement conflict) {
             super(s);
-            this.conflict = conflict.clone();
+            this.conflict = conflict;
         }
     }
 
@@ -43,7 +43,7 @@ public class Layout implements Installable {
      */
     public Layout addStudAt(Measurement position, Stud stud) {
         this.detectConflicts(position, stud.totalWidth().add(position), this.studs, "Stud");
-        this.studs.put(position.clone(), stud);
+        this.studs.put(position, stud);
 
         // Keep track of the tallest studs, so we know how far to shift studs down in the graphics
         this.tallestStudHeight = this.tallestStudHeight.compareTo(stud.totalHeight()) < 0 ? stud.totalHeight() : this.tallestStudHeight;
@@ -60,7 +60,7 @@ public class Layout implements Installable {
      * be moved
      */
     public Layout addDoorAt(Door ofType, Measurement atLocation) throws InstallableLocationConflict {
-        Measurement doorEndLocation = atLocation.clone().add(ofType.totalWidth());
+        Measurement doorEndLocation = atLocation.add(ofType.totalWidth());
         if (doorEndLocation.compareTo(this.totalWidth()) > 0 ) {
             String error = String.format("Door cannot be added at %s. Layout is only %s long and door ends at %s",
                     atLocation,
@@ -76,7 +76,7 @@ public class Layout implements Installable {
             Stud currentInstall = this.studs.get(mLocation);
 
             // Cripple studs need to be shifted into a layout that is relative to the left of the door
-            ofType.addCrippleStud(currentInstall, mLocation.clone().subtract(atLocation));
+            ofType.addCrippleStud(currentInstall, mLocation.subtract(atLocation));
             this.studs.remove(location);
         }
         this.doors.put(atLocation, ofType);
@@ -108,7 +108,7 @@ public class Layout implements Installable {
             if (conflictLocation.compareTo(startLocation) < 0) {
                 Measurement updatedLocation;
                 try {
-                    updatedLocation = startLocation.clone().subtract(studNeedingMoving.totalWidth());
+                    updatedLocation = startLocation.subtract(studNeedingMoving.totalWidth());
                 }
                 catch (Measurement.InvalidMeasurementException e) {
                     throw potentialException;
@@ -171,18 +171,18 @@ public class Layout implements Installable {
     public Measurement totalWidth() {
         Map.Entry<Measurement, Stud> lastStud = this.studs.lastEntry();
         Measurement greatestStudWidth = lastStud != null
-                ? lastStud.getKey().clone().add(lastStud.getValue().totalWidth())
+                ? lastStud.getKey().add(lastStud.getValue().totalWidth())
                 : new Measurement(0);
         Map.Entry<Measurement, Door> lastDoor = this.doors.lastEntry();
         Measurement greatestDoorWidth = lastDoor != null
-                ? lastDoor.getKey().clone().add(lastDoor.getValue().totalWidth())
+                ? lastDoor.getKey().add(lastDoor.getValue().totalWidth())
                 : new Measurement(0);
-        return greatestStudWidth.greaterValue(greatestDoorWidth).clone();
+        return greatestStudWidth.greaterValue(greatestDoorWidth);
     }
 
     @Override
     public Measurement totalHeight() {
-        return this.tallestStudHeight.clone();
+        return this.tallestStudHeight;
     }
 
     /**
@@ -208,7 +208,7 @@ public class Layout implements Installable {
             Stud stud = this.studs.get(location);
             // Each stud needs to be shifted down a difference of the tallest stud and its height so the bottoms
             // are the same
-            Measurement verticalShift = new Measurement(0).add(this.tallestStudHeight.clone().subtract(stud.totalHeight()));
+            Measurement verticalShift = new Measurement(0).add(this.tallestStudHeight.subtract(stud.totalHeight()));
             result.addGraphics(stud.graphicsList().shift(location, verticalShift));
         }
         this.doors.forEach((location, door) -> result.addGraphics(door.graphicsList().shift(location, new Measurement(0))));

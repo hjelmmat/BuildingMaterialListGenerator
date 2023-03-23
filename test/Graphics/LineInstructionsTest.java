@@ -27,5 +27,6 @@ class LineInstructionsTest {
         LineInstructions test = new LineInstructions(zero, zero, zero, zero);
         assertNotEquals(result, test.drawingInstructions());
         assertEquals(result, test.shift(five, ten).drawingInstructions());
+        assertEquals(result, test.shift(five, ten).drawingInstructions());
     }
 }

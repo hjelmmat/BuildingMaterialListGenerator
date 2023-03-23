@@ -66,9 +66,9 @@ public class GraphicsList {
      * @param vertical - how far to shift vertically
      * @return this GraphicsList
      */
-    // TODO: Consider making a deep copy of the items instead to ensure originals are not affected
     public GraphicsList shift(Measurement horizontal, Measurement vertical) {
-        this.instructions.forEach(graphicsInstructions -> graphicsInstructions.shift(horizontal, vertical));
-        return this;
+        GraphicsList result = new GraphicsList();
+        this.instructions.forEach(graphicsInstructions -> result.addGraphic(graphicsInstructions.shift(horizontal, vertical)));
+        return result;
     }
 }

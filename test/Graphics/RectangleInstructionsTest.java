@@ -26,5 +26,6 @@ class RectangleInstructionsTest {
         RectangleInstructions test = new RectangleInstructions(zero, zero, one, one);
         assertNotEquals(result, test.drawingInstructions());
         assertEquals(result, test.shift(ten, ten).drawingInstructions());
+        assertEquals(result, test.shift(ten, ten).drawingInstructions());
     }
 }

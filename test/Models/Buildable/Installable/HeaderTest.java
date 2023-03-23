@@ -29,8 +29,8 @@ class HeaderTest {
         GraphicsList result = new GraphicsList()
                 .addGraphic(new RectangleInstructions(zero, zero, gap, dimension.width))
                 .addGraphic(new RectangleInstructions(zero, dimension.width, gap, Lumber.Dimension.TWO_BY_SIX.height))
-                .addGraphic(new RectangleInstructions(zero, dimension.width.clone().add(Lumber.Dimension.TWO_BY_SIX.height), gap, Lumber.Dimension.TWO_BY_SIX.height))
-                .addGraphic(new RectangleInstructions(zero, dimension.width.clone().add(Lumber.Dimension.TWO_BY_SIX.height.clone().multiply(2)), gap, dimension.width));
+                .addGraphic(new RectangleInstructions(zero, dimension.width.add(Lumber.Dimension.TWO_BY_SIX.height), gap, Lumber.Dimension.TWO_BY_SIX.height))
+                .addGraphic(new RectangleInstructions(zero, dimension.width.add(Lumber.Dimension.TWO_BY_SIX.height.multiply(2)), gap, dimension.width));
         assertEquals(result.drawingInstructions(), new Header(gap).graphicsList().drawingInstructions());
     }
 

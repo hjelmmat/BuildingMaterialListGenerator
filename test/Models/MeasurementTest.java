@@ -93,9 +93,9 @@ class MeasurementTest {
         assertEquals(fiveAndOneHalf,
                 new Measurement(13, Measurement.Fraction.FIVE_SIXTEENTH).subtract(new Measurement(7, Measurement.Fraction.THIRTEEN_SIXTEENTH)));
 
-        Measurement six = new Measurement(6);
-        Measurement.InvalidMeasurementException thrown = assertThrows(Measurement.InvalidMeasurementException.class, () -> zeroMeasure.subtract(six)); //TODO finish
-        String error = "measurement cannot be less than 0, was -6";
+        Measurement oneHalf = new Measurement(0, Measurement.Fraction.ONE_HALF);
+        Measurement.InvalidMeasurementException thrown = assertThrows(Measurement.InvalidMeasurementException.class, () -> zeroMeasure.subtract(oneHalf));
+        String error = "measurement cannot be less than 0, was -1/2\"";
         assertEquals(error, thrown.getMessage());
     }
 
@@ -129,14 +129,6 @@ class MeasurementTest {
 
         String eighteenAndThreeFourths = "18-3/4\"";
         assertEquals(eighteenAndThreeFourths, new Measurement(18, Measurement.Fraction.THREE_FOURTH).toString());
-    }
-
-    @Test
-    public void measurementShouldCopyCorrectly() {
-        Measurement one = new Measurement(1);
-        Measurement copy = one.clone();
-        assertNotSame(one, copy);
-        assertEquals(one, copy);
     }
 
     @Test

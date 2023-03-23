@@ -23,10 +23,10 @@ public class RectangleInstructions implements GraphicsInstructions {
      */
     public RectangleInstructions(Measurement topLeftX, Measurement topLeftY, Measurement width, Measurement height) {
         // Clone the Measurements to ensure any changes to outside measurements won't affect this set of Instructions
-        this.topLeftX = topLeftX.clone();
-        this.topLeftY = topLeftY.clone();
-        this.width = width.clone();
-        this.height = height.clone();
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -46,9 +46,7 @@ public class RectangleInstructions implements GraphicsInstructions {
      * @return this Rectangle
      */
     @Override
-    public GraphicsInstructions shift(Measurement horizontal, Measurement vertical) {
-        this.topLeftX.add(horizontal);
-        this.topLeftY.add(vertical);
-        return this;
+    public RectangleInstructions shift(Measurement horizontal, Measurement vertical) {
+        return new RectangleInstructions(this.topLeftX.add(horizontal), this.topLeftY.add(vertical), this.width, this.height);
     }
 }
