@@ -1,0 +1,22 @@
+package models.buildable
+
+import java.util.*
+
+/**
+ * Interface to be used by classes outside Buildable using only built-in types.
+ */
+interface Buildable {
+    /**
+     *
+     * @return A Vector such that the first element describes the elements of the other vectors. The rest of the
+     * elements are Vectors of type Material and the Quantity.
+     */
+    fun materials(): Vector<Vector<String>> // TODO: Make a hashset of strings with the categories "Titles" "Data"
+
+    /**
+     *
+     * @return A Vector of instructions such that the first element is a Vector of instructions for Graphics.drawLine
+     * and the second element is a Vector of instructions for Graphics.drawRectangle
+     */
+    fun drawingInstructions(): Vector<Vector<Vector<Int>>> // TODO: Make a hashset of strings with the drawing type
+}
