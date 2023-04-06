@@ -8,9 +8,8 @@ import models.buildable.material.Lumber
 import models.buildable.material.MaterialList
 import models.Measurement
 import models.Measurement.Fraction
-import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.math.min
+import kotlin.IllegalArgumentException
 
 /**
  * Class used to describe what it takes to build a wall
@@ -18,7 +17,7 @@ import kotlin.math.min
  * @param height - Height of wall to create
  * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
  */
-class Wall internal constructor(
+class Wall internal constructor( // TODO: Fix all constructors to have same length/height order
     private val length: Measurement,
     height: Measurement = Measurement(97, Fraction.ONE_EIGHTH)
 ) : Buildable, Installable {
@@ -28,7 +27,12 @@ class Wall internal constructor(
 
     init {
         // All walls have at least one top plate, but the nails to attach it are from the studs
-        val genericTopPlate = Plate(length, studType)
+        val genericTopPlate: Plate
+        try {
+            genericTopPlate = Plate(length, studType)
+        } catch (e: Stud.InvalidLengthException) {
+            throw IllegalArgumentException("Wall cannot be longer than ${e.maxLength}")
+        }
         platesHeightMap[Measurement(0)] = genericTopPlate
         this.plateMaterials.addMaterial(Lumber(length, studType), 1)
 
@@ -54,12 +58,16 @@ class Wall internal constructor(
         // The height of a wall includes the top and bottom plates and the studs, so we need to remove the height of the
         // plates to get the heights of the studs
         studHeight =
-            validateParameterMinimumMeasurement(height, minimumHeight, "height").subtract(minimumHeight)
-        stud = Stud(studHeight, studType)
+            validateParameterMinimumMeasurement(height, minimumHeight, "Height").subtract(minimumHeight)
+        try {
+            stud = Stud(studHeight, studType)
+        } catch (e: Stud.InvalidLengthException) {
+            throw IllegalArgumentException("Wall cannot be taller than ${e.maxLength.add(studHeightShift)}")
+        }
         layout = createLayout(
             validateParameterMinimumMeasurement(
                 length, minimumWidth,
-                "length"
+                "Length"
             )
         )
     }
@@ -109,17 +117,19 @@ class Wall internal constructor(
 
     @Throws(IllegalArgumentException::class)
     fun addADoor(ofType: StandardDoor, atLocation: Measurement): Wall {
-        val baseErrorMessage = "Door of type $ofType cannot be installed at $atLocation."
+        val baseErrorMessage = "$ofType door cannot be installed at $atLocation,"
         val attemptedDoor = Door(ofType)
+        require(atLocation.add(attemptedDoor.totalWidth()) <= this.totalWidth()) {
+            "$baseErrorMessage wall is ${this.totalWidth()} long"
+        }
         require(studHeight >= attemptedDoor.totalHeight()) {
-            "$baseErrorMessage Wall has studs $studHeight tall, door was ${attemptedDoor.totalHeight()} tall"
+            "$baseErrorMessage door is ${attemptedDoor.totalHeight()} tall, wall is $studHeight tall"
         }
         try {
             layout.addDoorAt(attemptedDoor, atLocation)
         } catch (c: InstallableLocationConflict) {
             throw IllegalArgumentException(
-                "$baseErrorMessage Wall is only $length long, door at $atLocation of width" +
-                        " ${attemptedDoor.totalWidth()} would be outside the wall"
+                "$baseErrorMessage collides with door at ${c.conflict}"
             )
         }
         return this

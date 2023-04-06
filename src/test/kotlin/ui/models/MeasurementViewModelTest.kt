@@ -9,28 +9,28 @@ class MeasurementViewModelTest {
     fun shouldValidateIntegerValue() {
         val test = MeasurementViewModel("Test")
         test.integerValue = "-1"
-        assertEquals(false, test.validValue())
+        assertEquals(false, test.isValidValue())
         test.integerValue = "0"
-        assertEquals(true, test.validValue())
+        assertEquals(true, test.isValidValue())
         test.integerValue = "1"
-        assertEquals(true, test.validValue())
+        assertEquals(true, test.isValidValue())
         test.integerValue = "a"
-        assertEquals(false, test.validValue())
+        assertEquals(false, test.isValidValue())
         test.integerValue = "1.1"
-        assertEquals(false, test.validValue())
+        assertEquals(false, test.isValidValue())
     }
 
     @Test
     fun shouldBeGreaterThanMinimumValue() {
         val test = MeasurementViewModel("Test", Measurement(5))
         assertEquals(test.errorMessage, "Test >= 5\"")
-        assertEquals(false, test.validValue())
+        assertEquals(false, test.isValidValue())
         test.integerValue = "4"
         test.fractionValue = Measurement.Fraction.FIFTEEN_SIXTEENTH
-        assertEquals(false, test.validValue())
+        assertEquals(false, test.isValidValue())
         test.integerValue = "5"
         test.fractionValue = Measurement.Fraction.ZERO
-        assertEquals(true, test.validValue())
+        assertEquals(true, test.isValidValue())
     }
 
     @Test

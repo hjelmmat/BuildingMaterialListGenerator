@@ -1,22 +1,11 @@
-package ui.models
+package ui.models.graphics
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import java.util.Vector
-
-class Graphic(val offset: Offset, val size: Size) {
-    override fun equals(other: Any?): Boolean {
-        return this === other
-                || (other is Graphic && offset == other.offset && size == other.size)
-    }
-
-    override fun hashCode(): Int {
-        return "$offset$size".hashCode()
-    }
-}
+import java.util.*
 
 
 class GraphicsViewModel {

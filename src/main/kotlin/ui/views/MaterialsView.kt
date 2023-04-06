@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import ui.models.MaterialsViewModel
+import ui.models.materials.MaterialsViewModel
 
 @Composable
 fun RowScope.TableCell(text: String) {
@@ -22,7 +22,7 @@ fun RowScope.TableCell(text: String) {
 
 @Composable
 fun materialsView(model: MaterialsViewModel) {
-    LazyColumn(Modifier.padding(16.dp).size(250.dp, 150.dp)) {
+    LazyColumn(Modifier.padding(16.dp).width(250.dp)) {
         item {
             Row(Modifier.background(Color.Gray)) {
                 TableCell(model.materialTitle)

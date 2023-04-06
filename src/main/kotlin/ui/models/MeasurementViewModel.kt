@@ -12,7 +12,7 @@ class MeasurementViewModel(val name: String, private val minimumValue: Measureme
     var integerValue: String by mutableStateOf("0")
     var fractionValue: Measurement.Fraction by mutableStateOf(Measurement.Fraction.ZERO)
 
-    fun validValue(): Boolean {
+    fun isValidValue(): Boolean {
         return try {
             Measurement(integerValue.toInt(), fractionValue) >= minimumValue
         } catch (e: NumberFormatException) {
@@ -24,7 +24,7 @@ class MeasurementViewModel(val name: String, private val minimumValue: Measureme
 
     @Throws(Measurement.InvalidMeasurementException::class)
     fun asMeasurement(): Measurement {
-        return if (validValue()) {
+        return if (isValidValue()) {
             Measurement(integerValue.toInt(), fractionValue)
         } else {
             throw (Measurement.InvalidMeasurementException("Measurement is smaller than minimum value $minimumValue"))

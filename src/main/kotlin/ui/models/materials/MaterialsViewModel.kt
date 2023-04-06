@@ -1,21 +1,10 @@
-package ui.models
+package ui.models.materials
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.util.*
 
-
-class Material(val material: String, val quantity: String) {
-    override fun equals(other: Any?): Boolean {
-        return this === other
-                || (other is Material && material == other.material && quantity == other.quantity)
-    }
-
-    override fun hashCode(): Int {
-        return "$material$quantity".hashCode()
-    }
-}
 
 class MaterialsViewModel {
     val materialTitle = "Material"

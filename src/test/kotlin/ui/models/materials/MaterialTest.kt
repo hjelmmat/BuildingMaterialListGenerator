@@ -1,7 +1,8 @@
-package ui.models
+package ui.models.materials
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import ui.models.materials.Material
 
 class MaterialTest {
     @Test

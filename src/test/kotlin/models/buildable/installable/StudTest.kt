@@ -7,8 +7,8 @@ import models.buildable.material.MaterialList
 import models.buildable.material.Nail
 import models.Measurement
 import models.Measurement.Fraction
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class StudTest {
     private var dimension = Lumber.Dimension.TWO_BY_FOUR
@@ -19,8 +19,16 @@ internal class StudTest {
             .addMaterial(Lumber(Measurement(92, Fraction.FIVE_EIGHTH), dimension), 1)
             .addMaterial(Nail.TEN_D, 6)
         val test = Stud().materialList()
-        val error = String.format("Expected %s, was %s", result.materials(), test.materials())
-        Assertions.assertEquals(result, test, error)
+        assertEquals(result, test)
+    }
+
+    @Test
+    fun whenLengthIsGreaterThanLumberMaxLengthShouldThrow() {
+        val thrown = assertFailsWith<Stud.InvalidLengthException> {
+            Stud(Measurement(240, Fraction.ONE_SIXTEENTH))
+        }
+        assertEquals("cannot be longer than ${Lumber.FactoryLength.maxLength}", thrown.message)
+        assertEquals(Lumber.FactoryLength.maxLength, thrown.maxLength)
     }
 
     @Test
@@ -28,12 +36,12 @@ internal class StudTest {
         val result = MaterialList()
             .addMaterial(Nail.TEN_D, 6)
             .addMaterial(Lumber(Measurement(92, Fraction.FIVE_EIGHTH), dimension), 1)
-        Assertions.assertEquals(result, Stud().materialList())
-        Assertions.assertEquals(result, Stud(Measurement(92), dimension).materialList())
+        assertEquals(result, Stud().materialList())
+        assertEquals(result, Stud(Measurement(92), dimension).materialList())
         val secondResult = MaterialList()
             .addMaterial(Nail.TEN_D, 6)
             .addMaterial(Lumber(Measurement(96), dimension), 1)
-        Assertions.assertEquals(
+        assertEquals(
             secondResult,
             Stud(Measurement(92, Fraction.ELEVEN_SIXTEENTH), dimension).materialList()
         )
@@ -41,18 +49,18 @@ internal class StudTest {
 
     @Test
     fun studShouldBeEqualWhenOfTheSameLength() {
-        Assertions.assertEquals(Stud(Measurement(95), dimension), Stud(Measurement(95), dimension))
+        assertEquals(Stud(Measurement(95), dimension), Stud(Measurement(95), dimension))
     }
 
     @Test
     fun studShouldCalculateHashCode() {
         val result = -1875035575
-        Assertions.assertEquals(result, Stud().hashCode())
+        assertEquals(result, Stud().hashCode())
     }
 
     @Test
     fun studShouldNotBeEqualWhenOfDifferentInstalledLength() {
-        Assertions.assertNotEquals(Stud(), Stud(Measurement(92), dimension))
+        assertNotEquals(Stud(), Stud(Measurement(92), dimension))
     }
 
     @Test
@@ -60,7 +68,7 @@ internal class StudTest {
         val zero = Measurement(0)
         val height = Measurement(10)
         val results = GraphicsList().addGraphic(RectangleInstructions(zero, zero, dimension.width, height))
-        Assertions.assertEquals(
+        assertEquals(
             results.drawingInstructions(),
             Stud(height, dimension).graphicsList().drawingInstructions()
         )
@@ -68,6 +76,6 @@ internal class StudTest {
 
     @Test
     fun shouldReturnTotalHeight() {
-        Assertions.assertEquals(Measurement(95), Stud(Measurement(95), Lumber.Dimension.TWO_BY_FOUR).totalHeight())
+        assertEquals(Measurement(95), Stud(Measurement(95), Lumber.Dimension.TWO_BY_FOUR).totalHeight())
     }
 }

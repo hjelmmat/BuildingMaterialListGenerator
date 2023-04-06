@@ -1,9 +1,11 @@
-package ui.models
+package ui.models.graphics
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import ui.models.graphics.Graphic
+import ui.models.graphics.GraphicsViewModel
 import java.util.Vector
 
 class GraphicsViewModelTest {

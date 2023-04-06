@@ -65,21 +65,11 @@ class Lumber(length: Measurement, private val dimension: Dimension) : Material {
      * that is longer than the provided length.
      */
     enum class FactoryLength(private val length: Measurement) {
-        TWO_FT(Measurement(24)), FOUR_FT(Measurement(48)), EIGHT_FT_PRECUT(
-            Measurement(
-                92,
-                Fraction.FIVE_EIGHTH
-            )
-        ),
-        EIGHT_FT(Measurement(96)), NINE_FT_PRECUT(
-            Measurement(
-                104,
-                Fraction.FIVE_EIGHTH
-            )
-        ),
-        TEN_FT(Measurement(120)), TWELVE_FT(Measurement(144)), FOURTEEN_FT(Measurement(168)), SIXTEEN_FT(Measurement(192)), TWENTY_FT(
-            Measurement(240)
-        );
+        TWO_FT(Measurement(24)), FOUR_FT(Measurement(48)),
+        EIGHT_FT_PRECUT(Measurement(92, Fraction.FIVE_EIGHTH)), EIGHT_FT(Measurement(96)),
+        NINE_FT_PRECUT(Measurement(104, Fraction.FIVE_EIGHTH)), TEN_FT(Measurement(120)),
+        TWELVE_FT(Measurement(144)), FOURTEEN_FT(Measurement(168)),
+        SIXTEEN_FT(Measurement(192)), TWENTY_FT(Measurement(240));
 
         /**
          *
@@ -90,6 +80,8 @@ class Lumber(length: Measurement, private val dimension: Dimension) : Material {
         }
 
         companion object {
+            val maxLength = TWENTY_FT.length
+
             @Throws(IllegalArgumentException::class)
             fun fromLength(length: Measurement): FactoryLength {
                 for (factoryLength in values()) {
@@ -98,7 +90,7 @@ class Lumber(length: Measurement, private val dimension: Dimension) : Material {
                     }
                 }
                 // If this part of the code is reached, then no valid length was found.
-                throw IllegalArgumentException("A length cannot be greater than ${TWENTY_FT.length}, was $length")
+                throw IllegalArgumentException("A length cannot be greater than ${maxLength}, was $length")
             }
         }
     }

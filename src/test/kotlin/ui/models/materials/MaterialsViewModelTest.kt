@@ -1,7 +1,9 @@
-package ui.models
+package ui.models.materials
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import ui.models.materials.Material
+import ui.models.materials.MaterialsViewModel
 import java.util.Vector
 
 class MaterialsViewModelTest {

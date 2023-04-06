@@ -2,19 +2,15 @@ package models.buildable
 
 import graphics.GraphicsList
 import graphics.RectangleInstructions
-import models.buildable.installable.Door
-import models.buildable.installable.DoubleStud
-import models.buildable.installable.Layout
-import models.buildable.installable.Stud
-import models.buildable.material.Lumber
-import models.buildable.material.MaterialList
-import models.buildable.material.Nail
+import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
-import org.junit.jupiter.api.Assertions
+import models.buildable.installable.*
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.collections.listOf
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 internal class WallTest {
     private var validMeasurement = Measurement(100)
@@ -23,64 +19,72 @@ internal class WallTest {
     private var fourStudWall = Wall(Measurement(40))
 
     @Test
-    fun wallShouldThrowWhenLengthIsInvalid() {
+    fun whenLengthIsTooShortWallShouldThrow() {
         val minimumLengthEdgeCase = Measurement(2, Fraction.FIFTEEN_SIXTEENTH)
-        val thrown = Assertions.assertThrows(
-            IllegalArgumentException::class.java,
-        ) { Wall(minimumLengthEdgeCase) }
-        val exceptionMessage = "length cannot be less than 3\", was 2-15/16\""
-        Assertions.assertEquals(exceptionMessage, thrown.message)
-        Assertions.assertDoesNotThrow<Wall> { Wall(Measurement(3)) }
+        val thrown = assertFailsWith<IllegalArgumentException> { Wall(minimumLengthEdgeCase) }
+        val exceptionMessage = "Length cannot be less than 3\", was 2-15/16\""
+        assertEquals(exceptionMessage, thrown.message)
     }
 
     @Test
-    fun wallShouldThrowWhenHeightIsInvalid() {
+    fun whenLengthIsTooLongWallShouldThrow() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Wall(Measurement(240, Fraction.ONE_SIXTEENTH))
+        }
+        assertEquals("Wall cannot be longer than 240\"", thrown.message)
+    }
+
+    @Test
+    fun whenHeightIsTooShortWallShouldThrow() {
         val minimumHeightEdgeCase = Measurement(2, Fraction.FIFTEEN_SIXTEENTH)
-        val thrown = Assertions.assertThrows(
-            IllegalArgumentException::class.java
-        ) { Wall(validMeasurement, minimumHeightEdgeCase) }
-        val exceptionMessage = "height cannot be less than 4-1/2\", was 2-15/16\""
-        Assertions.assertEquals(exceptionMessage, thrown.message)
-        val minimumHeight = Measurement(5)
-        Assertions.assertDoesNotThrow<Wall> { Wall(validMeasurement, minimumHeight) }
+        val thrown = assertFailsWith<IllegalArgumentException> { Wall(validMeasurement, minimumHeightEdgeCase) }
+        assertEquals("Height cannot be less than 4-1/2\", was 2-15/16\"", thrown.message)
     }
 
     @Test
-    fun wallShouldCreateWallWithDefaultHeight() {
+    fun whenHeightIsTooLongWallShouldThrow() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Wall(validMeasurement, Measurement(244, Fraction.NINE_SIXTEENTH))
+        }
+        assertEquals("Wall cannot be taller than 243\"", thrown.message)
+    }
+
+
+    @Test
+    fun whenHeightIsDefaultShouldCreateWall() {
         val results = Vector<Vector<String>>()
         results.add(Vector(listOf("24\" 2x4", "3")))
         results.add(Vector(listOf("92-5/8\" 2x4", "3")))
         results.add(Vector(listOf("10d nails", "30")))
-        Assertions.assertEquals(results, Wall(Measurement(24)).materials())
+        assertEquals(results, Wall(Measurement(24)).materials())
     }
 
     @Test
-    @Throws(IllegalArgumentException::class)
     fun wallShouldCalculateCorrectStuds() {
         val standardStud = Stud()
         val minimumLayout = Layout().addStudAt(Measurement(0), standardStud)
             .addStudAt(Measurement(1, Fraction.ONE_HALF), standardStud)
-        Assertions.assertEquals(minimumLayout, Wall(Measurement(3)).layout())
+        assertEquals(minimumLayout, Wall(Measurement(3)).layout())
         val firstStud = Measurement(0)
         val secondStud = Measurement(16)
         val twoStudLayout = Layout().addStudAt(firstStud, standardStud).addStudAt(secondStud, standardStud)
-        Assertions.assertEquals(twoStudLayout, maxTwoStudWall.layout())
+        assertEquals(twoStudLayout, maxTwoStudWall.layout())
         val doubleStud = DoubleStud(standardStud)
         val minThreeStudLayout = Layout()
             .addStudAt(firstStud, standardStud)
             .addStudAt(Measurement(14, Fraction.NINE_SIXTEENTH), doubleStud)
         val minThreeStudWall = Wall(Measurement(17, Fraction.NINE_SIXTEENTH))
-        Assertions.assertEquals(minThreeStudLayout, minThreeStudWall.layout())
+        assertEquals(minThreeStudLayout, minThreeStudWall.layout())
         val threeStudLayout = Layout().addStudAt(firstStud, standardStud)
             .addStudAt(secondStud, standardStud)
             .addStudAt(Measurement(23, Fraction.ONE_HALF), standardStud)
-        Assertions.assertEquals(threeStudLayout, threeStudWall.layout())
+        assertEquals(threeStudLayout, threeStudWall.layout())
         val fourStudLayout = Layout()
             .addStudAt(firstStud, standardStud)
             .addStudAt(secondStud, standardStud)
             .addStudAt(Measurement(32), standardStud)
             .addStudAt(Measurement(38, Fraction.ONE_HALF), standardStud)
-        Assertions.assertEquals(fourStudLayout, fourStudWall.layout())
+        assertEquals(fourStudLayout, fourStudWall.layout())
     }
 
     @Test
@@ -88,7 +92,7 @@ internal class WallTest {
         val shortStud = Stud(Measurement(5), Lumber.Dimension.TWO_BY_FOUR)
         val shortLayout = Layout().addStudAt(Measurement(0), shortStud)
             .addStudAt(Measurement(1, Fraction.ONE_HALF), shortStud)
-        Assertions.assertEquals(shortLayout, Wall(Measurement(3), Measurement(9, Fraction.ONE_HALF)).layout())
+        assertEquals(shortLayout, Wall(Measurement(3), Measurement(9, Fraction.ONE_HALF)).layout())
     }
 
     @Test
@@ -101,35 +105,15 @@ internal class WallTest {
         val rectangles = Vector<Vector<Int>>()
         // Add the plates
         rectangles.add(
-            Vector(
-                listOf(
-                    zero.numberOfPixels,
-                    zero.numberOfPixels,
-                    ten.numberOfPixels,
-                    width.numberOfPixels
-                )
-            )
+            Vector(listOf(zero.numberOfPixels, zero.numberOfPixels, ten.numberOfPixels, width.numberOfPixels))
         )
         rectangles.add(
-            Vector(
-                listOf(
-                    zero.numberOfPixels,
-                    width.numberOfPixels,
-                    ten.numberOfPixels,
-                    width.numberOfPixels
-                )
-            )
+            Vector(listOf(zero.numberOfPixels, width.numberOfPixels, ten.numberOfPixels, width.numberOfPixels))
         )
         val heightMinusWidth = ten.subtract(width)
         rectangles.add(
             Vector(
-                listOf(
-                    zero.numberOfPixels,
-                    heightMinusWidth.numberOfPixels,
-                    ten.numberOfPixels,
-                    width.numberOfPixels
-                )
-            )
+                listOf(zero.numberOfPixels, heightMinusWidth.numberOfPixels, ten.numberOfPixels, width.numberOfPixels))
         )
 
         // Add the studs
@@ -137,13 +121,7 @@ internal class WallTest {
         val doubleWidth = width.multiply(2)
         rectangles.add(
             Vector(
-                listOf(
-                    zero.numberOfPixels,
-                    doubleWidth.numberOfPixels,
-                    width.numberOfPixels,
-                    studHeight.numberOfPixels
-                )
-            )
+                listOf(zero.numberOfPixels, doubleWidth.numberOfPixels, width.numberOfPixels, studHeight.numberOfPixels))
         )
         rectangles.add(
             Vector(
@@ -156,28 +134,37 @@ internal class WallTest {
             )
         )
         result.add(rectangles)
-        Assertions.assertEquals(result, Wall(ten, ten).drawingInstructions())
+        assertEquals(result, Wall(ten, ten).drawingInstructions())
     }
 
     @Test
-    fun shouldThrowExceptionWhenDoorDoesNotFitInWallLength() {
-        val thrown = Assertions.assertThrows(
-            IllegalArgumentException::class.java
-        ) { maxTwoStudWall.addADoor(Door.StandardDoor.Bedroom, Measurement(100)) }
-        val exceptionMessage =
-            "Door of type Bedroom cannot be installed at 100\". Wall is only 17-1/2\" long, door at 100\" of width 44\" would be outside the wall"
-        Assertions.assertEquals(exceptionMessage, thrown.message)
+    fun whenDoorDoesNotFitInWallLengthShouldThrowException() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            maxTwoStudWall.addADoor(Door.StandardDoor.Bedroom, Measurement(100))
+        }
+        assertEquals("Bedroom door cannot be installed at 100\", wall is 17-1/2\" long", thrown.message)
     }
 
     @Test
-    fun shouldThrowExceptionWhenDoorIsTooTallForWall() {
-        val thrown = Assertions.assertThrows(
-            IllegalArgumentException::class.java
-        ) { Wall(Measurement(100), Measurement(10)).addADoor(Door.StandardDoor.Bedroom, Measurement(0)) }
-        Assertions.assertEquals(
-            "Door of type Bedroom cannot be installed at 0\". Wall has studs 5-1/2\" tall, door was 89-1/2\" tall",
-            thrown.message,
+    fun whenDoorIsTooTallForWallShouldThrowException() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Wall(Measurement(100), Measurement(10))
+                .addADoor(Door.StandardDoor.Bedroom, Measurement(0))
+        }
+        assertEquals(
+            "Bedroom door cannot be installed at 0\", door is 89-1/2\" tall, wall is 5-1/2\" tall",
+            thrown.message
         )
+    }
+
+    @Test
+    fun whenNewDoorCollidesWithExistingDoorWallShouldThrow() {
+        val test = Wall(Measurement(100), Measurement(95))
+        test.addADoor(Door.StandardDoor.Bedroom, Measurement(48))
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            test.addADoor(Door.StandardDoor.Bedroom, Measurement(50))
+        }
+        assertEquals("Bedroom door cannot be installed at 50\", collides with door at 48\"", thrown.message)
     }
 
     @Test
@@ -195,8 +182,9 @@ internal class WallTest {
 
         /*
         Checking twice to ensure that the materials are not added multiple times over successive calls`
-         */Assertions.assertEquals(materialResult, test.materialList())
-        Assertions.assertEquals(materialResult, test.materialList())
+         */
+        assertEquals(materialResult, test.materialList())
+        assertEquals(materialResult, test.materialList())
         val zero = Measurement(0)
         val studWidth = Stud().totalWidth()
         val downShiftBecauseOfPlates = studWidth.multiply(2)
@@ -206,12 +194,7 @@ internal class WallTest {
             .addGraphic(RectangleInstructions(zero, downShiftBecauseOfPlates.add(defaultHeight), wallLength, studWidth))
             .addGraphic(RectangleInstructions(zero, downShiftBecauseOfPlates, studWidth, defaultHeight))
             .addGraphic(
-                RectangleInstructions(
-                    wallLength.subtract(studWidth),
-                    downShiftBecauseOfPlates,
-                    studWidth,
-                    defaultHeight
-                )
+                RectangleInstructions(wallLength.subtract(studWidth), downShiftBecauseOfPlates, studWidth, defaultHeight)
             )
             .addGraphics(
                 Door()
@@ -219,6 +202,6 @@ internal class WallTest {
                     .addCrippleStud(Stud(), Measurement(30))
                     .graphicsList().shift(Measurement(2), downShiftBecauseOfPlates),
             )
-        Assertions.assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
+        assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
     }
 }

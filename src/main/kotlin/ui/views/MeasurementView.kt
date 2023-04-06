@@ -20,10 +20,10 @@ fun measurementView(measurementModel: MeasurementViewModel) {
                 label = { Text(measurementModel.name) },
                 onValueChange = { measurementModel.integerValue = it },
                 singleLine = true,
-                isError = !measurementModel.validValue(),
+                isError = !measurementModel.isValidValue(),
                 modifier = Modifier.width(100.dp)
             )
-            if (!measurementModel.validValue()) {
+            if (!measurementModel.isValidValue()) {
                 Text(
                     text = measurementModel.errorMessage,
                     modifier = Modifier.width(95.dp).padding(5.dp),

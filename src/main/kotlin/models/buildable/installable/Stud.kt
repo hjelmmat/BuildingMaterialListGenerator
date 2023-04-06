@@ -16,6 +16,13 @@ open class Stud(
     private val installedHeight: Measurement = Measurement(92, Measurement.Fraction.FIVE_EIGHTH),
     internal val dimension: Lumber.Dimension = Lumber.Dimension.TWO_BY_FOUR
 ) : Installable {
+    init {
+        val maxLength = Lumber.FactoryLength.maxLength
+        if (installedHeight > maxLength) {
+            throw InvalidLengthException("cannot be longer than ${Lumber.FactoryLength.maxLength}", maxLength)
+        }
+    }
+
     protected val material: MaterialList = MaterialList().addMaterial(Lumber(installedHeight, dimension), 1)
         .addMaterial(nailType, this.numberOfNails())
 
@@ -71,6 +78,8 @@ open class Stud(
         val zero = Measurement(0)
         return GraphicsList().addGraphic(RectangleInstructions(zero, zero, dimension.width, installedHeight))
     }
+
+    class InvalidLengthException(s: String, val maxLength: Measurement) : IllegalArgumentException(s)
 
     companion object {
         val nailType = Nail.TEN_D
