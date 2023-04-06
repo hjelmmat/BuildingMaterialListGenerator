@@ -20,7 +20,7 @@ import kotlin.IllegalArgumentException
 class Wall internal constructor( // TODO: Fix all constructors to have same length/height order
     private val length: Measurement,
     height: Measurement = Measurement(97, Fraction.ONE_EIGHTH)
-) : Buildable, Installable {
+) : Installable {
     private val platesHeightMap: TreeMap<Measurement, Plate> = TreeMap()
     private val plateMaterials = MaterialList()
     private val studHeightShift: Measurement
@@ -133,14 +133,6 @@ class Wall internal constructor( // TODO: Fix all constructors to have same leng
             )
         }
         return this
-    }
-
-    /**
-     *
-     * @return The material required to build this wall
-     */
-    override fun materials(): Vector<Vector<String>> {
-        return materialList().materials()
     }
 
     /**

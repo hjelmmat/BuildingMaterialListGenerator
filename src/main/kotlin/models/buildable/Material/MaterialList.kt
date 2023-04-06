@@ -5,7 +5,6 @@ import kotlin.collections.HashMap
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.forEach
-import kotlin.collections.listOf
 
 /**
  * A container for the Material needed to build something
@@ -57,8 +56,8 @@ class MaterialList {
      * ["Material", "Quantity"]
      * and the rest of the elements are the [Material, Quantity] of the list represented as Strings
      */
-    fun materials(): Vector<Vector<String>> {
-        val result = Vector<Vector<String>>()
+    fun materials(): HashMap<String, Vector<Vector<String>>> {
+        val result = HashMap<String, Vector<Vector<String>>>()
         val nails = Vector<Vector<String>>()
         val lumber = Vector<Vector<String>>()
         map.forEach { (material: Material, quantity: Int) ->
@@ -69,8 +68,12 @@ class MaterialList {
         }
         nails.sortBy { it[0] }
         lumber.sortBy { it[0] }
-        result.addAll(lumber)
-        result.addAll(nails)
+        if (!lumber.isEmpty()) {
+            result["lumber"] = lumber
+        }
+        if (!nails.isEmpty()) {
+            result["nails"] = nails
+        }
         return result
     }
 }

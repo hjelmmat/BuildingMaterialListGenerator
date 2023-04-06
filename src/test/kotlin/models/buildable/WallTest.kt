@@ -50,14 +50,13 @@ internal class WallTest {
         assertEquals("Wall cannot be taller than 243\"", thrown.message)
     }
 
-
     @Test
     fun whenHeightIsDefaultShouldCreateWall() {
-        val results = Vector<Vector<String>>()
-        results.add(Vector(listOf("24\" 2x4", "3")))
-        results.add(Vector(listOf("92-5/8\" 2x4", "3")))
-        results.add(Vector(listOf("10d nails", "30")))
-        assertEquals(results, Wall(Measurement(24)).materials())
+        val results = MaterialList()
+            .addMaterial(Lumber(Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 3)
+            .addMaterial(Lumber(Measurement(91), Lumber.Dimension.TWO_BY_FOUR), 3)
+            .addMaterial(Nail.TEN_D, 30)
+        assertEquals(results.materials(), Wall(Measurement(24)).materialList().materials())
     }
 
     @Test

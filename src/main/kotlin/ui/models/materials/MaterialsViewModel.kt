@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class MaterialsViewModel {
@@ -12,11 +13,12 @@ class MaterialsViewModel {
     var data by mutableStateOf<List<Material>>(emptyList())
         private set
 
-    fun updateData(newData: Vector<Vector<String>>): MaterialsViewModel {
-        data = List(newData.size) {
-            val value = newData[it]
-            Material(value[0], value[1])
+    fun updateData(newData: HashMap<String, Vector<Vector<String>>>): MaterialsViewModel {
+        val temp = Vector<Material>()
+        newData.forEach() {
+            it.value.forEach() { material -> temp.add(Material(material[0], material[1])) }
         }
+        data = temp.toList()
         return this
     }
 }

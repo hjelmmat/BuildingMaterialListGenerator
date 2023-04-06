@@ -13,8 +13,8 @@ class CreateWallContentsViewModelTest {
     fun shouldCalculateMaterials() {
         val test = WallContentsViewModel()
         val wall = Wall(Measurement(15), Measurement(10))
-        test.update(wall.materials(), wall.graphicsList().drawingInstructions())
-        assertEquals(MaterialsViewModel().updateData(wall.materials()).data, test.materials.data)
+        test.update(wall.materialList().materials(), wall.graphicsList().drawingInstructions())
+        assertEquals(MaterialsViewModel().updateData(wall.materialList().materials()).data, test.materials.data)
         assertEquals(GraphicsViewModel().updateData(wall.graphicsList().drawingInstructions()).data, test.graphics.data)
     }
 }
