@@ -18,8 +18,4 @@ class House : Buildable {
     override fun materials(): Vector<Vector<String>> {
         return wall?.materials() ?: MaterialList().materials()
     }
-
-    override fun drawingInstructions(): Vector<Vector<Vector<Int>>> {
-        return wall?.drawingInstructions() ?: GraphicsList().drawingInstructions()
-    }
 }

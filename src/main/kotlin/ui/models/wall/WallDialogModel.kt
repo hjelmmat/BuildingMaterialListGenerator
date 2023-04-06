@@ -21,6 +21,6 @@ class WallDialogModel {
     }
 
     private fun updateContents() {
-        wallContentsModel.update(wall.materials(), wall.drawingInstructions())
+        wallContentsModel.update(wall.materials(), wall.graphicsList().drawingInstructions())
     }
 }

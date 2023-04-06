@@ -145,15 +145,6 @@ class Wall internal constructor( // TODO: Fix all constructors to have same leng
 
     /**
      *
-     * @return The instructions to draw this wall as described in [Buildable]
-     * @see Buildable
-     */
-    override fun drawingInstructions(): Vector<Vector<Vector<Int>>> {
-        return graphicsList().drawingInstructions()
-    }
-
-    /**
-     *
      * @return - A copy of the [Measurement] of the width of this Wall
      */
     override fun totalWidth(): Measurement {

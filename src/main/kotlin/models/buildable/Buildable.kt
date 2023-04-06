@@ -12,11 +12,4 @@ interface Buildable {
      * elements are Vectors of type Material and the Quantity.
      */
     fun materials(): Vector<Vector<String>> // TODO: Make a hashset of strings with the categories "Titles" "Data"
-
-    /**
-     *
-     * @return A Vector of instructions such that the first element is a Vector of instructions for Graphics.drawLine
-     * and the second element is a Vector of instructions for Graphics.drawRectangle
-     */
-    fun drawingInstructions(): Vector<Vector<Vector<Int>>> // TODO: Make a hashset of strings with the drawing type
 }

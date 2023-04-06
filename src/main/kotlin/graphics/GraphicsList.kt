@@ -2,20 +2,20 @@ package graphics
 
 import models.Measurement
 import java.util.*
-import java.util.function.Consumer
+import kotlin.collections.HashMap
 
 /**
  * Stores lists of drawing instructions for lines and rectangles.
  */
 class GraphicsList {
-    private val instructions: Vector<GraphicsInstructions> = Vector() // TODO: Separate into line and rectangles
+    private val instructions: Vector<GraphicsInstructions> = Vector()
 
     /**
      *
      * @return A Vector of Vectors of Instructions. The first element is for lines. The second element is for rectangles
      */
-    fun drawingInstructions(): Vector<Vector<Vector<Int>>> {
-        val result = Vector<Vector<Vector<Int>>>()
+    fun drawingInstructions(): HashMap<String, Vector<Vector<Int>>> {
+        val result = HashMap<String, Vector<Vector<Int>>>()
         val lines = Vector<Vector<Int>>()
         val rectangles = Vector<Vector<Int>>()
         for (graphic in this.instructions) {
@@ -26,8 +26,12 @@ class GraphicsList {
                 rectangles.add(instructions)
             }
         }
-        result.add(lines)
-        result.add(rectangles)
+        if (!lines.isEmpty()) {
+            result["lines"] = lines
+        }
+        if (!rectangles.isEmpty()) {
+            result["rectangles"] = rectangles
+        }
         return result
     }
 
@@ -59,7 +63,7 @@ class GraphicsList {
      */
     fun shift(horizontal: Measurement, vertical: Measurement): GraphicsList {
         val result = GraphicsList()
-        instructions.forEach(Consumer { result.addGraphic(it.shift(horizontal, vertical)) })
+        instructions.forEach() { result.addGraphic(it.shift(horizontal, vertical)) }
         return result
     }
 }

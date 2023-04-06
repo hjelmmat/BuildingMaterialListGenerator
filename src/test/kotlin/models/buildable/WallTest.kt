@@ -8,6 +8,7 @@ import models.Measurement.Fraction
 import models.buildable.installable.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.collections.listOf
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -100,8 +101,7 @@ internal class WallTest {
         val zero = Measurement(0)
         val width = Lumber.Dimension.TWO_BY_FOUR.width
         val ten = Measurement(10)
-        val result = Vector<Vector<Vector<Int>>>()
-        result.add(Vector())
+        val result = HashMap<String, Vector<Vector<Int>>>()
         val rectangles = Vector<Vector<Int>>()
         // Add the plates
         rectangles.add(
@@ -133,8 +133,8 @@ internal class WallTest {
                 )
             )
         )
-        result.add(rectangles)
-        assertEquals(result, Wall(ten, ten).drawingInstructions())
+        result["rectangles"] = rectangles
+        assertEquals(result, Wall(ten, ten).graphicsList().drawingInstructions())
     }
 
     @Test
