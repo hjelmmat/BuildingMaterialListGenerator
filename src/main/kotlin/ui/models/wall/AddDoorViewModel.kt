@@ -13,7 +13,7 @@ class AddDoorViewModel(private val addDoorMethod: (Measurement) -> Unit) {
     val addDoorButton = ButtonWithErrorViewModel(
         buttonOnClick = ::addDoor,
         buttonEnabled = location::isValidValue,
-        buttonText = "Add Door",
+        buttonText = "Add",
         shouldDisplayError = { addDoorError != "" },
         errorMessage = { addDoorError }
     )

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.*
 import ui.models.MeasurementViewModel
 
@@ -36,18 +37,18 @@ fun measurementView(measurementModel: MeasurementViewModel) {
         Box() {
             TextField(
                 value = measurementModel.fractionValue.toString(),
-                label = { Text("Fraction") },
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = {
                     IconButton(onClick = { expanded = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Open Options"
+                            contentDescription = "Open Options",
+                            modifier = Modifier.scale(.75F)
                         )
                     }
                 },
-                modifier = Modifier.width(125.dp)
+                modifier = Modifier.width(115.dp)
             )
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 measurementModel.fractionOptions.forEachIndexed { _, itemValue ->

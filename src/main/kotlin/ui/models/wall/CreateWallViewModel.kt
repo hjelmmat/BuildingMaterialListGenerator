@@ -17,7 +17,7 @@ class CreateWallViewModel(private val addWallMethod: (Measurement, Measurement) 
     val buttonWithError = ButtonWithErrorViewModel(
         buttonOnClick = ::addWall,
         buttonEnabled = ::isValidMeasurements,
-        buttonText = "Add Wall",
+        buttonText = "Create",
         shouldDisplayError = { addWallError != "" },
         errorMessage = { addWallError }
     )

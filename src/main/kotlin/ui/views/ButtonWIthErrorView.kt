@@ -1,8 +1,6 @@
 package ui.views
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -14,7 +12,7 @@ import ui.models.ButtonWithErrorViewModel
 
 @Composable
 fun buttonWithErrorView(model: ButtonWithErrorViewModel) {
-    Column {
+    Row {
         Button(
             onClick = model.buttonOnClick,
             enabled = model.buttonEnabled(),
@@ -23,7 +21,7 @@ fun buttonWithErrorView(model: ButtonWithErrorViewModel) {
         if (model.shouldDisplayError()) {
             Text(
                 text = model.errorMessage(),
-                modifier = Modifier.width(150.dp).padding(5.dp),
+                modifier = Modifier.width(100.dp).padding(5.dp),
                 color = MaterialTheme.colors.error,
                 fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,
