@@ -1,8 +1,7 @@
 package graphics
 
 import models.Measurement
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 import java.util.*
 
 internal class RectangleInstructionsTest {
@@ -15,15 +14,15 @@ internal class RectangleInstructionsTest {
         val one = Measurement(1).numberOfPixels
         val result = Vector(Vector(listOf(one, one, one, one)))
         val oneM = Measurement(1)
-        Assertions.assertEquals(result, RectangleInstructions(oneM, oneM, oneM, oneM).drawingInstructions())
+        assertEquals(result, RectangleInstructions(oneM, oneM, oneM, oneM).drawingInstructions())
     }
 
     @Test
     fun shouldShift() {
         val result = Vector(listOf(ten.numberOfPixels, ten.numberOfPixels, one.numberOfPixels, one.numberOfPixels))
         val test = RectangleInstructions(zero, zero, one, one)
-        Assertions.assertNotEquals(result, test.drawingInstructions())
-        Assertions.assertEquals(result, test.shift(ten, ten).drawingInstructions())
-        Assertions.assertEquals(result, test.shift(ten, ten).drawingInstructions())
+        assertNotEquals(result, test.drawingInstructions())
+        assertEquals(result, test.shift(ten, ten).drawingInstructions())
+        assertEquals(result, test.shift(ten, ten).drawingInstructions())
     }
 }

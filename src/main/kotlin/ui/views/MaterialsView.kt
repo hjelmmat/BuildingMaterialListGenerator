@@ -22,7 +22,7 @@ fun RowScope.TableCell(text: String) {
 
 @Composable
 fun materialsView(model: MaterialsViewModel) {
-    LazyColumn(Modifier.padding(16.dp).width(250.dp)) {
+    LazyColumn(Modifier.width(250.dp)) {
         item {
             Row(Modifier.background(Color.Gray)) {
                 TableCell(model.materialTitle)

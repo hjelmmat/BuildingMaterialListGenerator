@@ -1,9 +1,8 @@
 package graphics
 
 import models.Measurement
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import java.util.*
+import kotlin.test.*
 
 internal class LineInstructionsTest {
     @Test
@@ -17,7 +16,7 @@ internal class LineInstructionsTest {
                 ),
             ),
         )
-        Assertions.assertEquals(
+        assertEquals(
             result,
             LineInstructions(Measurement(1), Measurement(2), Measurement(3), Measurement(4)).drawingInstructions()
         )
@@ -30,8 +29,8 @@ internal class LineInstructionsTest {
         val ten = Measurement(10)
         val result = Vector(listOf(five.numberOfPixels, ten.numberOfPixels, five.numberOfPixels, ten.numberOfPixels))
         val test = LineInstructions(zero, zero, zero, zero)
-        Assertions.assertNotEquals(result, test.drawingInstructions())
-        Assertions.assertEquals(result, test.shift(five, ten).drawingInstructions())
-        Assertions.assertEquals(result, test.shift(five, ten).drawingInstructions())
+        assertNotEquals(result, test.drawingInstructions())
+        assertEquals(result, test.shift(five, ten).drawingInstructions())
+        assertEquals(result, test.shift(five, ten).drawingInstructions())
     }
 }

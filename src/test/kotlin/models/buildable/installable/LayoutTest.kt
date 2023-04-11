@@ -3,24 +3,22 @@ package models.buildable.installable
 import graphics.GraphicsList
 import graphics.RectangleInstructions
 import models.buildable.installable.Layout.InstallableLocationConflict
-import models.buildable.material.Lumber
-import models.buildable.material.MaterialList
-import models.buildable.material.Nail
+import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class LayoutTest {
-    private var defaultStud = Stud()
+    private val defaultStud = Stud()
     private var firstPosition = Measurement(0)
     private var secondPosition = Measurement(1, Fraction.ONE_HALF)
     private var basicLayout = Layout().addStudAt(firstPosition, defaultStud).addStudAt(secondPosition, defaultStud)
+    private val door = StandardDoor.Bedroom
 
     @Test
     fun layoutShouldAddStudWithPositionCopy() {
         val position = Measurement(0)
-        Assertions.assertEquals(
+        assertEquals(
             basicLayout,
             Layout().addStudAt(position, defaultStud).addStudAt(position.add(secondPosition), defaultStud)
         )
@@ -28,30 +26,24 @@ internal class LayoutTest {
 
     @Test
     fun layoutShouldThrowWhenConflictingStudIsAdded() {
-        val error = "Stud cannot be added at 2\". Stud already is located at 1\""
-        val thrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+        val error = "Cannot be added at 2\", collides with Stud at 1\""
+        val thrown = assertFailsWith<InstallableLocationConflict> {
             Layout().addStudAt(Measurement(1), defaultStud).addStudAt(Measurement(2), defaultStud)
         }
-        Assertions.assertEquals(error, thrown.message)
-        Assertions.assertEquals(Measurement(1), thrown.conflict)
-        val secondError = "Stud cannot be added at 2\". Stud already is located at 2\""
-        val secondThrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+        assertEquals(error, thrown.message)
+        assertEquals(Measurement(1), thrown.conflict)
+        val secondError = "Cannot be added at 2\", collides with Stud at 2\""
+        val secondThrown = assertFailsWith<InstallableLocationConflict> {
             Layout().addStudAt(Measurement(2), defaultStud).addStudAt(Measurement(2), defaultStud)
         }
-        Assertions.assertEquals(secondError, secondThrown.message)
-        Assertions.assertEquals(Measurement(2), secondThrown.conflict)
-        val thirdError = "Stud cannot be added at 4-1/2\". Stud already is located at 5\""
-        val thirdThrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+        assertEquals(secondError, secondThrown.message)
+        assertEquals(Measurement(2), secondThrown.conflict)
+        val thirdError = "Cannot be added at 4-1/2\", collides with Stud at 5\""
+        val thirdThrown = assertFailsWith<InstallableLocationConflict> {
             Layout().addStudAt(Measurement(5), defaultStud).addStudAt(Measurement(4, Fraction.ONE_HALF), defaultStud)
         }
-        Assertions.assertEquals(thirdError, thirdThrown.message)
-        Assertions.assertEquals(Measurement(5), thirdThrown.conflict)
+        assertEquals(thirdError, thirdThrown.message)
+        assertEquals(Measurement(5), thirdThrown.conflict)
     }
 
     @Test
@@ -59,7 +51,7 @@ internal class LayoutTest {
         val result = MaterialList()
             .addMaterial(Nail.TEN_D, 12)
             .addMaterial(Lumber(Measurement(92), Lumber.Dimension.TWO_BY_FOUR), 2)
-        Assertions.assertEquals(result, basicLayout.materialList())
+        assertEquals(result, basicLayout.materialList())
     }
 
     @Test
@@ -68,13 +60,13 @@ internal class LayoutTest {
             .addStudAt(firstPosition, defaultStud)
             .addStudAt(secondPosition, defaultStud)
             .addStudAt(Measurement(100), defaultStud)
-            .addDoorAt(Door(), Measurement(10))
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(10))
         val testingLayout = Layout()
             .addStudAt(firstPosition, defaultStud)
             .addStudAt(secondPosition, defaultStud)
             .addStudAt(Measurement(100), defaultStud)
-            .addDoorAt(Door(), Measurement(10))
-        Assertions.assertEquals(resultLayout, testingLayout)
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(10))
+        assertEquals(resultLayout, testingLayout)
     }
 
     @Test
@@ -86,7 +78,7 @@ internal class LayoutTest {
             .addGraphic(RectangleInstructions(zero, zero, width, distance))
             .addGraphic(RectangleInstructions(distance, zero, width, distance))
         val stud = Stud(distance, Lumber.Dimension.TWO_BY_FOUR)
-        Assertions.assertEquals(
+        assertEquals(
             result.drawingInstructions(),
             Layout()
                 .addStudAt(Measurement(0), stud)
@@ -97,43 +89,48 @@ internal class LayoutTest {
     }
 
     @Test
-    fun whenADoorIsAddedLayoutShouldReplaceStudsInRangeWithDoor() {
+    fun whenAOpeningIsAddedLayoutShouldReplaceStudsInRangeWithOpening() {
         val zero = Measurement(0)
-        val resultDoor = Door().addCrippleStud(defaultStud, zero)
-        val result = Layout().addStudAt(Measurement(100), defaultStud).addDoorAt(resultDoor, zero)
-        Assertions.assertEquals(
+        val resultDoor = Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()).addCrippleStud(zero)
+        val result = Layout().addStudAt(Measurement(100), defaultStud).addOpeningAt(resultDoor, zero)
+        assertEquals(
             result,
             Layout()
                 .addStudAt(Measurement(100), defaultStud)
                 .addStudAt(zero, defaultStud)
-                .addDoorAt(Door(), zero),
+                .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), zero),
         )
     }
 
     @Test
-    fun whenADoorIsAddedThatOverlapsAnotherDoorAddDoorAtShouldThrow() {
-        val error = "Door cannot be added at 44\". Door already is located at 1\""
-        val thrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+    fun whenAOpeningIsAddedThatOverlapsAnotherOpeningAddOpeningAtShouldThrow() {
+        val error = "Cannot be added at 40\", collides with Opening at 1\""
+        val thrown = assertFailsWith<InstallableLocationConflict> {
             Layout()
                 .addStudAt(Measurement(100), defaultStud)
-                .addDoorAt(Door(), Measurement(1))
-                .addDoorAt(Door(), Measurement(44))
+                .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(1))
+                .addOpeningAt(
+                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
+                    Measurement(40)
+                )
         }
-        Assertions.assertEquals(error, thrown.message)
-        Assertions.assertEquals(Measurement(1), thrown.conflict)
-        val secondError = "Door cannot be added at 44\". Door already is located at 45\""
-        val secondThrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+        assertEquals(error, thrown.message)
+        assertEquals(Measurement(1), thrown.conflict)
+        val secondError = "Cannot be added at 44\", collides with Opening at 45\""
+        val secondThrown = assertFailsWith<InstallableLocationConflict> {
             Layout()
                 .addStudAt(Measurement(100), defaultStud)
-                .addDoorAt(Door(), Measurement(45))
-                .addDoorAt(Door(), Measurement(44))
+                .addOpeningAt(
+                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
+                    Measurement(45)
+                )
+                .addOpeningAt(
+                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
+                    Measurement(44)
+                )
         }
-        Assertions.assertEquals(secondError, secondThrown.message)
-        Assertions.assertEquals(Measurement(45), secondThrown.conflict)
+        assertEquals(secondError, secondThrown.message)
+        assertEquals(Measurement(45), secondThrown.conflict)
     }
 
     @Test
@@ -146,7 +143,7 @@ internal class LayoutTest {
             .addGraphic(RectangleInstructions(zero, zero, width, distance))
             .addGraphic(RectangleInstructions(distance, Measurement(2), width, shorterDistance))
         val stud = Stud(distance, Lumber.Dimension.TWO_BY_FOUR)
-        Assertions.assertEquals(
+        assertEquals(
             result.drawingInstructions(),
             Layout()
                 .addStudAt(Measurement(0), stud)
@@ -160,30 +157,33 @@ internal class LayoutTest {
     fun layoutShouldReturnTotalWidth() {
         val result = Measurement(10)
         val test = Layout().addStudAt(Measurement(8, Fraction.ONE_HALF), defaultStud)
-        Assertions.assertEquals(result, test.totalWidth())
+        assertEquals(result, test.totalWidth())
         val secondResult = Measurement(50)
         test.addStudAt(Measurement(48, Fraction.ONE_HALF), defaultStud)
-            .addDoorAt(Door(), Measurement(4, Fraction.ONE_HALF))
-        Assertions.assertEquals(secondResult, test.totalWidth())
+            .addOpeningAt(
+                Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
+                Measurement(4, Fraction.ONE_HALF)
+            )
+        assertEquals(secondResult, test.totalWidth())
         val thirdResult = Measurement(55)
         test.addStudAt(Measurement(53, Fraction.ONE_HALF), defaultStud)
-        Assertions.assertEquals(thirdResult, test.totalWidth())
+        assertEquals(thirdResult, test.totalWidth())
     }
 
     @Test
     fun shouldReturnIsEmpty() {
-        Assertions.assertTrue(Layout().isEmpty)
-        Assertions.assertFalse(Layout().addStudAt(Measurement(0), defaultStud).isEmpty)
+        assertTrue(Layout().isEmpty)
+        assertFalse(Layout().addStudAt(Measurement(0), defaultStud).isEmpty)
     }
 
     @Test
-    fun layoutShouldAddDoor() {
+    fun layoutShouldAddOpening() {
         val zero = Measurement(0)
         val test = Layout().addStudAt(zero, defaultStud)
             .addStudAt(Measurement(16), defaultStud)
             .addStudAt(Measurement(32), defaultStud)
             .addStudAt(Measurement(50), defaultStud)
-            .addDoorAt(Door(), Measurement(2))
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(2))
         val materialResult = MaterialList()
             .addMaterial(Nail.TEN_D, 148)
             .addMaterial(Lumber(Measurement(92, Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR), 4)
@@ -191,7 +191,7 @@ internal class LayoutTest {
             .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_FOUR), 2)
             .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_SIX), 2)
             .addMaterial(Lumber(Measurement(6, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 4)
-        Assertions.assertEquals(materialResult.materials(), test.materialList().materials())
+        assertEquals(materialResult.materials(), test.materialList().materials())
         val graphicsResult = GraphicsList()
             .addGraphic(RectangleInstructions(zero, zero, defaultStud.totalWidth(), defaultStud.totalHeight()))
             .addGraphic(
@@ -203,71 +203,91 @@ internal class LayoutTest {
                 )
             )
         graphicsResult.addGraphics(
-            Door()
-                .addCrippleStud(defaultStud, Measurement(14))
-                .addCrippleStud(defaultStud, Measurement(30))
+            Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight())
+                .addCrippleStud(Measurement(14))
+                .addCrippleStud(Measurement(30))
                 .graphicsList().shift(Measurement(2), zero))
-        Assertions.assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
+        assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
     }
 
     @Test
-    fun layoutShouldAdjustOutsideStudsForAddedDoors() {
+    fun layoutShouldAdjustOutsideStudsForAddedOpenings() {
         val result = Layout().addStudAt(Measurement(4, Fraction.ONE_HALF), defaultStud)
-            .addStudAt(Measurement(50), defaultStud)
+            .addStudAt(Measurement(46), defaultStud)
             .addStudAt(Measurement(100), defaultStud)
-            .addDoorAt(Door().addCrippleStud(defaultStud, Measurement(24)), Measurement(6))
+            .addOpeningAt(
+                Opening(
+                    door.openingWidth,
+                    door.openingHeight,
+                    defaultStud.totalHeight()
+                ).addCrippleStud(Measurement(24)),
+                Measurement(6)
+            )
         val test = Layout().addStudAt(Measurement(5), defaultStud)
             .addStudAt(Measurement(30), defaultStud)
-            .addStudAt(Measurement(49), defaultStud)
+            .addStudAt(Measurement(45), defaultStud)
             .addStudAt(Measurement(100), defaultStud)
-            .addDoorAt(Door(), Measurement(6))
-        Assertions.assertEquals(result.graphicsList().drawingInstructions(), test.graphicsList().drawingInstructions())
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(6))
+        assertEquals(result.graphicsList().drawingInstructions(), test.graphicsList().drawingInstructions())
     }
 
     @Test
-    fun addDoorShouldThrowIfStudCannotBeMoved() {
-        val error = "Door cannot be added at 1\". Stud at 0\" cannot be moved."
+    fun addOpeningShouldThrowIfStudCannotBeMoved() {
+        val error = "Cannot be added at 1\". Stud at 0\" cannot be moved."
         val test = Layout().addStudAt(Measurement(0), defaultStud).addStudAt(Measurement(100), defaultStud)
-        val thrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) { test.addDoorAt(Door(), Measurement(1)) }
-        Assertions.assertEquals(error, thrown.message)
-        Assertions.assertEquals(Measurement(0), thrown.conflict)
-        Assertions.assertEquals(
+        val thrown = assertFailsWith<InstallableLocationConflict> {
+            test.addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(1))
+        }
+        assertEquals(error, thrown.message)
+        assertEquals(Measurement(0), thrown.conflict)
+        assertEquals(
             Layout().addStudAt(Measurement(0), defaultStud).addStudAt(Measurement(100), defaultStud),
             test
         )
-        val secondError = "Door cannot be added at 0\". Stud at 43\" cannot be moved."
-        val secondThrown = Assertions.assertThrows(
-            InstallableLocationConflict::class.java
-        ) {
+        val secondError = "Cannot be added at 0\". Stud at 39\" cannot be moved."
+        val secondThrown = assertFailsWith<InstallableLocationConflict> {
             Layout()
-                .addStudAt(Measurement(43), defaultStud)
-                .addDoorAt(Door(), Measurement(0))
+                .addStudAt(Measurement(39), defaultStud)
+                .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(0))
         }
-        Assertions.assertEquals(secondError, secondThrown.message)
-        Assertions.assertEquals(Measurement(43), secondThrown.conflict)
+        assertEquals(secondError, secondThrown.message)
+        assertEquals(Measurement(39), secondThrown.conflict)
     }
 
     @Test
-    fun addDoorShouldThrowWhenRightSideOfDoorIsOutsideLayout() {
-        val error = "Door cannot be added at 0\". Layout is only 11-1/2\" long and door ends at 44\""
+    fun addOpeningShouldThrowWhenRightSideOfOpeningIsOutsideLayout() {
+        val error = "Cannot be added at 0\". Layout is only 11-1/2\" long and opening ends at 40\""
         val test = Layout().addStudAt(Measurement(10), defaultStud)
-        val thrown = Assertions.assertThrows(InstallableLocationConflict::class.java
-        ) { test.addDoorAt(Door(), Measurement(0)) }
-        Assertions.assertEquals(error, thrown.message)
-        Assertions.assertEquals(Measurement(0), thrown.conflict)
-        test.addStudAt(Measurement(44), defaultStud)
-        Assertions.assertDoesNotThrow<Layout> { test.addDoorAt(Door(), Measurement(0)) }
+        val thrown = assertFailsWith<InstallableLocationConflict> {
+            test.addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(0))
+        }
+        assertEquals(error, thrown.message)
+        assertEquals(Measurement(0), thrown.conflict)
     }
 
     @Test
     fun shouldReturnTotalHeight() {
-        Assertions.assertEquals(
+        assertEquals(
             Measurement(100),
             Layout()
                 .addStudAt(Measurement(50), Stud(Measurement(100), Lumber.Dimension.TWO_BY_FOUR))
                 .totalHeight(),
         )
+    }
+
+    @Test
+    fun shouldCreateHashCode() {
+        val result = 0
+        val test = Layout()
+        assertEquals(result, test.hashCode())
+
+        val secondResult = -1875740663
+        test.addStudAt(Measurement(100), Stud())
+        assertEquals(secondResult, test.hashCode())
+
+        val thirdResult = 1518310535
+        test.addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(50))
+        assertEquals(thirdResult, test.hashCode())
+
     }
 }

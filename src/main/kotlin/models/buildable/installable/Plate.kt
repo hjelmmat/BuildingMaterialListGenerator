@@ -50,7 +50,7 @@ class Plate(length: Measurement, dimension: Lumber.Dimension) : Stud(length, dim
          * @return The number of nails to use
          */
         @JvmStatic
-        fun numberOfNails(length: Measurement): Int {
+        fun numberOfNails(length: Measurement): Int { //TODO: Change to return a material list of the nails and quantity
             val nailSpacing = Measurement(12)
             val numberOfNailPairs = ceil(length.divide(nailSpacing)).toInt() + 1
             return numberOfNailPairs * 2

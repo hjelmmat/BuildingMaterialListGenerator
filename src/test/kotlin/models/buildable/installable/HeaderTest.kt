@@ -1,14 +1,10 @@
 package models.buildable.installable
 
-import graphics.GraphicsList
-import graphics.RectangleInstructions
-import models.buildable.material.Lumber
-import models.buildable.material.MaterialList
-import models.buildable.material.Nail
+import graphics.*
+import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 internal class HeaderTest {
     private var dimension = Lumber.Dimension.TWO_BY_FOUR
@@ -20,7 +16,7 @@ internal class HeaderTest {
             .addMaterial(Lumber(width, Lumber.Dimension.TWO_BY_FOUR), 2)
             .addMaterial(Lumber(width, Lumber.Dimension.TWO_BY_SIX), 2)
             .addMaterial(Nail.TEN_D, 48)
-        Assertions.assertEquals(result, Header(width).materialList())
+        assertEquals(result, Header(width).materialList())
     }
 
     @Test
@@ -32,18 +28,18 @@ internal class HeaderTest {
             .addGraphic(RectangleInstructions(zero, zero, gap, dimension.width))
             .addGraphic(RectangleInstructions(zero, dimension.width, gap, twoBySixHeight))
             .addGraphic(RectangleInstructions(zero, dimension.width.add(twoBySixHeight), gap, dimension.width))
-        Assertions.assertEquals(result.drawingInstructions(), Header(gap).graphicsList().drawingInstructions())
+        assertEquals(result.drawingInstructions(), Header(gap).graphicsList().drawingInstructions())
     }
 
     @Test
     fun shouldReturnTotalWidth() {
         val gapWidth = Measurement(44)
-        Assertions.assertEquals(gapWidth, Header(gapWidth).totalWidth())
+        assertEquals(gapWidth, Header(gapWidth).totalWidth())
     }
 
     @Test
     fun shouldReturnTotalHeight() {
         val result = Measurement(8, Fraction.ONE_HALF)
-        Assertions.assertEquals(result, Header(Measurement(41)).totalHeight())
+        assertEquals(result, Header(Measurement(41)).totalHeight())
     }
 }

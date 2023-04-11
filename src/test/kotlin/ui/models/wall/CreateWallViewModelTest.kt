@@ -1,8 +1,7 @@
 package ui.models.wall
 
 import models.Measurement
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class CreateWallViewModelTest {
     private val errorMessage = "You done messed up"

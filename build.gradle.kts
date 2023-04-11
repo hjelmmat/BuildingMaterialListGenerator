@@ -15,7 +15,7 @@ dependencies {
 }
 
 tasks.test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 compose.desktop {

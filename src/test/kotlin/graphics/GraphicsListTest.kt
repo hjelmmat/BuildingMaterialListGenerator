@@ -1,12 +1,9 @@
 package graphics
 
 import models.Measurement
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.test.BeforeTest
-import kotlin.test.assertNotEquals
+import kotlin.test.*
 
 internal class GraphicsListTest {
     var zero = Measurement(0)

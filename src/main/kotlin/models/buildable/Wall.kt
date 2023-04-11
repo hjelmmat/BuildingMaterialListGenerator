@@ -2,10 +2,7 @@ package models.buildable
 
 import graphics.GraphicsList
 import models.buildable.installable.*
-import models.buildable.installable.Door.StandardDoor
-import models.buildable.installable.Layout.InstallableLocationConflict
-import models.buildable.material.Lumber
-import models.buildable.material.MaterialList
+import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
 import java.util.*
@@ -17,11 +14,13 @@ import kotlin.IllegalArgumentException
  * @param height - Height of wall to create
  * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
  */
-class Wall internal constructor( // TODO: Fix all constructors to have same length/height order
+class Wall internal constructor(
     private val length: Measurement,
     height: Measurement = Measurement(97, Fraction.ONE_EIGHTH)
 ) : Installable {
     private val platesHeightMap: TreeMap<Measurement, Plate> = TreeMap()
+
+    // Plate Materials is not exactly the same as the combination of 2 or 3 plates because of how Plates calculate nails
     private val plateMaterials = MaterialList()
     private val studHeightShift: Measurement
 
@@ -117,22 +116,31 @@ class Wall internal constructor( // TODO: Fix all constructors to have same leng
 
     @Throws(IllegalArgumentException::class)
     fun addADoor(ofType: StandardDoor, atLocation: Measurement): Wall {
-        val baseErrorMessage = "$ofType door cannot be installed at $atLocation,"
-        val attemptedDoor = Door(ofType)
-        require(atLocation.add(attemptedDoor.totalWidth()) <= this.totalWidth()) {
-            "$baseErrorMessage wall is ${this.totalWidth()} long"
-        }
-        require(studHeight >= attemptedDoor.totalHeight()) {
-            "$baseErrorMessage door is ${attemptedDoor.totalHeight()} tall, wall is $studHeight tall"
-        }
-        try {
-            layout.addDoorAt(attemptedDoor, atLocation)
-        } catch (c: InstallableLocationConflict) {
-            throw IllegalArgumentException(
-                "$baseErrorMessage collides with door at ${c.conflict}"
-            )
-        }
+        val attemptedDoor = Opening(ofType.openingWidth, ofType.openingHeight, studHeight)
+        validateAddedOpeningLocation("$ofType door", atLocation, attemptedDoor)
+        layout.addOpeningAt(attemptedDoor, atLocation)
         return this
+    }
+
+    @Throws(IllegalArgumentException::class)
+    fun addAWindow(
+        atLocation: Measurement,
+        bottomOfWindowHeight: Measurement,
+        windowWidth: Measurement,
+        windowHeight: Measurement,
+    ): Wall {
+        val attemptedWindow = Window(windowWidth, windowHeight, bottomOfWindowHeight, studHeight)
+        validateAddedOpeningLocation("Window", atLocation, attemptedWindow)
+        layout.addOpeningAt(attemptedWindow, atLocation)
+        return this
+    }
+
+    @Throws(IllegalArgumentException::class)
+    private fun validateAddedOpeningLocation(additionType: String, atLocation: Measurement, addition: Opening) {
+        val baseErrorMessage = "$additionType cannot be installed at $atLocation,"
+        require(atLocation.add(addition.totalWidth()) <= this.totalWidth()) {
+            "$baseErrorMessage $additionType is ${addition.totalWidth()} wide and wall is ${this.totalWidth()} long"
+        }
     }
 
     /**

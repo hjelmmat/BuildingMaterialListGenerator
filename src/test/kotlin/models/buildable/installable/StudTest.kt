@@ -1,13 +1,9 @@
 package models.buildable.installable
 
-import graphics.GraphicsList
-import graphics.RectangleInstructions
-import models.buildable.material.Lumber
-import models.buildable.material.MaterialList
-import models.buildable.material.Nail
+import graphics.*
+import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
-import org.junit.jupiter.api.Test
 import kotlin.test.*
 
 internal class StudTest {

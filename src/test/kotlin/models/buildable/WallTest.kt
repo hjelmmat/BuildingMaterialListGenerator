@@ -1,17 +1,14 @@
 package models.buildable
 
-import graphics.GraphicsList
-import graphics.RectangleInstructions
+import graphics.*
 import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
 import models.buildable.installable.*
-import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.listOf
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 internal class WallTest {
     private var validMeasurement = Measurement(100)
@@ -139,35 +136,16 @@ internal class WallTest {
     @Test
     fun whenDoorDoesNotFitInWallLengthShouldThrowException() {
         val thrown = assertFailsWith<IllegalArgumentException> {
-            maxTwoStudWall.addADoor(Door.StandardDoor.Bedroom, Measurement(100))
-        }
-        assertEquals("Bedroom door cannot be installed at 100\", wall is 17-1/2\" long", thrown.message)
-    }
-
-    @Test
-    fun whenDoorIsTooTallForWallShouldThrowException() {
-        val thrown = assertFailsWith<IllegalArgumentException> {
-            Wall(Measurement(100), Measurement(10))
-                .addADoor(Door.StandardDoor.Bedroom, Measurement(0))
+            maxTwoStudWall.addADoor(StandardDoor.Bedroom, Measurement(100))
         }
         assertEquals(
-            "Bedroom door cannot be installed at 0\", door is 89-1/2\" tall, wall is 5-1/2\" tall",
+            "Bedroom door cannot be installed at 100\", Bedroom door is 40\" wide and wall is 17-1/2\" long",
             thrown.message
         )
     }
 
     @Test
-    fun whenNewDoorCollidesWithExistingDoorWallShouldThrow() {
-        val test = Wall(Measurement(100), Measurement(95))
-        test.addADoor(Door.StandardDoor.Bedroom, Measurement(48))
-        val thrown = assertFailsWith<IllegalArgumentException> {
-            test.addADoor(Door.StandardDoor.Bedroom, Measurement(50))
-        }
-        assertEquals("Bedroom door cannot be installed at 50\", collides with door at 48\"", thrown.message)
-    }
-
-    @Test
-    fun whenDoorIsAddedMaterialListShouldUpdate() {
+    fun whenDoorIsAddedLayoutShouldUpdate() {
         val defaultHeight = Measurement(92, Fraction.FIVE_EIGHTH)
         val materialResult = MaterialList()
             .addMaterial(Nail.TEN_D, 168)
@@ -177,10 +155,10 @@ internal class WallTest {
             .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_SIX), 2)
             .addMaterial(Lumber(Measurement(6, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 4)
         val wallLength = Measurement(48)
-        val test = Wall(wallLength).addADoor(Door.StandardDoor.Bedroom, Measurement(2))
+        val test = Wall(wallLength).addADoor(StandardDoor.Bedroom, Measurement(2))
 
         /*
-        Checking twice to ensure that the materials are not added multiple times over successive calls`
+        Checking twice to ensure that the materials are not added multiple times over successive calls
          */
         assertEquals(materialResult, test.materialList())
         assertEquals(materialResult, test.materialList())
@@ -193,14 +171,45 @@ internal class WallTest {
             .addGraphic(RectangleInstructions(zero, downShiftBecauseOfPlates.add(defaultHeight), wallLength, studWidth))
             .addGraphic(RectangleInstructions(zero, downShiftBecauseOfPlates, studWidth, defaultHeight))
             .addGraphic(
-                RectangleInstructions(wallLength.subtract(studWidth), downShiftBecauseOfPlates, studWidth, defaultHeight)
+                RectangleInstructions(
+                    wallLength.subtract(studWidth),
+                    downShiftBecauseOfPlates,
+                    studWidth,
+                    defaultHeight
+                )
             )
             .addGraphics(
-                Door()
-                    .addCrippleStud(Stud(), Measurement(14))
-                    .addCrippleStud(Stud(), Measurement(30))
+                Opening(StandardDoor.Bedroom.openingWidth, StandardDoor.Bedroom.openingHeight, Stud().totalHeight())
+                    .addCrippleStud(Measurement(14))
+                    .addCrippleStud(Measurement(30))
                     .graphicsList().shift(Measurement(2), downShiftBecauseOfPlates),
             )
         assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
+    }
+
+    @Test
+    fun whenWindowIsAddedShouldThrowForInvalidLocation() {
+        val firstThrown = assertFailsWith<IllegalArgumentException> {
+            maxTwoStudWall.addAWindow(Measurement(10), Measurement(0), Measurement(10), Measurement(9))
+        }
+        assertEquals(
+            "Window cannot be installed at 10\", Window is 16\" wide and wall is 17-1/2\" long",
+            firstThrown.message
+        )
+    }
+
+    @Test
+    fun whenWindowIsAddedLayoutShouldUpdate() {
+        val materialResult = MaterialList()
+            .addMaterial(Nail.TEN_D, 152)
+            .addMaterial(Lumber(Measurement(81), Lumber.Dimension.TWO_BY_FOUR), 4)
+            .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_FOUR), 4)
+            .addMaterial(Lumber(Measurement(20), Lumber.Dimension.TWO_BY_SIX), 2)
+            .addMaterial(Lumber(Measurement(6, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 8)
+
+        val wallLength = Measurement(16)
+        val test = Wall(wallLength, Measurement(80))
+            .addAWindow(Measurement(3), Measurement(10), Measurement(5), Measurement(20))
+        assertEquals(materialResult.materials(), test.materialList().materials())
     }
 }

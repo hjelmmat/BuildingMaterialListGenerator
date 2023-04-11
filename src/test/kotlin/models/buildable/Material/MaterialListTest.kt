@@ -1,11 +1,9 @@
 package models.buildable.material
 
 import models.Measurement
-import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 internal class MaterialListTest {
     private var result: HashMap<String, Vector<Vector<String>>> = HashMap()

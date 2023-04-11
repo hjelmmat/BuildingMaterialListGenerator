@@ -22,7 +22,7 @@ fun measurementView(measurementModel: MeasurementViewModel) {
                 onValueChange = { measurementModel.integerValue = it },
                 singleLine = true,
                 isError = !measurementModel.isValidValue(),
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.width(135.dp)
             )
             if (!measurementModel.isValidValue()) {
                 Text(

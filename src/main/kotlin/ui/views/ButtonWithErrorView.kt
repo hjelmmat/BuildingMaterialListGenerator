@@ -21,7 +21,7 @@ fun buttonWithErrorView(model: ButtonWithErrorViewModel) {
         if (model.shouldDisplayError()) {
             Text(
                 text = model.errorMessage(),
-                modifier = Modifier.width(100.dp).padding(5.dp),
+                modifier = Modifier.width(150.dp).padding(5.dp),
                 color = MaterialTheme.colors.error,
                 fontSize = 10.sp,
                 style = MaterialTheme.typography.caption,

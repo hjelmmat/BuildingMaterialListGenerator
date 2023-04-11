@@ -1,8 +1,7 @@
 package ui.models.materials
 
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import java.util.Vector
+import kotlin.test.*
 
 class MaterialsViewModelTest {
     @Test
