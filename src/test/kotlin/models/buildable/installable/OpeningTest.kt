@@ -8,128 +8,58 @@ import models.Measurement.Fraction
 import kotlin.test.*
 
 internal class OpeningTest {
-    private var dimension = Lumber.Dimension.TWO_BY_FOUR
-    private var baseKingHeight = Measurement(89, Fraction.ONE_HALF)
-    private var baseTrimmerHeight = Measurement(81)
-    private var gapWidth = Measurement(41)
-    private var baseTotalWidth = Measurement(44)
+    private val dimension = Lumber.Dimension.TWO_BY_FOUR
+    private val baseKingHeight = Measurement(89, Fraction.ONE_HALF)
+    private val baseKing = Stud(baseKingHeight, dimension)
+    private val baseTrimmerHeight = Measurement(81)
+    private val baseTrimmer = Stud(baseTrimmerHeight, dimension)
+    private val baseGapWidth = Measurement(38)
+    private val baseHeader =
+        Header(Stud(Measurement(41), Lumber.Dimension.TWO_BY_SIX), Plate(Measurement(41), dimension))
+    private val baseTotalWidth = Measurement(44)
     private val door = StandardDoor.Bedroom
     private val defaultTotalHeight = Measurement(100)
 
     @Test
-    fun shouldEqualsWhenCrippleStudsAndTypeAreTheSame() {
-        val test = Opening(door.openingWidth, door.openingHeight, defaultTotalHeight)
-        assertEquals(Opening(door.openingWidth, door.openingHeight, defaultTotalHeight), test)
-        assertEquals(
-            Opening(door.openingWidth, door.openingHeight, defaultTotalHeight).addCrippleStud(Measurement(4)),
-            test.addCrippleStud(Measurement(4)),
-        )
-        assertNotEquals(
-            Opening(door.openingWidth, door.openingHeight, Measurement(110))
-                .addCrippleStud(Measurement(4)),
-            test,
-        )
-    }
-
-    @Test
-    fun shouldCreateHashNumber() {
-        val result = 704277349 // TODO: Fix the hashcode so it is stable
-        assertEquals(result, Opening(door.openingWidth, door.openingHeight, defaultTotalHeight).hashCode())
-    }
-
-    @Test
     fun shouldCreateMaterialList() {
         val result = MaterialList()
-            .addMaterial(Lumber(baseKingHeight, dimension), 2)
-            .addMaterial(Lumber(baseTrimmerHeight, dimension), 2)
-            .addMaterial(Lumber(gapWidth, dimension), 2)
-            .addMaterial(Lumber(gapWidth, Lumber.Dimension.TWO_BY_SIX), 2)
-            .addMaterial(Nail.TEN_D, 104)
+            .addMaterials(baseKing.materialList())
+            .addMaterials(baseKing.materialList())
+            .addMaterials(baseTrimmer.materialList())
+            .addMaterials(baseTrimmer.materialList())
+            .addMaterials(baseHeader.materialList())
+            // There need to be nails to attach each trimmer to the king
+            .addMaterial(Nail.TEN_D, Plate.numberOfNails(baseTrimmerHeight) * 2)
         assertEquals(
             result.materials(),
-            Opening(Measurement(38), Measurement(81), baseKingHeight).materialList().materials()
+            Opening(baseGapWidth, baseTrimmerHeight, baseKingHeight).materialList().materials()
         )
-    }
-
-    @Test
-    fun shouldAddCrippleStuds() {
-        val zero = Measurement(0)
-        val doorHeight = Measurement(100)
-        val kingStud = Stud(doorHeight, dimension)
-        val topOfTrimmer = kingStud.totalHeight().subtract(baseTrimmerHeight)
-        val lastTrimmerPlacement = baseTotalWidth.subtract(dimension.width.multiply(2))
-        val header = Header(gapWidth)
-        val topOfHeader = topOfTrimmer.subtract(header.totalHeight())
-        val crippleStudGraphic = Stud(topOfHeader, dimension)
-        val result = GraphicsList()
-            .addGraphics(kingStud.graphicsList())
-            .addGraphic(RectangleInstructions(dimension.width, topOfTrimmer, dimension.width, baseTrimmerHeight))
-            .addGraphic(RectangleInstructions(lastTrimmerPlacement, topOfTrimmer, dimension.width, baseTrimmerHeight))
-            .addGraphics(kingStud.graphicsList().shift(baseTotalWidth.subtract(dimension.width), zero))
-            .addGraphics(header.graphicsList().shift(dimension.width, topOfHeader))
-            .addGraphics(
-                CrippleLayout(Measurement(41), crippleStudGraphic)
-                    .addStudAt(Measurement(8, Fraction.ONE_HALF), crippleStudGraphic)
-                    .graphicsList().shift(dimension.width, Measurement(0))
-            )
-        val crippleStuds = Stud(doorHeight, dimension)
-        val test = Opening(Measurement(38), Measurement(81), defaultTotalHeight)
-            // Valid Cripple Stud
-            .addCrippleStud(Measurement(10))
-            // Ignored Cripple Stud since it is where the left king stud is
-            .addCrippleStud(zero)
-            // Ignored Cripple Stud since it is where the right king stud is
-            .addCrippleStud(baseTotalWidth.subtract(dimension.width).add(Measurement(1)))
-        assertEquals(result.drawingInstructions(), test.graphicsList().drawingInstructions())
-        val materialResult = MaterialList()
-            .addMaterial(Lumber(doorHeight, dimension), 2)
-            .addMaterial(Lumber(baseTrimmerHeight, dimension), 2)
-            .addMaterial(Lumber(gapWidth, dimension), 2)
-            .addMaterial(Lumber(gapWidth, Lumber.Dimension.TWO_BY_SIX), 2)
-            .addMaterial(Lumber(doorHeight.subtract(baseTrimmerHeight).subtract(header.totalHeight()), dimension), 3)
-            .addMaterial(Nail.TEN_D, 130)
-        assertEquals(materialResult.materials(), test.materialList().materials())
     }
 
     @Test
     fun shouldCreateGraphicsList() {
-        val zero = Measurement(0)
-        val topOfTrimmer = baseKingHeight.subtract(baseTrimmerHeight)
+        val kingHeight = baseKingHeight.add(Measurement(2))
         val result = GraphicsList()
-            .addGraphic(RectangleInstructions(zero, zero, dimension.width, baseKingHeight))
-            .addGraphic(RectangleInstructions(dimension.width, topOfTrimmer, dimension.width, baseTrimmerHeight))
-            .addGraphic(
-                RectangleInstructions(
-                    baseTotalWidth.subtract(dimension.width.multiply(2)),
-                    topOfTrimmer,
-                    dimension.width,
-                    baseTrimmerHeight
-                )
+            .addGraphics(
+                Layout()
+                    .addStudAt(Measurement(0), Stud(kingHeight, dimension))
+                    .addStudAt(Measurement(57, Fraction.ONE_HALF), Stud(kingHeight))
+                    .graphicsList()
             )
-            .addGraphic(
-                RectangleInstructions(
-                    baseTotalWidth.subtract(dimension.width),
-                    zero,
-                    dimension.width,
-                    baseKingHeight
-                )
+            .addGraphics(
+                Layout()
+                    .addStudAt(baseKing.totalWidth(), DoubleStud(baseTrimmer))
+                    .addStudAt(Measurement(54, Fraction.ONE_HALF), DoubleStud(baseTrimmer))
+                    .graphicsList().shift(Measurement(0), Measurement(10, Fraction.ONE_HALF))
             )
-            .addGraphics(Header(gapWidth).graphicsList().shift(dimension.width, zero))
+            .addGraphics(
+                Header(Stud(Measurement(56), Lumber.Dimension.TWO_BY_EIGHT), Plate(Measurement(56), dimension))
+                    .graphicsList().shift(dimension.width, Measurement(0))
+            )
         assertEquals(
             result.drawingInstructions(),
-            Opening(Measurement(38), Measurement(81), baseKingHeight).graphicsList().drawingInstructions()
+            Opening(Measurement(50), baseTrimmerHeight, kingHeight).graphicsList().drawingInstructions()
         )
-    }
-
-    @Test
-    fun shouldThrowWhenCrippleStudIsAddedBeyondEdgeOfDoor() {
-        val error = "Stud cannot be added at 44-1/16\". Opening is only 44\" wide"
-        val conflictMeasurement = Measurement(44, Fraction.ONE_SIXTEENTH)
-        val thrown = assertFailsWith<InstallableLocationConflict> {
-            Opening(Measurement(38), Measurement(81), defaultTotalHeight).addCrippleStud(conflictMeasurement)
-        }
-        assertEquals(error, thrown.message)
-        assertEquals(conflictMeasurement, thrown.conflict)
     }
 
     @Test
@@ -140,4 +70,135 @@ internal class OpeningTest {
         }
         assertEquals(error, thrown.message)
     }
+
+    @Test
+    fun whenWidthIsZeroShouldThrow() {
+        val error = "Width must be greater than 0\""
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Opening(Measurement(0), Measurement(100), Measurement(50))
+        }
+        assertEquals(error, thrown.message)
+    }
+
+    @Test
+    fun whenHeightIsZeroShouldThrow() {
+        val error = "Height must be greater than 0\""
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Opening(Measurement(10), Measurement(0), Measurement(50))
+        }
+        assertEquals(error, thrown.message)
+    }
+
+    @Test
+    fun whenGapIsTooLongShouldThrow() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Opening(Measurement(85, Fraction.ONE_SIXTEENTH), Measurement(100), Measurement(0))
+        }
+        assertEquals("Opening can only be 85\" wide", thrown.message)
+    }
+
+    @Test
+    fun whenGapDoesNotHaveSpaceForPlateShouldThrow() {
+        val thrown = assertFailsWith<IllegalArgumentException> {
+            Opening(Measurement(85, Fraction.ONE_SIXTEENTH), Measurement(100), Measurement(0), Measurement(1))
+        }
+        assertEquals("Height to bottom of opening must be greater than 1-1/2\" or 0\"", thrown.message)
+    }
+
+    @Test
+    fun shouldReturnOpeningWidth() {
+        assertEquals(
+            Measurement(36),
+            Opening(Measurement(30), Measurement(10), Measurement(100)).totalWidth()
+        )
+    }
+
+    @Test
+    fun shouldReturnOpeningHeight() {
+        assertEquals(
+            Measurement(100),
+            Opening(Measurement(30), Measurement(10), Measurement(100)).totalHeight()
+        )
+    }
+
+    @Test
+    fun shouldThrowWhenCrippleStudIsAddedBeyondEdgeOfOpening() {
+        val error = "Stud cannot be added at 44-1/16\". Opening is only 44\" wide"
+        val conflictMeasurement = Measurement(44, Fraction.ONE_SIXTEENTH)
+        val thrown = assertFailsWith<InstallableLocationConflict> {
+            Opening(Measurement(38), Measurement(81), defaultTotalHeight).addCrippleStud(conflictMeasurement)
+        }
+        assertEquals(error, thrown.message)
+        assertEquals(conflictMeasurement, thrown.conflict)
+    }
+
+    @Test
+    fun whenAddingCrippleStudsShouldIgnoreCorrectStuds() {
+        val bottomOfGap = Measurement(15)
+        val trimmer = Stud(bottomOfGap.add(Measurement(10)), dimension)
+        val rightKingStudLocation = Measurement(24, Fraction.ONE_HALF)
+        val header = Header(Stud(Measurement(23), Lumber.Dimension.TWO_BY_SIX), Plate(Measurement(23), dimension))
+        val headerCrippleStudHeight = baseKingHeight.subtract(trimmer.totalHeight()).subtract(header.totalHeight())
+        val headerCrippleStud = Stud(headerCrippleStudHeight, dimension)
+        val floorCrippleStud = Stud(bottomOfGap.subtract(dimension.width), dimension)
+        val plateShift = baseKingHeight.subtract(bottomOfGap)
+        val result = GraphicsList()
+            .addGraphics(
+                Layout()
+                    .addStudAt(Measurement(0), baseKing)
+                    .addStudAt(rightKingStudLocation, baseKing)
+                    .graphicsList()
+            )
+            .addGraphics(
+                Layout()
+                    .addStudAt(baseKing.totalWidth(), trimmer)
+                    .addStudAt(rightKingStudLocation.subtract(trimmer.totalWidth()), trimmer)
+                    .graphicsList().shift(Measurement(0), baseKingHeight.subtract(trimmer.totalHeight()))
+            )
+            .addGraphics(header.graphicsList().shift(baseKing.totalWidth(), headerCrippleStudHeight))
+            .addGraphics(Plate(Measurement(20), dimension).graphicsList().shift(Measurement(3), plateShift))
+            .addGraphics(
+                CrippleLayout(
+                    Measurement(1, Measurement.Fraction.ONE_HALF),
+                    header.totalWidth(),
+                    headerCrippleStud
+                )
+                    .addStudAt(Measurement(3), headerCrippleStud)
+                    .addStudAt(Measurement(10), headerCrippleStud)
+                    .addStudAt(Measurement(21, Measurement.Fraction.ONE_HALF), headerCrippleStud)
+                    .graphicsList(),
+            )
+            .addGraphics(
+                CrippleLayout(Measurement(3), Measurement(21, Measurement.Fraction.ONE_HALF), floorCrippleStud)
+                    .addStudAt(Measurement(10), floorCrippleStud)
+                    .graphicsList().shift(Measurement(0), plateShift.add(dimension.width))
+            )
+        val test = Opening(Measurement(20), Measurement(10), baseKingHeight, bottomOfGap)
+            // conflicts with first left King, is ignored
+            .addCrippleStud(Measurement(0))
+            // conflicts with left trimmer or first cripple, is ignored
+            .addCrippleStud(Measurement(1, Measurement.Fraction.ONE_HALF))
+            // conflicts with first floor cripple, but not first header cripple, should be added to header, not floor
+            .addCrippleStud(Measurement(3))
+            // is valid cripple stud, added to both
+            .addCrippleStud(Measurement(10))
+            // conflicts with last floor cripple, but not last header cripple, should be added to header, not floor
+            .addCrippleStud(rightKingStudLocation.subtract(trimmer.totalWidth().multiply(2)))
+            // conflicts with right trimmer, is ignored
+            .addCrippleStud(rightKingStudLocation.subtract(trimmer.totalWidth()))
+            // conflicts with right king, is ignored
+            .addCrippleStud(rightKingStudLocation)
+        assertEquals(result.drawingInstructions(), test.graphicsList().drawingInstructions())
+        assertEquals(result.drawingInstructions(), test.graphicsList().drawingInstructions())
+
+        val materialsResult = MaterialList()
+            .addMaterial(Lumber(Measurement(24), Lumber.Dimension.TWO_BY_FOUR), 6)
+            .addMaterial(Lumber(Measurement(48), Lumber.Dimension.TWO_BY_FOUR), 2)
+            .addMaterial(Lumber(baseKingHeight, Lumber.Dimension.TWO_BY_FOUR), 7)
+            .addMaterial(Lumber(Measurement(23), Lumber.Dimension.TWO_BY_SIX), 2)
+            .addMaterial(Nail.TEN_D, 178)
+        assertEquals(materialsResult.materials(), test.materialList().materials())
+        assertEquals(materialsResult.materials(), test.materialList().materials())
+    }
+
 }

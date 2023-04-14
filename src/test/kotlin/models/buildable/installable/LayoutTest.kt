@@ -11,7 +11,7 @@ import kotlin.test.*
 internal class LayoutTest {
     private val defaultStud = Stud()
     private var firstPosition = Measurement(0)
-    private var secondPosition = Measurement(1, Fraction.ONE_HALF)
+    private var secondPosition = Measurement(2)
     private var basicLayout = Layout().addStudAt(firstPosition, defaultStud).addStudAt(secondPosition, defaultStud)
     private val door = StandardDoor.Bedroom
 
@@ -179,11 +179,6 @@ internal class LayoutTest {
     @Test
     fun layoutShouldAddOpening() {
         val zero = Measurement(0)
-        val test = Layout().addStudAt(zero, defaultStud)
-            .addStudAt(Measurement(16), defaultStud)
-            .addStudAt(Measurement(32), defaultStud)
-            .addStudAt(Measurement(50), defaultStud)
-            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(2))
         val materialResult = MaterialList()
             .addMaterial(Nail.TEN_D, 148)
             .addMaterial(Lumber(Measurement(92, Fraction.FIVE_EIGHTH), Lumber.Dimension.TWO_BY_FOUR), 4)
@@ -191,6 +186,11 @@ internal class LayoutTest {
             .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_FOUR), 2)
             .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_SIX), 2)
             .addMaterial(Lumber(Measurement(6, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 4)
+        val test = Layout().addStudAt(zero, defaultStud)
+            .addStudAt(Measurement(16), defaultStud)
+            .addStudAt(Measurement(32), defaultStud)
+            .addStudAt(Measurement(50), defaultStud)
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(2))
         assertEquals(materialResult.materials(), test.materialList().materials())
         val graphicsResult = GraphicsList()
             .addGraphic(RectangleInstructions(zero, zero, defaultStud.totalWidth(), defaultStud.totalHeight()))
@@ -206,7 +206,8 @@ internal class LayoutTest {
             Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight())
                 .addCrippleStud(Measurement(14))
                 .addCrippleStud(Measurement(30))
-                .graphicsList().shift(Measurement(2), zero))
+                .graphicsList().shift(Measurement(2), zero)
+        )
         assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
     }
 
@@ -273,21 +274,5 @@ internal class LayoutTest {
                 .addStudAt(Measurement(50), Stud(Measurement(100), Lumber.Dimension.TWO_BY_FOUR))
                 .totalHeight(),
         )
-    }
-
-    @Test
-    fun shouldCreateHashCode() {
-        val result = 0
-        val test = Layout()
-        assertEquals(result, test.hashCode())
-
-        val secondResult = -1875740663
-        test.addStudAt(Measurement(100), Stud())
-        assertEquals(secondResult, test.hashCode())
-
-        val thirdResult = 1518310535
-        test.addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(50))
-        assertEquals(thirdResult, test.hashCode())
-
     }
 }

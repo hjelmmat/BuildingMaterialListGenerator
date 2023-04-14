@@ -14,7 +14,7 @@ import kotlin.IllegalArgumentException
  * @param height - Height of wall to create
  * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
  */
-class Wall internal constructor(
+class Wall constructor(
     private val length: Measurement,
     height: Measurement = Measurement(97, Fraction.ONE_EIGHTH)
 ) : Installable {
@@ -129,7 +129,8 @@ class Wall internal constructor(
         windowWidth: Measurement,
         windowHeight: Measurement,
     ): Wall {
-        val attemptedWindow = Window(windowWidth, windowHeight, bottomOfWindowHeight, studHeight)
+        val attemptedWindow =
+            Opening(windowWidth, windowHeight, studHeight, bottomOfWindowHeight)
         validateAddedOpeningLocation("Window", atLocation, attemptedWindow)
         layout.addOpeningAt(attemptedWindow, atLocation)
         return this

@@ -160,7 +160,7 @@ internal class WallTest {
         /*
         Checking twice to ensure that the materials are not added multiple times over successive calls
          */
-        assertEquals(materialResult, test.materialList())
+        assertEquals(materialResult.materials(), test.materialList().materials())
         assertEquals(materialResult, test.materialList())
         val zero = Measurement(0)
         val studWidth = Stud().totalWidth()
@@ -200,16 +200,29 @@ internal class WallTest {
 
     @Test
     fun whenWindowIsAddedLayoutShouldUpdate() {
+        val dimension = Lumber.Dimension.TWO_BY_FOUR
         val materialResult = MaterialList()
-            .addMaterial(Nail.TEN_D, 152)
-            .addMaterial(Lumber(Measurement(81), Lumber.Dimension.TWO_BY_FOUR), 4)
-            .addMaterial(Lumber(Measurement(41), Lumber.Dimension.TWO_BY_FOUR), 4)
-            .addMaterial(Lumber(Measurement(20), Lumber.Dimension.TWO_BY_SIX), 2)
-            .addMaterial(Lumber(Measurement(6, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_FOUR), 8)
+            .addMaterial(Nail.TEN_D, 178)
+            // Wall Plates
+            .addMaterial(Lumber(Measurement(32), dimension), 3)
+            // Wall Studs
+            .addMaterial(Lumber(Measurement(80), dimension), 4)
+            // Trimmers
+            .addMaterial(Lumber(Measurement(25), dimension), 2)
+            // Header Plates
+            .addMaterial(Lumber(Measurement(21, Fraction.ONE_HALF), dimension), 2)
+            // Header LoadBearing
+            .addMaterial(Lumber(Measurement(21, Fraction.ONE_HALF), Lumber.Dimension.TWO_BY_SIX), 2)
+            // Floor Plate
+            .addMaterial(Lumber(Measurement(20), dimension), 1)
+            // Floor Cripple
+            .addMaterial(Lumber(Measurement(8, Fraction.ONE_HALF), dimension), 3)
+            // Top Cripple
+            .addMaterial(Lumber(Measurement(50), dimension), 3)
 
-        val wallLength = Measurement(16)
-        val test = Wall(wallLength, Measurement(80))
-            .addAWindow(Measurement(3), Measurement(10), Measurement(5), Measurement(20))
+        val wallLength = Measurement(32)
+        val test = Wall(wallLength, Measurement(90))
+            .addAWindow(Measurement(3), Measurement(10), Measurement(20), Measurement(15))
         assertEquals(materialResult.materials(), test.materialList().materials())
     }
 }

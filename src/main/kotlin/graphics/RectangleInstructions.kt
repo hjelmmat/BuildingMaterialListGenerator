@@ -41,4 +41,26 @@ class RectangleInstructions(
     override fun shift(horizontal: Measurement, vertical: Measurement): RectangleInstructions {
         return RectangleInstructions(topLeftX.add(horizontal), topLeftY.add(vertical), width, height)
     }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as RectangleInstructions
+
+        if (topLeftX != other.topLeftX) return false
+        if (topLeftY != other.topLeftY) return false
+        if (width != other.width) return false
+        return height == other.height
+    }
+
+    override fun hashCode(): Int {
+        var result = topLeftX.hashCode()
+        result = 31 * result + topLeftY.hashCode()
+        result = 31 * result + width.hashCode()
+        result = 31 * result + height.hashCode()
+        return result
+    }
+
 }

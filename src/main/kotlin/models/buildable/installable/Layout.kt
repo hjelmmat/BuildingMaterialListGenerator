@@ -59,12 +59,12 @@ open class Layout : Installable {
         detectConflicts(atLocation, endLocation, this.openings, "Opening")
         tryShiftOutsideStudsToValidPosition(atLocation, endLocation, "Opening")
 
-        val removedKeys = Vector<Measurement>()
+        val studsToRemove = mutableListOf<Measurement>()
         studs.subMap(atLocation, endLocation).forEach {
             ofType.addCrippleStud(it.key.subtract(atLocation))
-            removedKeys.add(it.key)
+            studsToRemove.add(it.key)
         }
-        removedKeys.forEach { studs.remove(it) }
+        studsToRemove.forEach { studs.remove(it) }
         openings[atLocation] = ofType
         return this
     }
@@ -189,13 +189,13 @@ open class Layout : Installable {
      * @return if the object is the same or not
      */
     override fun equals(other: Any?) = (other === this)
-            || other is Layout && this.studs == other.studs && this.openings == other.openings
+            || (other is Layout && graphicsList() == other.graphicsList() && materialList() == other.materialList())
 
     /**
      *
      * @return a hashcode for this Layout
      */
     override fun hashCode(): Int {
-        return studs.hashCode() + openings.hashCode()
+        return graphicsList().hashCode() * materialList().hashCode()
     }
 }

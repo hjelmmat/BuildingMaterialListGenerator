@@ -9,9 +9,14 @@ repositories {
     google()
 }
 
+kotlin {
+    jvmToolchain(11)
+}
+
 dependencies {
     implementation(compose.desktop.currentOs)
     testImplementation(kotlin("test"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {

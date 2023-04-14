@@ -1,6 +1,7 @@
 package graphics
 
 import models.Measurement
+import models.buildable.installable.Layout
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -65,5 +66,12 @@ class GraphicsList {
         val result = GraphicsList()
         instructions.forEach() { result.addGraphic(it.shift(horizontal, vertical)) }
         return result
+    }
+
+    override fun equals(other: Any?) = (other === this)
+            || (other is GraphicsList && this.instructions == other.instructions)
+
+    override fun hashCode(): Int {
+        return instructions.hashCode()
     }
 }

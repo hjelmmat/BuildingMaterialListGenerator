@@ -42,14 +42,11 @@ class Lumber(length: Measurement, private val dimension: Dimension) : Material {
         @JvmField val height: Measurement,
         private val niceString: String
     ) {
-        TWO_BY_FOUR(
-            Measurement(1, Fraction.ONE_HALF), Measurement(3, Fraction.ONE_HALF),
-            "2x4",
-        ),
-        TWO_BY_SIX(
-            Measurement(1, Fraction.ONE_HALF), Measurement(5, Fraction.ONE_HALF),
-            "2x6",
-        );
+        TWO_BY_FOUR(Measurement(1, Fraction.ONE_HALF), Measurement(3, Fraction.ONE_HALF), "2x4",),
+        TWO_BY_SIX(Measurement(1, Fraction.ONE_HALF), Measurement(5, Fraction.ONE_HALF), "2x6",),
+        TWO_BY_EIGHT(Measurement(1, Fraction.ONE_HALF), Measurement(7, Fraction.ONE_HALF), "2x8"),
+        TWO_BY_TEN(Measurement(1, Fraction.ONE_HALF), Measurement(9, Fraction.ONE_HALF), "2x10"),
+        TWO_BY_TWELVE(Measurement(1, Fraction.ONE_HALF), Measurement(11, Fraction.ONE_HALF), "2x12");
 
         /**
          *

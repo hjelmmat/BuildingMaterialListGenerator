@@ -7,43 +7,148 @@ import models.buildable.material.MaterialList
 import models.Measurement
 
 /**
- * A class designed to store information about an opening
+ * A class designed to store information about an opening (doors, windows ect)
+ * @param width - Width of the opening to create
+ * @param height - Height of the opening to create
+ * @param kingStudHeight - Height of the kingStuds to use
+ * @param heightToBottomOfOpening - The height to the bottom of the desired opening
  */
-open class Opening(val width: Measurement, val height: Measurement, private val totalHeight: Measurement) :
+open class Opening(
+    width: Measurement,
+    height: Measurement,
+    kingStudHeight: Measurement,
+    // Defaults to 0 for Door type openings
+    heightToBottomOfOpening: Measurement = Measurement(0),
+) :
     Installable {
-    protected val studDimension = Lumber.Dimension.TWO_BY_FOUR
-
-    // Headers should be long enough to cover the gap and rest on two trimmers, which are 2x4s
-    private val header: Header = Header(width.add(studDimension.width.multiply(2)))
-    private val topOfHeader: Measurement = header.totalHeight().add(height)
-
-    // there will be 2 king and 2 jack studs all of 2x4 so that is part of the total width.
-    private val totalWidth: Measurement = width.add(studDimension.width.multiply(4))
-    private val floorLayout: Layout
-    private val crippleStud: Stud?
-    private val crippleLayout: CrippleLayout?
-
-    // Extra nails are needed to attach trimmers to kings and the edge cripple studs to kings.
-    private var extraNails = Plate.numberOfNails(height) * 2
+    private val maximumGap = Measurement(85)
+    private val studDimension = Lumber.Dimension.TWO_BY_FOUR
 
     init {
-        require(totalHeight >= topOfHeader) {
-            "Total height of $totalHeight is too short, requires $topOfHeader"
+        val error = "must be greater than ${Measurement(0)}"
+        require(width > Measurement(0)) { "Width $error" }
+        require(height > Measurement(0)) { "Height $error" }
+        require((heightToBottomOfOpening >= studDimension.width) || (heightToBottomOfOpening == Measurement(0))) {
+            "Height to bottom of opening must be greater than ${studDimension.width} or ${Measurement(0)}"
         }
-        val king = Stud(totalHeight, this.studDimension)
-        val trimmer = Stud(height, this.studDimension)
-        floorLayout = Layout()
-            .addStudAt(Measurement(0), king)
-            .addStudAt(this.studDimension.width, trimmer)
-            .addStudAt(totalWidth.subtract(this.studDimension.width.multiply(2)), trimmer)
-            .addStudAt(totalWidth.subtract(this.studDimension.width), king)
-        val crippleStudHeight = totalHeight.subtract(topOfHeader)
-        if (crippleStudHeight != Measurement(0)) {
-            crippleStud = Stud(crippleStudHeight, studDimension)
-            crippleLayout = CrippleLayout(header.totalWidth(), crippleStud)
+    }
+
+    private val kingStud: Stud
+    private val trimmerStud: Stud
+    private val header: Header
+    private val kingLayout: Layout = Layout()
+    private val trimmerLayout: CrippleLayout
+    private val staticMaterials: MaterialList = MaterialList()
+    private val staticGraphics: GraphicsList = GraphicsList()
+
+    private val headerCrippleStud: Stud?
+    private val headerCrippleLayout: CrippleLayout?
+
+    private val floorCrippleLayoutDownShift: Measurement?
+    private val floorCrippleStud: Stud?
+    private val floorCrippleLayout: CrippleLayout?
+
+    init {
+        val loadBearingDimension = calculateLoadBearingDimension(width)
+        val trimmerHeight = height.add(heightToBottomOfOpening)
+        trimmerStud = if (loadBearingDimension == Lumber.Dimension.TWO_BY_SIX) {
+            Stud(trimmerHeight, studDimension)
         } else {
-            crippleStud = null
-            crippleLayout = null
+            DoubleStud(trimmerHeight, studDimension)
+        }
+
+        val headerWidth = width.add(trimmerStud.totalWidth().multiply(2))
+        header = Header(Stud(headerWidth, loadBearingDimension), Plate(headerWidth, studDimension))
+
+        val minimumHeight = trimmerStud.totalHeight().add(header.totalHeight())
+
+        require(kingStudHeight >= minimumHeight) {
+            "Total height of $kingStudHeight is too short, requires $minimumHeight"
+        }
+
+        kingStud = Stud(kingStudHeight, this.studDimension)
+
+        // The king and trimmer layouts are separated because Trimmers need to be attached to kings similar to how
+        // cripple studs are attached to the outside studs.
+        val lastKingStudLocation = kingStud.totalWidth().add(header.totalWidth())
+        kingLayout
+            .addStudAt(Measurement(0), kingStud)
+            .addStudAt(lastKingStudLocation, kingStud)
+
+        trimmerLayout = CrippleLayout(
+            kingStud.totalWidth(),
+            lastKingStudLocation.subtract(trimmerStud.totalWidth()),
+            trimmerStud
+        )
+
+        /*
+        static materials and graphics need to be calculated before cripple studs since those layouts can change
+        as cripple studs are added
+         */
+        staticMaterials
+            .addMaterials(kingLayout.materialList())
+            .addMaterials(trimmerLayout.materialList())
+            .addMaterials(header.materialList())
+
+        val headerCrippleStudHeight = kingStudHeight.subtract(minimumHeight)
+        staticGraphics
+            .addGraphics(kingLayout.graphicsList())
+            .addGraphics(
+                trimmerLayout.graphicsList().shift(Measurement(0), headerCrippleStudHeight.add(header.totalHeight()))
+            )
+            .addGraphics(header.graphicsList().shift(kingStud.totalWidth(), headerCrippleStudHeight))
+
+        if (headerCrippleStudHeight != Measurement(0)) {
+            val headerCrippleLayoutShift = kingStud.totalWidth()
+            headerCrippleStud = Stud(headerCrippleStudHeight, studDimension)
+            headerCrippleLayout = CrippleLayout(
+                firstStudPosition = headerCrippleLayoutShift,
+                lastStudPosition = lastKingStudLocation.subtract(headerCrippleLayoutShift),
+                studType = headerCrippleStud
+            )
+        } else {
+            headerCrippleStud = null
+            headerCrippleLayout = null
+        }
+
+        if (heightToBottomOfOpening > Measurement(0)) {
+            val floorCripplePlate = Plate(width, studDimension)
+            val floorCrippleLayoutInsideShift = kingStud.totalWidth().add(trimmerStud.totalWidth())
+            floorCrippleLayoutDownShift =
+                kingStudHeight.subtract(heightToBottomOfOpening).add(floorCripplePlate.totalHeight())
+
+            staticMaterials.addMaterials(floorCripplePlate.materialList())
+            staticGraphics.addGraphics(
+                floorCripplePlate
+                    .graphicsList()
+                    .shift(floorCrippleLayoutInsideShift, kingStudHeight.subtract(heightToBottomOfOpening))
+            )
+
+            floorCrippleStud = Stud(heightToBottomOfOpening.subtract(floorCripplePlate.totalHeight()), studDimension)
+            floorCrippleLayout = CrippleLayout(
+                firstStudPosition = floorCrippleLayoutInsideShift,
+                lastStudPosition = lastKingStudLocation.subtract(floorCrippleLayoutInsideShift),
+                studType = floorCrippleStud
+            )
+        } else {
+            floorCrippleLayoutDownShift = null
+            floorCrippleStud = null
+            floorCrippleLayout = null
+        }
+    }
+
+    @Throws(IllegalArgumentException::class)
+    private fun calculateLoadBearingDimension(gapWidth: Measurement): Lumber.Dimension {
+        return if (gapWidth <= Measurement(48)) {
+            Lumber.Dimension.TWO_BY_SIX
+        } else if (gapWidth <= Measurement(60)) {
+            Lumber.Dimension.TWO_BY_EIGHT
+        } else if (gapWidth <= Measurement(74)) {
+            Lumber.Dimension.TWO_BY_TEN
+        } else if (gapWidth <= maximumGap) {
+            Lumber.Dimension.TWO_BY_TWELVE
+        } else {
+            throw IllegalArgumentException("Opening can only be $maximumGap wide")
         }
     }
 
@@ -52,7 +157,7 @@ open class Opening(val width: Measurement, val height: Measurement, private val 
      * @return - A copy of the [Measurement] of the height of this opening
      */
     override fun totalHeight(): Measurement {
-        return totalHeight
+        return kingLayout.totalHeight()
     }
 
     /**
@@ -60,7 +165,7 @@ open class Opening(val width: Measurement, val height: Measurement, private val 
      * @return - A copy of the [Measurement] of the width of this opening
      */
     override fun totalWidth(): Measurement {
-        return totalWidth
+        return kingLayout.totalWidth()
     }
 
     /**
@@ -68,23 +173,24 @@ open class Opening(val width: Measurement, val height: Measurement, private val 
      * @return - A [MaterialList] of [models.buildable.material.Material] used to create this opening
      */
     override fun materialList(): MaterialList {
-        val result = MaterialList()
-            .addMaterials(floorLayout.materialList())
-            .addMaterials(header.materialList())
-            .addMaterial(Stud.nailType, extraNails)
-        crippleLayout?.let { result.addMaterials(it.materialList()) }
+        val result = MaterialList().addMaterials(staticMaterials)
+        headerCrippleLayout?.let { result.addMaterials(it.materialList()) }
+        floorCrippleLayout?.let { result.addMaterials(it.materialList()) }
         return result
     }
 
     /**
      *
-     * @return - A [GraphicsList] of [graphics.GraphicsInstructions] used to draw this opening
+     * @return - A [GraphicsList] of [GraphicsInstructions] used to draw this opening
      */
     override fun graphicsList(): GraphicsList {
-        val result = GraphicsList()
-            .addGraphics(floorLayout.graphicsList())
-            .addGraphics(header.graphicsList().shift(studDimension.width, totalHeight.subtract(topOfHeader)))
-        crippleLayout?.let { result.addGraphics(it.graphicsList().shift(studDimension.width, Measurement(0))) }
+        val result = GraphicsList().addGraphics(staticGraphics)
+        headerCrippleLayout?.let { result.addGraphics(it.graphicsList()) }
+        floorCrippleLayout?.let {
+            result.addGraphics(
+                it.graphicsList().shift(Measurement(0), floorCrippleLayoutDownShift!!)
+            )
+        }
         return result
     }
 
@@ -97,35 +203,13 @@ open class Opening(val width: Measurement, val height: Measurement, private val 
      */
     @Throws(InstallableLocationConflict::class)
     open fun addCrippleStud(locationInOpening: Measurement): Opening {
-        if (locationInOpening > this.totalWidth) {
-            val error = "Stud cannot be added at $locationInOpening. Opening is only ${this.totalWidth} wide"
+        if (locationInOpening > this.totalWidth()) {
+            val error = "Stud cannot be added at $locationInOpening. Opening is only ${this.totalWidth()} wide"
             throw InstallableLocationConflict(error, locationInOpening)
         }
-
-        // If the cripple stud need to go before the first or after the last, it can be ignored as there is a king stud
-        // there already
-        val firstCrippleStud = this.studDimension.width
-        val lastCrippleStud = totalWidth().subtract(this.studDimension.width.multiply(2))
-        if (locationInOpening < firstCrippleStud || locationInOpening >= lastCrippleStud) {
-            return this
-        }
-
-        // The cripple stud layout does not align with the outside of the Opening, so we need to shift the studs
-        crippleLayout?.addStudAt(locationInOpening.subtract(this.studDimension.width), crippleStud!!)
+        headerCrippleLayout?.addStudAt(locationInOpening, headerCrippleStud!!)
+        floorCrippleLayout?.addStudAt(locationInOpening, floorCrippleStud!!)
         return this
     }
 
-    /**
-     * openings are only equal if the type of opening and the tripe layout are the same
-     * @param other - the object to be compared
-     * @return Indication if the two openings are equal
-     */
-    override fun equals(other: Any?) = (other === this)
-            || (other is Opening && width == other.width && crippleLayout == other.crippleLayout)
-
-    /**
-     *
-     * @return hash code based on the type and tripleLayout
-     */
-    override fun hashCode() = width.hashCode() + crippleLayout.hashCode()
 }
