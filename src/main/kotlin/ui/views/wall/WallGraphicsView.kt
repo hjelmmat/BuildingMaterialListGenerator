@@ -13,6 +13,11 @@ fun wallGraphicsView(model: GraphicsViewModel) {
     Canvas(modifier = Modifier.fillMaxSize()) {
         model.data.forEach {
             drawRect(
+                color = Color.Gray,
+                topLeft = it.offset,
+                size = it.size,
+            )
+            drawRect(
                 color = Color.Black,
                 topLeft = it.offset,
                 size = it.size,
