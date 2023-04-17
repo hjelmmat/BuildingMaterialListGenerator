@@ -1,5 +1,6 @@
 package models.buildable.installable
 
+import androidx.compose.ui.text.resolveDefaults
 import graphics.GraphicsList
 import graphics.RectangleInstructions
 import models.buildable.installable.Layout.InstallableLocationConflict
@@ -100,37 +101,6 @@ internal class LayoutTest {
                 .addStudAt(zero, defaultStud)
                 .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), zero),
         )
-    }
-
-    @Test
-    fun whenAOpeningIsAddedThatOverlapsAnotherOpeningAddOpeningAtShouldThrow() {
-        val error = "Cannot be added at 40\", collides with Opening at 1\""
-        val thrown = assertFailsWith<InstallableLocationConflict> {
-            Layout()
-                .addStudAt(Measurement(100), defaultStud)
-                .addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(1))
-                .addOpeningAt(
-                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
-                    Measurement(40)
-                )
-        }
-        assertEquals(error, thrown.message)
-        assertEquals(Measurement(1), thrown.conflict)
-        val secondError = "Cannot be added at 44\", collides with Opening at 45\""
-        val secondThrown = assertFailsWith<InstallableLocationConflict> {
-            Layout()
-                .addStudAt(Measurement(100), defaultStud)
-                .addOpeningAt(
-                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
-                    Measurement(45)
-                )
-                .addOpeningAt(
-                    Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()),
-                    Measurement(44)
-                )
-        }
-        assertEquals(secondError, secondThrown.message)
-        assertEquals(Measurement(45), secondThrown.conflict)
     }
 
     @Test
@@ -257,7 +227,7 @@ internal class LayoutTest {
 
     @Test
     fun addOpeningShouldThrowWhenRightSideOfOpeningIsOutsideLayout() {
-        val error = "Cannot be added at 0\". Layout is only 11-1/2\" long and opening ends at 40\""
+        val error = "Cannot be added at 0\", is only 11-1/2\" wide and opening ends at 40\""
         val test = Layout().addStudAt(Measurement(10), defaultStud)
         val thrown = assertFailsWith<InstallableLocationConflict> {
             test.addOpeningAt(Opening(door.openingWidth, door.openingHeight, defaultStud.totalHeight()), Measurement(0))
@@ -274,5 +244,35 @@ internal class LayoutTest {
                 .addStudAt(Measurement(50), Stud(Measurement(100), Lumber.Dimension.TWO_BY_FOUR))
                 .totalHeight(),
         )
+    }
+
+    @Test
+    fun whenAddingOpeningShouldReplaceEdgeStuds() {
+        val testOpening = Opening(Measurement(5, Measurement.Fraction.ONE_HALF), Measurement(20), Measurement(50))
+        val result = GraphicsList()
+            .addGraphics(testOpening.graphicsList())
+        val test = Layout()
+            .addStudAt(Measurement(0), Stud(Measurement(50)))
+            .addStudAt(Measurement(10), Stud(Measurement(50)))
+            .addOpeningAt(testOpening, Measurement(0))
+        assertEquals(result, test.graphicsList())
+    }
+
+    @Test
+    fun whenAddingOpeningShouldAddToOpening() {
+        val height = Measurement(125)
+        val openingResult = Opening(door.openingWidth, door.openingHeight, height)
+            .addCrippleStud(Measurement(7))
+        val secondOpening = Opening(Measurement(10), Measurement(15), height, Measurement(94, Fraction.ONE_HALF))
+        openingResult.addUpperOpening(secondOpening, Measurement(4))
+        val result = Layout().addStudAt(Measurement(100), Stud(height)).addOpeningAt(openingResult, Measurement(3))
+        val test = Layout().addStudAt(Measurement(100), Stud(height))
+            .addStudAt(Measurement(10), Stud(height))
+            .addOpeningAt(Opening(door.openingWidth, door.openingHeight, height), Measurement(3))
+            .addOpeningAt(
+                Opening(Measurement(10), Measurement(15), height, Measurement(94, Fraction.ONE_HALF)),
+                Measurement(7)
+            )
+        assertEquals(result, test)
     }
 }

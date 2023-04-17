@@ -14,7 +14,7 @@ import kotlin.IllegalArgumentException
  * @param height - Height of wall to create
  * @throws IllegalArgumentException - Thrown when the length or height is less than the minimum wall length/height
  */
-class Wall constructor(
+class Wall(
     private val length: Measurement,
     height: Measurement = Measurement(97, Fraction.ONE_EIGHTH)
 ) : Installable {
@@ -117,7 +117,6 @@ class Wall constructor(
     @Throws(IllegalArgumentException::class)
     fun addADoor(ofType: StandardDoor, atLocation: Measurement): Wall {
         val attemptedDoor = Opening(ofType.openingWidth, ofType.openingHeight, studHeight)
-        validateAddedOpeningLocation("$ofType door", atLocation, attemptedDoor)
         layout.addOpeningAt(attemptedDoor, atLocation)
         return this
     }
@@ -129,19 +128,9 @@ class Wall constructor(
         windowWidth: Measurement,
         windowHeight: Measurement,
     ): Wall {
-        val attemptedWindow =
-            Opening(windowWidth, windowHeight, studHeight, bottomOfWindowHeight)
-        validateAddedOpeningLocation("Window", atLocation, attemptedWindow)
+        val attemptedWindow = Opening(windowWidth, windowHeight, studHeight, bottomOfWindowHeight)
         layout.addOpeningAt(attemptedWindow, atLocation)
         return this
-    }
-
-    @Throws(IllegalArgumentException::class)
-    private fun validateAddedOpeningLocation(additionType: String, atLocation: Measurement, addition: Opening) {
-        val baseErrorMessage = "$additionType cannot be installed at $atLocation,"
-        require(atLocation.add(addition.totalWidth()) <= this.totalWidth()) {
-            "$baseErrorMessage $additionType is ${addition.totalWidth()} wide and wall is ${this.totalWidth()} long"
-        }
     }
 
     /**

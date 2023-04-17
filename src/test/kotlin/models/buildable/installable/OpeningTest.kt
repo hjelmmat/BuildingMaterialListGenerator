@@ -5,6 +5,7 @@ import models.buildable.installable.Layout.InstallableLocationConflict
 import models.buildable.material.*
 import models.Measurement
 import models.Measurement.Fraction
+import java.awt.desktop.OpenFilesHandler
 import kotlin.test.*
 
 internal class OpeningTest {
@@ -201,4 +202,92 @@ internal class OpeningTest {
         assertEquals(materialsResult.materials(), test.materialList().materials())
     }
 
+    @Test
+    fun shouldAddOpeningAbove() {
+        val kingHeight = Measurement(75)
+        val trimmerHeight = Measurement(25)
+        val upperOpening = Opening(Measurement(5), Measurement(10), kingHeight, Measurement(48, Measurement.Fraction.ONE_HALF))
+        val result = GraphicsList()
+            .addGraphics(
+                Layout()
+                    .addStudAt(Measurement(0), Stud(kingHeight))
+                    .addStudAt(Measurement(19, Measurement.Fraction.ONE_HALF), Stud(kingHeight))
+                    .graphicsList()
+            )
+            .addGraphics(
+                Layout()
+                    .addStudAt(dimension.width, Stud(trimmerHeight, dimension))
+                    .addStudAt(Measurement(18), Stud(trimmerHeight, dimension))
+                    .graphicsList().shift(Measurement(0), Measurement(50))
+            )
+            .addGraphics(
+                Header(Stud(Measurement(18), Lumber.Dimension.TWO_BY_SIX), Plate(Measurement(18), dimension))
+                    .graphicsList().shift(dimension.width, Measurement(41, Measurement.Fraction.ONE_HALF))
+            )
+            .addGraphics(
+                CrippleLayout(
+                    dimension.width,
+                    Measurement(18),
+                    Stud(Measurement(41, Measurement.Fraction.ONE_HALF))
+                )
+                    .addOpeningAt(
+                        Opening(
+                            Measurement(5),
+                            Measurement(10),
+                            Measurement(41, Measurement.Fraction.ONE_HALF),
+                            Measurement(15)
+                        ),
+                        Measurement(4)
+                    )
+                    .graphicsList()
+            ).drawingInstructions()
+        val test = Opening(Measurement(15), trimmerHeight, kingHeight).addUpperOpening(upperOpening, Measurement(4))
+            .graphicsList().drawingInstructions()
+        assertEquals(result, test)
+    }
+
+    @Test
+    fun whenNewOpeningIsTooTallShouldThrow() {
+        val height = Measurement(125)
+        val test = Opening(door.openingWidth, door.openingHeight, height)
+        val secondOpening = Opening(
+            Measurement(10),
+            Measurement(15),
+            Measurement(130),
+            Measurement(5)
+        )
+        val error = assertFailsWith<IllegalArgumentException> {
+            test.addUpperOpening(
+                secondOpening, Measurement(4)
+            )
+        }
+        assertEquals(
+            "Added Opening is not the same total height of the current opening, should be 125\"",
+            error.message
+        )
+
+        val secondTest = Opening(door.openingWidth, Measurement(121, Fraction.ONE_HALF), Measurement(130))
+        val secondError = assertFailsWith<IllegalArgumentException> {
+            secondTest.addUpperOpening(
+                secondOpening, Measurement(4)
+            )
+        }
+        assertEquals("There is no space above for any opening", secondError.message)
+    }
+
+    @Test
+    fun whenNewOpeningIsNotHighEngoughShouldThrow() {
+        val height = Measurement(125)
+        val test = Opening(door.openingWidth, door.openingHeight, height)
+        val secondOpening = Opening(Measurement(10), Measurement(15), height)
+        val error = assertFailsWith<IllegalArgumentException> {
+            test.addUpperOpening(
+                secondOpening, Measurement(4)
+            )
+        }
+        assertEquals(
+            "Cannot add opening, does not fit above current opening. Should be at least 89-1/2\"",
+            error.message
+        )
+    }
 }

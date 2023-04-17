@@ -139,7 +139,7 @@ internal class WallTest {
             maxTwoStudWall.addADoor(StandardDoor.Bedroom, Measurement(100))
         }
         assertEquals(
-            "Bedroom door cannot be installed at 100\", Bedroom door is 40\" wide and wall is 17-1/2\" long",
+            "Cannot be added at 100\", is only 17-1/2\" wide and opening ends at 140\"",
             thrown.message
         )
     }
@@ -185,17 +185,6 @@ internal class WallTest {
                     .graphicsList().shift(Measurement(2), downShiftBecauseOfPlates),
             )
         assertEquals(graphicsResult.drawingInstructions(), test.graphicsList().drawingInstructions())
-    }
-
-    @Test
-    fun whenWindowIsAddedShouldThrowForInvalidLocation() {
-        val firstThrown = assertFailsWith<IllegalArgumentException> {
-            maxTwoStudWall.addAWindow(Measurement(10), Measurement(0), Measurement(10), Measurement(9))
-        }
-        assertEquals(
-            "Window cannot be installed at 10\", Window is 16\" wide and wall is 17-1/2\" long",
-            firstThrown.message
-        )
     }
 
     @Test

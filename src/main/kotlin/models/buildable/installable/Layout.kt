@@ -52,12 +52,20 @@ open class Layout : Installable {
         val endLocation = atLocation.add(ofType.totalWidth())
         if (endLocation > totalWidth()) {
             val error =
-                "Cannot be added at $atLocation. Layout is only ${totalWidth()} long and opening ends at $endLocation"
+                "Cannot be added at $atLocation, is only ${totalWidth()} wide and opening ends at $endLocation"
             throw InstallableLocationConflict(error, atLocation)
         }
 
-        detectConflicts(atLocation, endLocation, this.openings, "Opening")
+        try {
+            detectConflicts(atLocation, endLocation, this.openings, "Opening")
+        } catch (e: InstallableLocationConflict) {
+            openings[e.conflict]!!.addUpperOpening(ofType, atLocation.subtract(e.conflict))
+            return this
+        }
+
         tryShiftOutsideStudsToValidPosition(atLocation, endLocation, "Opening")
+
+        openings[atLocation] = ofType
 
         val studsToRemove = mutableListOf<Measurement>()
         studs.subMap(atLocation, endLocation).forEach {
@@ -65,7 +73,6 @@ open class Layout : Installable {
             studsToRemove.add(it.key)
         }
         studsToRemove.forEach { studs.remove(it) }
-        openings[atLocation] = ofType
         return this
     }
 
@@ -102,6 +109,9 @@ open class Layout : Installable {
 
                 // Try again since it might have multiple conflicts
                 tryShiftOutsideStudsToValidPosition(startLocation, endLocation, installableType)
+            } else if (conflictLocation == startLocation || conflictLocation == endLocation) {
+                // If the stud is exactly aligned with the outside stud, remove it since it will be replaced
+                this.studs.remove(conflictLocation)
             } else if (studNeedingMoving.totalWidth().add(endLocation) > totalWidth()) {
                 throw potentialException
             } else if (studNeedingMoving.totalWidth().add(conflictLocation) > endLocation) {
@@ -138,7 +148,6 @@ open class Layout : Installable {
                 throw InstallableLocationConflict(error + rightInside, rightInside)
             }
         }
-
     }
 
     /**

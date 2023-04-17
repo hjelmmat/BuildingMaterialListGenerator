@@ -14,11 +14,11 @@ import models.Measurement
  * @param heightToBottomOfOpening - The height to the bottom of the desired opening
  */
 open class Opening(
-    width: Measurement,
-    height: Measurement,
+    private val width: Measurement,
+    private val height: Measurement,
     kingStudHeight: Measurement,
     // Defaults to 0 for Door type openings
-    heightToBottomOfOpening: Measurement = Measurement(0),
+    private val heightToBottomOfOpening: Measurement = Measurement(0),
 ) :
     Installable {
     private val maximumGap = Measurement(85)
@@ -38,6 +38,9 @@ open class Opening(
     private val header: Header
     private val kingLayout: Layout = Layout()
     private val trimmerLayout: CrippleLayout
+    private val minimumHeight: Measurement
+
+
     private val staticMaterials: MaterialList = MaterialList()
     private val staticGraphics: GraphicsList = GraphicsList()
 
@@ -60,7 +63,7 @@ open class Opening(
         val headerWidth = width.add(trimmerStud.totalWidth().multiply(2))
         header = Header(Stud(headerWidth, loadBearingDimension), Plate(headerWidth, studDimension))
 
-        val minimumHeight = trimmerStud.totalHeight().add(header.totalHeight())
+        minimumHeight = trimmerStud.totalHeight().add(header.totalHeight())
 
         require(kingStudHeight >= minimumHeight) {
             "Total height of $kingStudHeight is too short, requires $minimumHeight"
@@ -196,8 +199,6 @@ open class Opening(
 
     /**
      * This method is intending to take a stud that was in a wall layout and move it into the opening's layout instead.
-     * If the stud happens to conflict with a King stud of the opening, it will be moved next to it.
-     * @param stud - A stud replaced by this opening
      * @param locationInOpening - The location of the stud relative to the start of the opening (the king stud)
      * @return This opening
      */
@@ -212,4 +213,30 @@ open class Opening(
         return this
     }
 
+    /**
+     * Add an opening above another opening (usually a window over a door)
+     * @param ofType - The opening to place above
+     * @param location - Location in the opening to place the new opening
+     * @return - This Opening with the new Opening
+     */
+    fun addUpperOpening(ofType: Opening, location: Measurement): Opening {
+        require(headerCrippleStud is Stud) {
+            "There is no space above for any opening"
+        }
+        require(ofType.totalHeight() == this.totalHeight()) {
+            "Added Opening is not the same total height of the current opening, should be ${this.totalHeight()}"
+        }
+        require(ofType.heightToBottomOfOpening >= minimumHeight) {
+            "Cannot add opening, does not fit above current opening. Should be at least $minimumHeight"
+        }
+        val adjustedOpening =
+            Opening(
+                ofType.width,
+                ofType.height,
+                headerCrippleStud.totalHeight(),
+                ofType.heightToBottomOfOpening.subtract(minimumHeight)
+            )
+        this.headerCrippleLayout?.addOpeningAt(adjustedOpening, location)
+        return this
+    }
 }
